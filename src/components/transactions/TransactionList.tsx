@@ -182,7 +182,7 @@ export function TransactionList({
         {/* Average Transaction Size */}
         <div className="bg-white border border-[#DED9D2] rounded-[2px] p-4 flex flex-col justify-between hover:border-[#1B1A18] transition-colors sf-card">
           <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block">
-            Average Spend
+            Avg. Transaction
           </span>
           <div className="mt-2 mb-1">
             <span className="text-xl sm:text-2xl font-mono font-bold text-[#1B1A18] tabular-nums tracking-tight">
@@ -208,7 +208,7 @@ export function TransactionList({
             />
             <input
               type="text"
-              placeholder="Search transactions"
+              placeholder="Search transactions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
@@ -240,8 +240,8 @@ export function TransactionList({
             >
               <option value="date-desc">Newest</option>
               <option value="date-asc">Oldest</option>
-              <option value="amount-desc">Highest amount</option>
-              <option value="amount-asc">Lowest amount</option>
+              <option value="amount-desc">Highest Amount</option>
+              <option value="amount-asc">Lowest Amount</option>
               <option value="title-asc">Name (A–Z)</option>
             </select>
             <IconArrowsSort
@@ -312,12 +312,6 @@ export function TransactionList({
               of <span className="tabular-nums font-bold text-[#1B1A18]">{filteredTransactions.length}</span>
             </span>
           </div>
-          <span>
-            Total:{' '}
-            <strong className="text-[#1B1A18] font-bold tabular-nums">
-              {formatCurrency(totalFilteredAmount, currency)}
-            </strong>
-          </span>
         </div>
       </div>
 
@@ -346,7 +340,7 @@ export function TransactionList({
             </h4>
             <p className="text-xs text-[#625E59] mt-1 max-w-sm mx-auto">
               {isFilterActive
-                ? 'Try different filters.'
+                ? 'Try changing your filters.'
                 : 'No expenses recorded for this month.'}
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">

@@ -190,7 +190,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
               <div className="w-7 h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F]">
                 <IconCalendar className="w-4 h-4" stroke={2} />
               </div>
-              {selectedMonth.label}
+              Calendar
             </h2>
           </div>
 

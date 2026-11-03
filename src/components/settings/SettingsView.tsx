@@ -85,16 +85,16 @@ export function SettingsView({
           <div className="w-7 h-7 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
             <IconCoins size={15} stroke={2} />
           </div>
-          <h3>Financial Preferences</h3>
+          <h3>Preferences</h3>
         </div>
 
         {/* Currency */}
         <div className="flex items-center justify-between gap-4 pb-4 border-b border-[#DED9D2]">
           <div>
             <div className="flex items-center gap-2 text-xs text-[#1B1A18] font-bold font-sans">
-              <span>Reporting Currency</span>
+              <span>Currency</span>
             </div>
-            <p className="text-xs text-[#625E59] mt-0.5">All amounts displayed in this currency</p>
+            <p className="text-xs text-[#625E59] mt-0.5">Used for all amounts</p>
           </div>
           <div className="relative">
             <select
@@ -119,7 +119,7 @@ export function SettingsView({
             <div className="flex items-center gap-2 text-xs text-[#1B1A18] font-bold font-sans">
               <span>Monthly Target ({selectedMonth.label})</span>
             </div>
-            <p className="text-xs text-[#625E59] mt-0.5 font-mono">Blur or press Enter to save</p>
+            <p className="text-xs text-[#625E59] mt-0.5 font-mono">Saves on blur or Enter</p>
           </div>
           <div className="flex items-center gap-2">
             <input
@@ -155,7 +155,7 @@ export function SettingsView({
           <div className="w-7 h-7 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
             <IconDatabase size={15} stroke={2} />
           </div>
-          <h3>Data Portability &amp; Backups</h3>
+          <h3>Data &amp; Backups</h3>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -183,7 +183,7 @@ export function SettingsView({
             aria-label="Import backup data"
           >
             <IconUpload size={14} stroke={2} />
-            <span>Import backup</span>
+            <span>Import Backup</span>
           </button>
         </div>
       </div>
@@ -204,7 +204,7 @@ export function SettingsView({
             aria-label="Reload sample data"
           >
             <IconRotateClockwise size={14} stroke={2} />
-            <span>Reload sample data</span>
+            <span>Reload Sample Data</span>
           </button>
 
           <button
@@ -213,7 +213,7 @@ export function SettingsView({
             aria-label="Clear all records permanently"
           >
             <IconTrash size={14} stroke={2} />
-            <span>Clear all records</span>
+            <span>Clear All Records</span>
           </button>
         </div>
 

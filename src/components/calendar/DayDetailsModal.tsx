@@ -129,7 +129,7 @@ export function DayDetailsModal({
 
           {dayTransactions.length === 0 ? (
             <div className="text-center py-8 px-4 rounded-[2px] bg-white border border-dashed border-[#DED9D2]">
-              <p className="text-xs font-mono font-semibold text-[#1B1A18]">Nothing scheduled.</p>
+              <p className="text-xs font-mono font-semibold text-[#1B1A18]">No transactions for this day.</p>
             </div>
           ) : (
             <div className="space-y-2">

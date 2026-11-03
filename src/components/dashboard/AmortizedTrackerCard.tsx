@@ -67,7 +67,7 @@ export function AmortizedTrackerCard({
         <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 self-start sm:self-auto shrink-0">
           <div className="inline-flex items-center h-9 gap-2 px-3.5 rounded-[2px] bg-[#F9EEE9] border border-[#E65B3F]/30 text-xs shrink-0">
             <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-[#A83F29]">
-              Monthly:
+              Monthly Cost
             </span>
             <span className="font-mono font-bold text-[#A83F29] tabular-nums">
               {formatCurrency(totalMonthlyAmortizedCost, currency)}
@@ -95,13 +95,6 @@ export function AmortizedTrackerCard({
           <p className="text-xs text-[#625E59] max-w-sm mx-auto">
             Track product value over time.
           </p>
-          <button
-            onClick={() => onOpenAddModal()}
-            className="sf-button-primary text-xs uppercase tracking-wider h-8 px-3.5 inline-flex items-center gap-1.5 mt-2 rounded-[2px]"
-          >
-            <IconPlus size={13} stroke={2.5} />
-            <span>Add product</span>
-          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -112,7 +112,7 @@ export function SpendingChart() {
             <IconChartBar size={16} stroke={2} />
           </div>
           <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-            Spending Trends ({selectedMonth.label})
+            Spending Activity
           </h3>
         </div>
 
@@ -136,7 +136,7 @@ export function SpendingChart() {
           {filteredTransactions.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
               <span className="px-3 py-1.5 text-xs font-mono text-[#625E59] bg-[#F7F5F2]/90 border border-[#DED9D2] rounded-[2px] shadow-xs">
-                No data for {selectedMonth.label}
+                No activity yet.
               </span>
             </div>
           )}
@@ -183,7 +183,7 @@ export function SpendingChart() {
                       <div className="text-[10px] text-[#A6A29C]">
                         {bar.settled > 0 ? `Settled: ${formatCurrency(bar.settled, currency)}` : ''}
                         {bar.settled > 0 && bar.scheduled > 0 ? ' • ' : ''}
-                        {bar.scheduled > 0 ? `Due: ${formatCurrency(bar.scheduled, currency)}` : ''}
+                        {bar.scheduled > 0 ? `Scheduled: ${formatCurrency(bar.scheduled, currency)}` : ''}
                       </div>
                     )}
                     <div

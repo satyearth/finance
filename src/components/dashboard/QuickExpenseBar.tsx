@@ -83,7 +83,7 @@ export function QuickExpenseBar() {
             onChange={(e) => setInputVal(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder='e.g. Coffee 250 Food'
+            placeholder='e.g. Coffee ₹250 Food'
             className="w-full text-xs sm:text-sm font-medium text-[#1B1A18] placeholder:text-[#625E59] bg-transparent outline-none font-sans"
           />
 

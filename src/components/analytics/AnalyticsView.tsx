@@ -224,7 +224,7 @@ export function AnalyticsView() {
                 </p>
               </div>
               <div className="h-7 flex items-center text-[11px] text-[#625E59] font-mono">
-                Single entry in period
+                Only entry
               </div>
             </>
           ) : (
@@ -305,7 +305,7 @@ export function AnalyticsView() {
             <>
               <div className="my-auto py-1">
                 <div className="text-2xl font-mono font-bold tracking-tight text-[#625E59]">—</div>
-                <p className="text-[11px] text-[#625E59] mt-0.5 italic">No target configured</p>
+                <p className="text-[11px] text-[#625E59] mt-0.5 italic">No budget set</p>
               </div>
               <div className="h-7 flex items-center text-xs text-[#625E59] font-mono tabular-nums">
                 Spent: {formatCurrency(totalSpentThisMonth, currency)}
@@ -324,7 +324,7 @@ export function AnalyticsView() {
             </div>
             <div>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-                Category Breakdown
+                Spending Mix
               </h3>
             </div>
           </div>
@@ -337,7 +337,7 @@ export function AnalyticsView() {
         {!hasData || activeAllocationCategories.length === 0 ? (
           <div className="py-6 text-center text-xs font-mono text-[#625E59]">
             <div className="w-full bg-[#EFECE6] h-3.5 rounded-[2px] mb-2.5 border border-[#E5E0D8]" />
-            <span>No spending data for {selectedMonth.label}</span>
+            <span>No spending data yet.</span>
           </div>
         ) : (
           <div className="space-y-3.5">
@@ -404,12 +404,12 @@ export function AnalyticsView() {
             </div>
             <div>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-                Budget Performance
+                Budget
               </h3>
             </div>
           </div>
           <span className="text-xs font-mono text-[#625E59] tabular-nums self-start sm:self-auto">
-            Avg pace:{' '}
+            Daily Average:{' '}
             <strong className="text-[#1B1A18] font-bold">
               {formatCurrency(dailySpendAverage, currency)}/day
             </strong>
@@ -480,7 +480,7 @@ export function AnalyticsView() {
           <div className="flex items-center gap-2">
             <IconWallet size={16} stroke={2} className="text-[#E65B3F]" />
             <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-              By Category
+              Category Details
             </h3>
           </div>
 
@@ -513,10 +513,10 @@ export function AnalyticsView() {
               <IconChartPie size={24} stroke={1.8} />
             </div>
             <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-              No spending recorded.
+              No spending yet.
             </h4>
             <p className="text-xs text-[#625E59] mt-1.5 max-w-sm mx-auto font-mono">
-              Record expenses to view category insights.
+              Add transactions to see category insights.
             </p>
           </div>
         ) : (
