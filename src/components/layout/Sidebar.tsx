@@ -81,7 +81,7 @@ export function Sidebar() {
       {/* Bottom Footer: Made by Saty */}
       <div className="pt-2 px-3 select-none">
         <span className="text-xs font-semibold text-[#625E59] hover:text-[#1B1A18] tracking-tight font-display block transition-colors">
-          Made by Saty
+          Made by Satyarth
         </span>
       </div>
     </aside>

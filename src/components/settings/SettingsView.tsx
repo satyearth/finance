@@ -77,9 +77,6 @@ export function SettingsView({
       {/* Page Title */}
       <div>
         <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-[#1B1A18]">Settings</h2>
-        <p className="text-xs text-[#625E59] font-mono mt-0.5">
-          Workspace preferences and data management
-        </p>
       </div>
 
       {/* Financial Preferences */}
@@ -161,10 +158,6 @@ export function SettingsView({
           <h3>Data Portability &amp; Backups</h3>
         </div>
 
-        <p className="text-xs text-[#625E59] -mt-1 font-sans">
-          Export your transaction ledger or import from a previous backup
-        </p>
-
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <button
             onClick={() => exportToJSON(transactions)}
@@ -190,7 +183,7 @@ export function SettingsView({
             aria-label="Import backup data"
           >
             <IconUpload size={14} stroke={2} />
-            <span>Import Backup</span>
+            <span>Import backup</span>
           </button>
         </div>
       </div>
@@ -204,10 +197,6 @@ export function SettingsView({
           <h3>Storage &amp; Reset</h3>
         </div>
 
-        <p className="text-xs text-[#625E59] -mt-1 font-sans">
-          Load demo data or permanently clear all your transaction records
-        </p>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <button
             onClick={() => onOpenResetConfirmModal('sample')}
@@ -215,7 +204,7 @@ export function SettingsView({
             aria-label="Reload sample data"
           >
             <IconRotateClockwise size={14} stroke={2} />
-            <span>Reload Sample Data</span>
+            <span>Reload sample data</span>
           </button>
 
           <button
@@ -224,7 +213,7 @@ export function SettingsView({
             aria-label="Clear all records permanently"
           >
             <IconTrash size={14} stroke={2} />
-            <span>Clear All Records</span>
+            <span>Clear all records</span>
           </button>
         </div>
 

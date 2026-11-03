@@ -53,7 +53,7 @@ export function HeroBudgetCard() {
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 bg-[#E65B3F] rotate-45 shrink-0" />
             <span className="text-[11px] font-mono uppercase tracking-wider text-[#625E59] font-bold">
-              {selectedMonth.label} Total Outflow
+              {selectedMonth.label} Monthly Spend
             </span>
           </div>
 
@@ -80,7 +80,7 @@ export function HeroBudgetCard() {
               isOverBudget ? 'bg-red-50 text-red-700 border-red-200' : 'bg-[#F9EEE9] text-[#A83F29] border-[#E65B3F]/30'
             }`}>
               <span className={`w-1.5 h-1.5 shrink-0 ${isOverBudget ? 'bg-red-600' : 'bg-[#E65B3F]'}`} />
-              <span>{isOverBudget ? 'Over target:' : 'Headroom:'}</span>
+              <span>{isOverBudget ? 'Over target:' : 'Remaining:'}</span>
               <strong className="font-bold tabular-nums">{formatCurrency(Math.abs(remaining), currency)}</strong>
             </span>
           ) : (
@@ -90,7 +90,7 @@ export function HeroBudgetCard() {
               className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[2px] text-xs font-mono bg-[#F7F5F2] text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18] hover:text-[#1B1A18] transition-colors cursor-pointer"
             >
               <span className="w-1.5 h-1.5 bg-[#625E59] shrink-0" />
-              <span>Target: <strong className="font-bold text-[#E65B3F]">+ Set Monthly Target</strong></span>
+              <span>Target: <strong className="font-bold text-[#E65B3F]">+ Set target</strong></span>
             </button>
           )}
         </div>
@@ -100,7 +100,7 @@ export function HeroBudgetCard() {
       <div className="flex flex-col justify-between gap-4 lg:border-l lg:border-[#DED9D2] lg:pl-8 pt-4 lg:pt-0 border-t border-[#DED9D2] lg:border-t-0">
         <div className="flex items-center justify-between text-xs font-semibold text-[#1B1A18]">
           <span className="text-xs uppercase tracking-wider text-[#625E59] font-mono font-bold">
-            Monthly Target Utilization
+            Budget Usage
           </span>
           {currentBudget > 0 ? (
             <span className={`px-2 py-0.5 rounded-[2px] text-xs font-mono font-bold tabular-nums ${
@@ -112,7 +112,7 @@ export function HeroBudgetCard() {
             </span>
           ) : (
             <span className="px-2 py-0.5 rounded-[2px] text-xs font-mono text-[#625E59] bg-[#F7F5F2] border border-[#DED9D2]">
-              No Target Set
+              No target
             </span>
           )}
         </div>
@@ -168,7 +168,7 @@ export function HeroBudgetCard() {
               >
                 <span>Target:</span>
                 <strong className="font-mono font-bold text-[#1B1A18] tabular-nums underline decoration-dotted underline-offset-2 group-hover:text-[#E65B3F]">
-                  {currentBudget > 0 ? formatCurrency(currentBudget, currency) : 'Set Target'}
+                  {currentBudget > 0 ? formatCurrency(currentBudget, currency) : 'Set target'}
                 </strong>
               </button>
             )}

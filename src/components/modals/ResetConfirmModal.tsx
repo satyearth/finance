@@ -63,7 +63,7 @@ export function ResetConfirmModal({ actionType, onClose }: ResetConfirmModalProp
               <IconAlertTriangle size={17} stroke={2} />
             </div>
             <h3 id="reset-confirm-title" className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-              {isClear ? 'Erase All Records Confirmation' : 'Restore Default Sample Data'}
+              {isClear ? 'Clear All Records' : 'Load Sample Data'}
             </h3>
           </div>
           <button
@@ -78,8 +78,8 @@ export function ResetConfirmModal({ actionType, onClose }: ResetConfirmModalProp
 
         <p className="text-xs text-[#625E59] leading-relaxed font-mono">
           {isClear
-            ? 'Are you sure you want to permanently clear all transactions from your browser? This action cannot be reversed.'
-            : 'This will reset your ledger back to the pre-populated realistic sample transactions across your current month.'}
+            ? 'This will permanently delete all records. This action cannot be undone.'
+            : 'This will replace current records with sample data.'}
         </p>
 
         <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#DED9D2]">
@@ -100,7 +100,7 @@ export function ResetConfirmModal({ actionType, onClose }: ResetConfirmModalProp
             }`}
           >
             {isClear ? <IconTrash size={14} stroke={2} /> : <IconRotateClockwise size={14} stroke={2} />}
-            <span>{isClear ? 'Erase All Data' : 'Restore Sample Data'}</span>
+            <span>{isClear ? 'Clear all' : 'Load sample data'}</span>
           </button>
         </div>
       </div>

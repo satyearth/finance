@@ -11,7 +11,7 @@ import {
 import { useFinance } from '@/context/FinanceContext';
 import { Transaction, CategoryId } from '@/types/finance';
 import { CategoryBadge } from '@/components/common/CategoryBadge';
-import { CATEGORY_LIST, CURRENCIES } from '@/constants/categories';
+import { CATEGORY_LIST } from '@/constants/categories';
 import { formatCurrency, convertToBaseCurrency } from '@/utils/formatters';
 
 /**
@@ -107,7 +107,7 @@ export function DayDetailsModal({
             <div>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">{formattedDayTitle}</h3>
               <p className="text-xs text-[#625E59] mt-0.5 font-mono">
-                Day Outflow: <span className="text-[#1B1A18] font-bold tabular-nums">{formatCurrency(dayTotal, currency)}</span>
+                Total: <span className="text-[#1B1A18] font-bold tabular-nums">{formatCurrency(dayTotal, currency)}</span>
               </p>
             </div>
           </div>
@@ -124,13 +124,12 @@ export function DayDetailsModal({
         {/* Modal Body */}
         <div className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4 bg-[#F7F5F2]">
           <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#625E59]">
-            Recorded Transactions ({dayTransactions.length})
+            Transactions ({dayTransactions.length})
           </div>
 
           {dayTransactions.length === 0 ? (
             <div className="text-center py-8 px-4 rounded-[2px] bg-white border border-dashed border-[#DED9D2]">
-              <p className="text-xs font-mono font-semibold text-[#1B1A18]">No expenses recorded for this date.</p>
-              <p className="text-xs text-[#625E59] mt-1 font-mono">Use the form below to quickly log an expense.</p>
+              <p className="text-xs font-mono font-semibold text-[#1B1A18]">Nothing scheduled.</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -186,14 +185,14 @@ export function DayDetailsModal({
           {/* Quick Add Form for this day */}
           <div className="pt-4 border-t border-[#DED9D2]">
             <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#625E59] mb-2.5">
-              Quick Log for {dateString}
+              Add transaction
             </div>
 
             <form onSubmit={handleQuickAddForDay} className="space-y-2.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input
                   type="text"
-                  placeholder="Description (e.g. Lunch with team)"
+                  placeholder="Description"
                   value={quickTitle}
                   onChange={(e) => setQuickTitle(e.target.value)}
                   className="sf-input w-full h-8.5 px-3 text-xs rounded-[2px]"
@@ -202,7 +201,7 @@ export function DayDetailsModal({
                   type="number"
                   min="0"
                   step="any"
-                  placeholder={`Amount (${CURRENCIES[currency]?.symbol || '₹'})`}
+                  placeholder="Amount"
                   value={quickAmount}
                   onChange={(e) => setQuickAmount(e.target.value)}
                   className="sf-input w-full h-8.5 px-3 text-xs font-mono font-bold tabular-nums rounded-[2px]"
@@ -227,7 +226,7 @@ export function DayDetailsModal({
                   className="sf-button-primary h-8.5 text-xs uppercase tracking-wider px-4 shrink-0 flex items-center justify-center gap-1.5 font-mono rounded-[2px]"
                 >
                   <IconPlus size={13} stroke={2.5} />
-                  <span>Log Expense</span>
+                  <span>Add transaction</span>
                 </button>
               </div>
             </form>

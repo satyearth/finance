@@ -121,15 +121,12 @@ export function TransactionList({
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-base sm:text-lg font-mono font-bold text-[#1B1A18] uppercase tracking-wider">
-                Transactions Ledger
+                Transactions
               </h1>
               <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#625E59]">
                 {selectedMonth.label}
               </span>
             </div>
-            <p className="text-xs text-[#625E59] font-normal mt-0.5">
-              Audited record of expenses, categorized outflows, and lifespan tracking
-            </p>
           </div>
         </div>
 
@@ -139,7 +136,7 @@ export function TransactionList({
           className="sf-button-primary h-9 px-4 text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto"
         >
           <IconPlus size={15} stroke={2.5} />
-          <span>New Entry</span>
+          <span>Add transaction</span>
         </button>
       </div>
 
@@ -148,7 +145,7 @@ export function TransactionList({
         {/* Total Monthly Outflow */}
         <div className="bg-white border border-[#DED9D2] rounded-[2px] p-4 flex flex-col justify-between hover:border-[#1B1A18] transition-colors sf-card">
           <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block">
-            Month Outflow
+            Monthly Spend
           </span>
           <div className="mt-2 mb-1">
             <span className="text-xl sm:text-2xl font-mono font-bold text-[#1B1A18] tabular-nums tracking-tight">
@@ -156,7 +153,7 @@ export function TransactionList({
             </span>
           </div>
           <span className="text-xs text-[#625E59] font-mono">
-            {filteredTransactions.length} recorded {filteredTransactions.length === 1 ? 'entry' : 'entries'}
+            {filteredTransactions.length} {filteredTransactions.length === 1 ? 'transaction' : 'transactions'}
           </span>
         </div>
 
@@ -164,7 +161,7 @@ export function TransactionList({
         <div className="bg-white border border-[#DED9D2] rounded-[2px] p-4 flex flex-col justify-between hover:border-[#1B1A18] transition-colors sf-card">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block">
-              Filtered Volume
+              Filtered Total
             </span>
             {isFilterActive && (
               <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-[1px] bg-[#F9EEE9] text-[#E65B3F] border border-[#E65B3F]/30 uppercase">
@@ -178,14 +175,14 @@ export function TransactionList({
             </span>
           </div>
           <span className="text-xs text-[#625E59] font-mono">
-            {processedTransactions.length} of {filteredTransactions.length} matching
+            {processedTransactions.length} of {filteredTransactions.length}
           </span>
         </div>
 
         {/* Average Transaction Size */}
         <div className="bg-white border border-[#DED9D2] rounded-[2px] p-4 flex flex-col justify-between hover:border-[#1B1A18] transition-colors sf-card">
           <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block">
-            Average / Entry
+            Average Spend
           </span>
           <div className="mt-2 mb-1">
             <span className="text-xl sm:text-2xl font-mono font-bold text-[#1B1A18] tabular-nums tracking-tight">
@@ -193,7 +190,7 @@ export function TransactionList({
             </span>
           </div>
           <span className="text-xs text-[#625E59] font-mono">
-            Mean transaction size
+            Per transaction
           </span>
         </div>
       </div>
@@ -211,7 +208,7 @@ export function TransactionList({
             />
             <input
               type="text"
-              placeholder="Search items by description, merchant, or notes..."
+              placeholder="Search transactions"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
@@ -241,11 +238,11 @@ export function TransactionList({
               className="sf-input appearance-none pl-3 pr-8 h-9 text-xs font-mono font-medium text-[#1B1A18] cursor-pointer bg-white w-full rounded-[2px]"
               aria-label="Sort transactions"
             >
-              <option value="date-desc">Newest First</option>
-              <option value="date-asc">Oldest First</option>
-              <option value="amount-desc">Highest Amount</option>
-              <option value="amount-asc">Lowest Amount</option>
-              <option value="title-asc">Name (A-Z)</option>
+              <option value="date-desc">Newest</option>
+              <option value="date-asc">Oldest</option>
+              <option value="amount-desc">Highest amount</option>
+              <option value="amount-asc">Lowest amount</option>
+              <option value="title-asc">Name (A–Z)</option>
             </select>
             <IconArrowsSort
               size={13}
@@ -312,7 +309,7 @@ export function TransactionList({
             <IconFilter size={12} stroke={2} className="text-[#625E59]" />
             <span>
               Showing <span className="text-[#1B1A18] font-bold tabular-nums">{processedTransactions.length}</span>{' '}
-              of <span className="tabular-nums font-bold text-[#1B1A18]">{filteredTransactions.length}</span> entries
+              of <span className="tabular-nums font-bold text-[#1B1A18]">{filteredTransactions.length}</span>
             </span>
           </div>
           <span>
@@ -345,15 +342,15 @@ export function TransactionList({
               <IconReceipt size={22} stroke={2} />
             </div>
             <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-              No transactions found
+              {isFilterActive ? 'No matching transactions' : 'No transactions yet'}
             </h4>
             <p className="text-xs text-[#625E59] mt-1 max-w-sm mx-auto">
-              {searchQuery || selectedCategory !== 'all'
-                ? 'Try adjusting your search query or selected category filter.'
-                : 'No expenses recorded for this month yet.'}
+              {isFilterActive
+                ? 'Try different filters.'
+                : 'No expenses recorded for this month.'}
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              {(searchQuery || selectedCategory !== 'all') && (
+              {isFilterActive && (
                 <button
                   type="button"
                   onClick={() => {
@@ -363,7 +360,7 @@ export function TransactionList({
                   className="sf-button-ghost text-xs py-1.5 px-3 flex items-center gap-1.5 rounded-[2px]"
                 >
                   <IconX size={13} stroke={2} />
-                  <span>Clear Filters</span>
+                  <span>Clear filters</span>
                 </button>
               )}
               <button
@@ -371,7 +368,7 @@ export function TransactionList({
                 className="sf-button-primary text-xs font-mono uppercase tracking-wider py-1.5 px-3.5 flex items-center gap-1.5 rounded-[2px]"
               >
                 <IconPlus size={14} stroke={2.5} />
-                <span>Record Expense</span>
+                <span>Add transaction</span>
               </button>
             </div>
           </div>

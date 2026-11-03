@@ -104,7 +104,7 @@ export function TransactionRow({
             <button
               onClick={() => onTrackAmortization(transaction)}
               className="p-1.5 rounded-[2px] text-[#625E59] hover:text-[#E65B3F] hover:bg-[#F9EEE9] active:translate-y-[1px] transition-all"
-              title="Track product lifespan / monthly amortization"
+              title="Track lifespan"
               aria-label="Track lifespan"
             >
               <IconHourglassEmpty size={14} stroke={2} />

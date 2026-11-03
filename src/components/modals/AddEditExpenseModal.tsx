@@ -83,18 +83,18 @@ export function AddEditExpenseModal({
     e.preventDefault();
 
     if (!title.trim()) {
-      setError('Please enter an item name.');
+      setError('Enter a description.');
       return;
     }
 
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      setError('Please enter a valid positive amount.');
+      setError('Enter a valid amount.');
       return;
     }
 
     if (!date) {
-      setError('Please select a valid date.');
+      setError('Select a valid date.');
       return;
     }
 
@@ -141,13 +141,8 @@ export function AddEditExpenseModal({
             </div>
             <div>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-                {editingTransaction ? 'Edit Expense Record' : 'Record New Expense'}
+                {editingTransaction ? 'Edit Expense' : 'Add Expense'}
               </h3>
-              <p className="text-xs text-[#625E59] font-normal">
-                {editingTransaction
-                  ? 'Modify transaction details'
-                  : 'Save entry to your personal finance ledger'}
-              </p>
             </div>
           </div>
 
@@ -177,7 +172,7 @@ export function AddEditExpenseModal({
             <input
               type="text"
               required
-              placeholder="e.g. Starbucks, Grocery run, Flight..."
+              placeholder="e.g. Coffee, Groceries..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="sf-input w-full h-9 px-3 text-xs"
@@ -253,11 +248,11 @@ export function AddEditExpenseModal({
           {/* Notes */}
           <div className="space-y-1.5">
             <label className="text-xs font-mono font-semibold text-[#1B1A18] block">
-              Notes <span className="text-[#625E59] text-[11px] font-normal">(Optional)</span>
+              Notes <span className="text-[#625E59] text-[11px] font-normal">(optional)</span>
             </label>
             <textarea
               rows={2}
-              placeholder="Add additional notes or split details..."
+              placeholder="Add a note (optional)"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="sf-input w-full py-2 px-3 text-xs resize-none"
@@ -279,7 +274,7 @@ export function AddEditExpenseModal({
               className="sf-button-primary h-9 px-5 text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-1.5"
             >
               {editingTransaction ? <IconCheck size={14} stroke={2.5} /> : <IconPlus size={14} stroke={2.5} />}
-              <span>{editingTransaction ? 'Save Changes' : 'Record Expense'}</span>
+              <span>{editingTransaction ? 'Save' : 'Add transaction'}</span>
             </button>
           </div>
         </form>

@@ -14,7 +14,6 @@ import { useFinance } from '@/context/FinanceContext';
 import { AmortizedItem } from '@/types/finance';
 import { formatCurrency, formatDate } from '@/utils/formatters';
 import { CategoryBadge } from '@/components/common/CategoryBadge';
-import { CURRENCIES } from '@/constants/categories';
 
 /**
  * Props for AmortizedTrackerCard component.
@@ -43,7 +42,6 @@ export function AmortizedTrackerCard({
     currency,
   } = useFinance();
 
-  const sym = CURRENCIES[currency]?.symbol || '₹';
   const today = new Date();
 
   return (
@@ -56,23 +54,20 @@ export function AmortizedTrackerCard({
               <IconHourglassEmpty size={16} stroke={2} />
             </div>
             <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-              Product Lifespan &amp; Monthly Amortization
+              Product Lifespan
             </h3>
             <span className="sf-badge text-xs">
               <span className="w-1.5 h-1.5 bg-[#E65B3F]" />
-              {activeAmortizedCount} Active {activeAmortizedCount === 1 ? 'Item' : 'Items'}
+              {activeAmortizedCount} Active {activeAmortizedCount === 1 ? 'item' : 'items'}
             </span>
           </div>
-          <p className="text-xs text-[#625E59] font-normal">
-            Real cost-per-month for items that last multiple months (e.g. {sym}200 item for 2 months = {sym}100/mo)
-          </p>
         </div>
 
         {/* Action Button & Summary Pill */}
         <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 self-start sm:self-auto shrink-0">
           <div className="inline-flex items-center h-9 gap-2 px-3.5 rounded-[2px] bg-[#F9EEE9] border border-[#E65B3F]/30 text-xs shrink-0">
             <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-[#A83F29]">
-              Monthly Burn:
+              Monthly:
             </span>
             <span className="font-mono font-bold text-[#A83F29] tabular-nums">
               {formatCurrency(totalMonthlyAmortizedCost, currency)}
@@ -85,7 +80,7 @@ export function AmortizedTrackerCard({
             className="sf-button-primary h-9 text-xs uppercase tracking-wider px-3.5 flex items-center justify-center gap-1.5 shrink-0 rounded-[2px]"
           >
             <IconPlus size={14} stroke={2.5} />
-            <span>Track from Expenses</span>
+            <span>Add product</span>
           </button>
         </div>
       </div>
@@ -96,16 +91,16 @@ export function AmortizedTrackerCard({
           <div className="w-9 h-9 mx-auto rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F]">
             <IconSparkles size={18} stroke={2} />
           </div>
-          <h4 className="text-xs font-mono font-bold uppercase text-[#1B1A18]">No lifespan items tracked yet</h4>
+          <h4 className="text-xs font-mono font-bold uppercase text-[#1B1A18]">No products yet</h4>
           <p className="text-xs text-[#625E59] max-w-sm mx-auto">
-            Pick any expense you&apos;ve already added (like shampoo, supplements, perfume, gym, or skincare) to calculate its real cost-per-month!
+            Track product value over time.
           </p>
           <button
             onClick={() => onOpenAddModal()}
             className="sf-button-primary text-xs uppercase tracking-wider h-8 px-3.5 inline-flex items-center gap-1.5 mt-2 rounded-[2px]"
           >
             <IconPlus size={13} stroke={2.5} />
-            <span>Pick from Added Expenses</span>
+            <span>Add product</span>
           </button>
         </div>
       ) : (
@@ -179,7 +174,7 @@ export function AmortizedTrackerCard({
                     {hasLifespan && item.monthlyCost ? (
                       <>
                         <span className="text-[10px] font-mono uppercase font-semibold text-[#A83F29] block leading-none">
-                          Monthly Burn
+                          Monthly Cost
                         </span>
                         <span className="text-sm font-mono font-bold text-[#E65B3F] tabular-nums mt-0.5 block">
                           {formatCurrency(item.monthlyCost, currency)}
@@ -205,13 +200,13 @@ export function AmortizedTrackerCard({
                     <div className="flex items-center justify-between text-[10px] font-mono text-[#625E59]">
                       <span className="flex items-center gap-1">
                         <IconCalendarTime size={12} stroke={2} />
-                        <span>{item.durationMonths}m lifespan</span>
+                        <span>{item.durationMonths}m duration</span>
                       </span>
 
                       <span>
                         {isCompleted ? (
                           <span className="inline-flex items-center gap-0.5 text-[11px] font-bold text-[#1B1A18]">
-                            <IconCheck size={11} stroke={3} /> Finished
+                            <IconCheck size={11} stroke={3} /> Completed
                           </span>
                         ) : (
                           `${remainingDays}d left (${progressPercent}%)`
@@ -250,7 +245,7 @@ export function AmortizedTrackerCard({
                         onClick={() => onEditItem(item)}
                         className="font-mono text-xs font-semibold text-[#E65B3F] hover:underline"
                       >
-                        + Set Lifespan
+                        + Set duration
                       </button>
                     </div>
                   </div>

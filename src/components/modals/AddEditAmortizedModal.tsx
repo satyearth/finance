@@ -40,12 +40,12 @@ interface AddEditAmortizedModalProps {
 
 /** Preset duration choices in months */
 const DURATION_PRESETS = [
-  { label: '1 Month', months: 1 },
-  { label: '2 Months', months: 2 },
-  { label: '3 Months', months: 3 },
-  { label: '6 Months', months: 6 },
-  { label: '1 Year', months: 12 },
-  { label: 'No Lifespan', months: -1 },
+  { label: '1 mo', months: 1 },
+  { label: '2 mo', months: 2 },
+  { label: '3 mo', months: 3 },
+  { label: '6 mo', months: 6 },
+  { label: '1 yr', months: 12 },
+  { label: 'Ongoing', months: -1 },
   { label: 'Custom', months: 0 },
 ];
 
@@ -287,22 +287,22 @@ export function AddEditAmortizedModal({
     e.preventDefault();
 
     if (!name.trim()) {
-      setError('Please choose an expense or enter a product name.');
+      setError('Enter a product name.');
       return;
     }
 
     if (parsedCost <= 0) {
-      setError('Please enter a valid purchase price.');
+      setError('Enter a valid purchase price.');
       return;
     }
 
     if (!startDate) {
-      setError('Please specify a purchase start date.');
+      setError('Specify a purchase date.');
       return;
     }
 
     if (hasLifespan && new Date(endDate) <= new Date(startDate)) {
-      setError('End date must be after the start date.');
+      setError('End date must be after start date.');
       return;
     }
 
@@ -368,16 +368,11 @@ export function AddEditAmortizedModal({
             <div>
               <h3 id="amort-modal-title" className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
                 {editingItem
-                  ? 'Edit Lifespan Tracking'
+                  ? 'Edit Product'
                   : selectedTx
-                    ? 'Set Product Lifespan'
-                    : 'Track Lifespan from Added Expenses'}
+                    ? 'Set Lifespan'
+                    : 'Product Lifespan'}
               </h3>
-              <p className="text-xs text-[#625E59] font-normal">
-                {editingItem
-                  ? 'Modify duration or details for this item'
-                  : 'Calculate true monthly burn for items lasting multiple months'}
-              </p>
             </div>
           </div>
 
@@ -404,7 +399,7 @@ export function AddEditAmortizedModal({
               }`}
             >
               <IconReceipt size={14} stroke={2} />
-              <span>Choose from Expenses ({(transactions || []).length})</span>
+              <span>From expenses ({(transactions || []).length})</span>
             </button>
 
             <button
@@ -417,7 +412,7 @@ export function AddEditAmortizedModal({
               }`}
             >
               <IconPencil size={14} stroke={2} />
-              <span>Custom Product</span>
+              <span>Custom product</span>
             </button>
           </div>
         )}
@@ -435,11 +430,8 @@ export function AddEditAmortizedModal({
             <div className="space-y-3.5">
               <div className="space-y-0.5">
                 <label className="text-xs font-mono font-semibold text-[#1B1A18] block">
-                  Select an expense you already added:
+                  Select an expense:
                 </label>
-                <p className="text-xs text-[#625E59]">
-                  Choose any product/expense below to track its duration and monthly impact.
-                </p>
               </div>
 
               {/* Search input */}
@@ -451,7 +443,7 @@ export function AddEditAmortizedModal({
                 />
                 <input
                   type="text"
-                  placeholder="Search added expenses (e.g. Shampoo, Protein, Gym)..."
+                  placeholder="Search expenses..."
                   value={searchTxQuery}
                   onChange={(e) => setSearchTxQuery(e.target.value)}
                   className="sf-input w-full h-9 pl-9 pr-3.5 text-xs"
@@ -499,8 +491,8 @@ export function AddEditAmortizedModal({
                     <h4 className="text-xs font-mono font-bold uppercase text-[#1B1A18]">No matching expenses found</h4>
                     <p className="text-xs text-[#625E59] max-w-xs mx-auto">
                       {(transactions || []).length === 0
-                        ? "You haven't recorded any expenses yet. You can enter custom product details directly."
-                        : 'Try searching with a different keyword or clear your category filter.'}
+                        ? 'No expenses recorded yet.'
+                        : 'No matching expenses.'}
                     </p>
                     <button
                       type="button"
@@ -508,7 +500,7 @@ export function AddEditAmortizedModal({
                       className="mt-2 inline-flex items-center gap-1 text-xs font-mono font-semibold text-[#E65B3F] hover:underline"
                     >
                       <IconPlus size={13} stroke={2} />
-                      <span>Enter Custom Product Manually</span>
+                      <span>Add custom product</span>
                     </button>
                   </div>
                 ) : (
@@ -609,7 +601,7 @@ export function AddEditAmortizedModal({
               {(!selectedTx || editingItem) && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-mono font-semibold text-[#1B1A18] block">Product / Item Name *</label>
+                    <label className="text-xs font-mono font-semibold text-[#1B1A18] block">Product name *</label>
                     <input
                       type="text"
                       required
@@ -642,7 +634,7 @@ export function AddEditAmortizedModal({
               {(!selectedTx || editingItem) && (
                 <div className="space-y-1.5">
                   <label className="text-xs font-mono font-semibold text-[#1B1A18] block">
-                    Total Purchase Price ({currency}) *
+                    Purchase price ({currency}) *
                   </label>
                   <input
                     type="number"
@@ -660,9 +652,9 @@ export function AddEditAmortizedModal({
               {/* Duration Selector Preset Chips */}
               <div className="space-y-2">
                 <label className="text-xs font-mono font-semibold text-[#1B1A18] flex items-center justify-between">
-                  <span>Lifespan Duration (How long will it last?) *</span>
+                  <span>Lifespan *</span>
                   <span className="text-[11px] font-mono font-normal text-[#625E59]">
-                    {hasLifespan ? `${calculatedMonths} months amortization` : 'Leave ongoing'}
+                    {hasLifespan ? `${calculatedMonths} mo amortization` : 'Ongoing'}
                   </span>
                 </label>
                 <div className="grid grid-cols-3 sm:grid-cols-7 gap-2">
@@ -689,7 +681,7 @@ export function AddEditAmortizedModal({
               {/* Start and End Dates */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono font-semibold text-[#1B1A18] block">Bought / Start Date *</label>
+                  <label className="text-xs font-mono font-semibold text-[#1B1A18] block">Purchase date *</label>
                   <input
                     type="date"
                     required
@@ -702,7 +694,7 @@ export function AddEditAmortizedModal({
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-mono font-semibold text-[#1B1A18] block">
-                      Expected Finish Date <span className="font-normal text-[11px] text-[#625E59]">(Optional)</span>
+                      End date <span className="font-normal text-[11px] text-[#625E59]">(optional)</span>
                     </label>
                     {endDate && (
                       <button
@@ -737,12 +729,12 @@ export function AddEditAmortizedModal({
                   </div>
                   <div>
                     <span className="text-[11px] font-mono font-bold text-[#A83F29] uppercase tracking-wider block">
-                      {hasLifespan ? 'Calculated Monthly Burn' : 'Lifespan Duration'}
+                      {hasLifespan ? 'Monthly Depreciation' : 'Lifespan'}
                     </span>
                     <span className="text-xs text-[#A83F29]/80 font-normal">
                       {hasLifespan
-                        ? `${formatCurrency(parsedCost, currency)} across ${totalDays} days (${calculatedMonths} mo)`
-                        : 'Ongoing item without monthly split'}
+                        ? `${formatCurrency(parsedCost, currency)} · ${calculatedMonths} months`
+                        : 'Ongoing item'}
                     </span>
                   </div>
                 </div>
@@ -774,11 +766,11 @@ export function AddEditAmortizedModal({
               {/* Notes */}
               <div className="space-y-1.5">
                 <label className="text-xs font-mono font-semibold text-[#1B1A18] block">
-                  Notes <span className="font-normal text-[11px] text-[#625E59]">(Optional)</span>
+                  Notes <span className="font-normal text-[11px] text-[#625E59]">(optional)</span>
                 </label>
                 <textarea
                   rows={2}
-                  placeholder="e.g. 650ml pack lasts 2 full months"
+                  placeholder="Add a note (optional)"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   className="sf-input w-full p-2.5 text-xs resize-none"
@@ -798,7 +790,7 @@ export function AddEditAmortizedModal({
                   }}
                   className="sf-button-ghost h-9 px-4 text-xs font-mono rounded-[2px]"
                 >
-                  {selectedTx && !editingItem ? 'Back to List' : 'Cancel'}
+                  {selectedTx && !editingItem ? 'Back' : 'Cancel'}
                 </button>
 
                 <button
@@ -808,10 +800,8 @@ export function AddEditAmortizedModal({
                   {editingItem ? <IconCheck size={14} stroke={2.5} /> : <IconPlus size={14} stroke={2.5} />}
                   <span>
                     {editingItem
-                      ? 'Save Changes'
-                      : hasLifespan
-                        ? `Track Lifespan (${formatCurrency(monthlyCost, currency)}/mo)`
-                        : 'Track Lifespan'}
+                      ? 'Save'
+                      : 'Add product'}
                   </span>
                 </button>
               </div>

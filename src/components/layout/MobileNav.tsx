@@ -132,7 +132,7 @@ export function MobileNav({
             className="sf-button-primary w-full h-9 flex items-center justify-center gap-2 px-3 text-xs font-mono uppercase tracking-wider rounded-[2px]"
           >
             <IconPlus size={16} stroke={2.5} />
-            <span>New Expense</span>
+            <span>Add expense</span>
           </button>
 
           <button
@@ -146,6 +146,12 @@ export function MobileNav({
             <IconArrowsSort size={15} stroke={1.8} />
             <span>Import / Export</span>
           </button>
+
+          <div className="pt-2 px-1 select-none">
+            <span className="text-xs font-semibold text-[#625E59] tracking-tight font-display block">
+              Made by Satyarth
+            </span>
+          </div>
         </div>
       </div>
     </div>

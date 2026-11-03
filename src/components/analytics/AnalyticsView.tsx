@@ -112,15 +112,12 @@ export function AnalyticsView() {
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-base sm:text-lg font-mono font-bold text-[#1B1A18] uppercase tracking-wider">
-                Spending Analytics & Reports
+                Analytics
               </h1>
               <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#625E59]">
                 {selectedMonth.label}
               </span>
             </div>
-            <p className="text-xs text-[#625E59] font-normal mt-0.5">
-              Allocation breakdown, spending velocity, budget burn, and category metrics
-            </p>
           </div>
         </div>
 
@@ -128,7 +125,7 @@ export function AnalyticsView() {
         <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
           <div className="px-3.5 py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-[95px]">
             <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight">
-              Total Outflow
+              Monthly Spend
             </span>
             <span className="text-xs font-mono font-bold text-[#1B1A18] tabular-nums">
               {formatCurrency(totalSpentThisMonth, currency)}
@@ -137,7 +134,7 @@ export function AnalyticsView() {
 
           <div className="px-3.5 py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-[95px]">
             <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight">
-              Target Budget
+              Budget
             </span>
             <span className="text-xs font-mono font-bold text-[#1B1A18] tabular-nums">
               {formatCurrency(currentBudget, currency)}
@@ -259,7 +256,7 @@ export function AnalyticsView() {
                 </p>
               </div>
               <div className="h-7 flex items-center text-xs text-[#625E59] font-mono tabular-nums">
-                {formatCurrency(mostFrequentCat.total, currency)} total volume
+                {formatCurrency(mostFrequentCat.total, currency)} spent
               </div>
             </>
           ) : (
@@ -272,7 +269,7 @@ export function AnalyticsView() {
         {/* Budget Burn Velocity */}
         <div className="sf-card p-4 sm:p-5 flex flex-col justify-between min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
           <div className="flex items-center justify-between text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold">
-            <span>Budget Burn</span>
+            <span>Budget Used</span>
             <div className="w-7 h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
               <IconTrendingUp size={14} stroke={2} />
             </div>
@@ -327,11 +324,8 @@ export function AnalyticsView() {
             </div>
             <div>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-                Category Allocation Distribution
+                Category Breakdown
               </h3>
-              <p className="text-[11px] text-[#625E59] font-normal">
-                Proportional share of total monthly expenditure
-              </p>
             </div>
           </div>
           <span className="text-xs font-mono text-[#625E59] self-start sm:self-auto">
@@ -343,7 +337,7 @@ export function AnalyticsView() {
         {!hasData || activeAllocationCategories.length === 0 ? (
           <div className="py-6 text-center text-xs font-mono text-[#625E59]">
             <div className="w-full bg-[#EFECE6] h-3.5 rounded-[2px] mb-2.5 border border-[#E5E0D8]" />
-            <span>No expenditure logged to allocate for {selectedMonth.label}</span>
+            <span>No spending data for {selectedMonth.label}</span>
           </div>
         ) : (
           <div className="space-y-3.5">
@@ -410,15 +404,12 @@ export function AnalyticsView() {
             </div>
             <div>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-                Budget Utilization &amp; Burn Pace
+                Budget Performance
               </h3>
-              <p className="text-[11px] text-[#625E59] font-normal">
-                Monthly allowance consumption and daily cashflow pace
-              </p>
             </div>
           </div>
           <span className="text-xs font-mono text-[#625E59] tabular-nums self-start sm:self-auto">
-            Avg Pace:{' '}
+            Avg pace:{' '}
             <strong className="text-[#1B1A18] font-bold">
               {formatCurrency(dailySpendAverage, currency)}/day
             </strong>
@@ -449,7 +440,7 @@ export function AnalyticsView() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-xs font-mono">
             <div className="p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2]">
               <span className="text-[10px] uppercase text-[#625E59] font-semibold block">
-                Total Outflow
+                Spent
               </span>
               <span className="font-bold text-[#1B1A18] text-sm tabular-nums">
                 {formatCurrency(totalSpentThisMonth, currency)}
@@ -458,7 +449,7 @@ export function AnalyticsView() {
 
             <div className="p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2]">
               <span className="text-[10px] uppercase text-[#625E59] font-semibold block">
-                {isOverBudget ? 'Budget Deficit' : 'Remaining Buffer'}
+                {isOverBudget ? 'Deficit' : 'Remaining'}
               </span>
               <span
                 className={`font-bold text-sm tabular-nums ${
@@ -473,7 +464,7 @@ export function AnalyticsView() {
 
             <div className="p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2]">
               <span className="text-[10px] uppercase text-[#625E59] font-semibold block">
-                Monthly Limit
+                Budget
               </span>
               <span className="font-bold text-[#1B1A18] text-sm tabular-nums">
                 {formatCurrency(currentBudget, currency)}
@@ -489,7 +480,7 @@ export function AnalyticsView() {
           <div className="flex items-center gap-2">
             <IconWallet size={16} stroke={2} className="text-[#E65B3F]" />
             <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-              Category Breakdown &amp; Volume
+              By Category
             </h3>
           </div>
 
@@ -503,9 +494,9 @@ export function AnalyticsView() {
                 className="sf-input appearance-none pl-3 pr-7 h-8 text-xs font-mono font-medium text-[#1B1A18] cursor-pointer bg-white rounded-[2px]"
                 aria-label="Sort category breakdown"
               >
-                <option value="amount-desc">Highest Volume</option>
-                <option value="count-desc">Most Entries</option>
-                <option value="name-asc">Name (A-Z)</option>
+                <option value="amount-desc">Highest amount</option>
+                <option value="count-desc">Most entries</option>
+                <option value="name-asc">Name (A–Z)</option>
               </select>
               <IconArrowsSort
                 size={12}
@@ -522,10 +513,10 @@ export function AnalyticsView() {
               <IconChartPie size={24} stroke={1.8} />
             </div>
             <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-              No spending logged for {selectedMonth.label}
+              No spending recorded.
             </h4>
             <p className="text-xs text-[#625E59] mt-1.5 max-w-sm mx-auto font-mono">
-              Category breakdowns, burn rates, and spending extremes will automatically calculate as entries are recorded.
+              Record expenses to view category insights.
             </p>
           </div>
         ) : (

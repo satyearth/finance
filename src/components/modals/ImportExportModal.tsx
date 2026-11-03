@@ -124,11 +124,8 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
             </div>
             <div>
               <h3 id="import-export-title" className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-                Data Portability &amp; Backups
+                Import &amp; Export
               </h3>
-              <p className="text-xs text-[#625E59] font-mono mt-0.5">
-                Export ledger or restore entries safely
-              </p>
             </div>
           </div>
 
@@ -155,7 +152,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
             }`}
           >
             <IconDownload size={14} stroke={2} />
-            <span>Export Data</span>
+            <span>Export</span>
           </button>
 
           <button
@@ -168,7 +165,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
             }`}
           >
             <IconUpload size={14} stroke={2} />
-            <span>Import &amp; Restore</span>
+            <span>Import</span>
           </button>
         </div>
 
@@ -177,13 +174,10 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
           {activeTab === 'export' ? (
             /* --- EXPORT VIEW --- */
             <div className="space-y-4">
-              <div className="p-4 rounded-[2px] border border-[#DED9D2] bg-[#F7F5F2] space-y-1">
+              <div className="p-4 rounded-[2px] border border-[#DED9D2] bg-[#F7F5F2]">
                 <div className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-                  Ready to export {transactions.length} ledger entries
+                  {transactions.length} entries ready to export
                 </div>
-                <p className="text-xs text-[#625E59] font-mono">
-                  Download standard JSON or CSV files compatible with Excel, Google Sheets, or backup tools.
-                </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -225,10 +219,10 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
               >
                 <IconUpload size={24} stroke={2} className="mx-auto text-[#E65B3F] mb-2" />
                 <div className="text-xs font-mono font-bold text-[#1B1A18] uppercase tracking-wider">
-                  Click to choose a JSON backup file
+                  Select JSON backup
                 </div>
                 <div className="text-xs font-mono text-[#625E59] mt-1">
-                  Accepts satyfinance_backup.json
+                  .json format
                 </div>
               </div>
 
@@ -256,7 +250,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
                   {/* Ledger preview snippet */}
                   <div className="p-3 bg-[#F7F5F2] border border-[#DED9D2] rounded-[2px] space-y-1.5 max-h-36 overflow-y-auto">
                     <div className="text-[10px] font-mono uppercase tracking-wider font-bold text-[#625E59]">
-                      Sample Entries to Restore ({parsedPreview.length} total):
+                      Preview ({parsedPreview.length} entries):
                     </div>
                     {parsedPreview.slice(0, 3).map((item, i) => (
                       <div key={i} className="flex items-center justify-between text-xs font-mono py-0.5 border-b border-[#EBE6E0] last:border-b-0">
@@ -280,7 +274,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
                       onChange={(e) => setReplaceExisting(e.target.checked)}
                       className="rounded-[2px] border-[#DED9D2] text-[#E65B3F] focus:ring-0 cursor-pointer"
                     />
-                    <span>Replace all existing transactions (unchecked merges with current data)</span>
+                    <span>Replace all existing transactions</span>
                   </label>
 
                   <button
@@ -288,7 +282,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
                     onClick={handleConfirmImport}
                     className="sf-button-primary w-full h-9 text-xs font-mono font-bold uppercase tracking-wider flex items-center justify-center gap-2 rounded-[2px] active:translate-y-[1px]"
                   >
-                    Confirm Import ({parsedPreview.length} Items)
+                    Import ({parsedPreview.length} entries)
                   </button>
                 </div>
               )}

@@ -192,17 +192,14 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
               </div>
               {selectedMonth.label}
             </h2>
-            <p className="text-xs text-[#625E59] font-normal mt-0.5">
-              Showing scheduled recurring bills and settled outflows
-            </p>
           </div>
 
           <div className="hidden lg:flex items-center gap-3 pl-4 border-l border-[#DED9D2] text-xs font-mono">
             <span className="flex items-center gap-1.5 text-[#625E59]">
-              <span className="w-2.5 h-2.5 rounded-[1px] bg-[#1B1A18]" /> Settled Spend
+              <span className="w-2.5 h-2.5 rounded-[1px] bg-[#1B1A18]" /> Settled
             </span>
             <span className="flex items-center gap-1.5 text-[#625E59]">
-              <span className="w-2.5 h-2.5 rounded-[1px] bg-[#DED9D2]" /> Due Bills
+              <span className="w-2.5 h-2.5 rounded-[1px] bg-[#DED9D2]" /> Scheduled
             </span>
           </div>
         </div>
@@ -295,8 +292,8 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
                       type="button"
                       onClick={(e) => handleDirectAdd(e, item.dateString)}
                       className="opacity-0 group-hover:opacity-100 w-5 h-5 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#E65B3F] hover:bg-[#F9EEE9] hover:text-[#E65B3F] text-[#625E59] flex items-center justify-center transition-all active:translate-y-[1px]"
-                      title={`Add expense on ${item.dateString}`}
-                      aria-label={`Add expense on ${item.dateString}`}
+                      title={`Add transaction`}
+                      aria-label={`Add transaction`}
                     >
                       <IconPlus className="w-3 h-3" stroke={2.5} />
                     </button>

@@ -83,13 +83,13 @@ export function QuickExpenseBar() {
             onChange={(e) => setInputVal(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder='Quick add expense: e.g. "Coffee 280 Food", "Uber 450 Travel", "Gym 2000"...'
+            placeholder='e.g. Coffee 250 Food'
             className="w-full text-xs sm:text-sm font-medium text-[#1B1A18] placeholder:text-[#625E59] bg-transparent outline-none font-sans"
           />
 
           {justAddedMsg && (
             <span className="inline-flex items-center h-6 text-xs font-mono font-bold text-[#2A7E3B] bg-[#EBF7EE] border border-[#2A7E3B]/30 px-2.5 rounded-[2px] animate-fadeIn shrink-0">
-              ✓ Logged: {justAddedMsg}
+              Added: {justAddedMsg}
             </span>
           )}
 
@@ -112,7 +112,7 @@ export function QuickExpenseBar() {
             !canSubmit ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >
-          Track
+          Add
         </button>
       </div>
     </form>

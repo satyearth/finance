@@ -40,11 +40,11 @@ export function BentoMetrics() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-sans">
-      {/* 1. Settled Outflow */}
+      {/* 1. Settled Spend */}
       <div className="sf-card p-5 flex flex-col justify-between min-h-[140px] hover:border-[#1B1A18] transition-colors">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-mono font-bold text-[#625E59] uppercase tracking-wider">
-            SETTLED OUTFLOW
+            SETTLED
           </span>
           <div className="w-7 h-7 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
             <IconReceipt size={16} stroke={2} />
@@ -58,15 +58,15 @@ export function BentoMetrics() {
         </div>
 
         <p className="text-xs text-[#625E59] m-0 truncate font-mono">
-          {settledCount} {settledCount === 1 ? 'realized entry' : 'realized entries'} to date
+          {settledCount} {settledCount === 1 ? 'entry' : 'entries'}
         </p>
       </div>
 
-      {/* 2. Scheduled Bills */}
+      {/* 2. Scheduled */}
       <div className="sf-card p-5 flex flex-col justify-between min-h-[140px] hover:border-[#1B1A18] transition-colors">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-mono font-bold text-[#625E59] uppercase tracking-wider">
-            SCHEDULED BILLS
+            SCHEDULED
           </span>
           <div className="w-7 h-7 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
             <IconClock size={16} stroke={2} />
@@ -80,15 +80,15 @@ export function BentoMetrics() {
         </div>
 
         <p className="text-xs text-[#625E59] m-0 truncate font-mono">
-          {scheduledCount} {scheduledCount === 1 ? 'upcoming bill' : 'upcoming bills'}
+          {scheduledCount} {scheduledCount === 1 ? 'bill' : 'bills'}
         </p>
       </div>
 
-      {/* 3. Daily Burn Pace */}
+      {/* 3. Daily Average */}
       <div className="sf-card p-5 flex flex-col justify-between min-h-[140px] hover:border-[#1B1A18] transition-colors">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-mono font-bold text-[#625E59] uppercase tracking-wider">
-            DAILY BURN PACE
+            DAILY AVERAGE
           </span>
           <div className="w-7 h-7 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
             <IconTrendingUp size={16} stroke={2} />
@@ -103,7 +103,7 @@ export function BentoMetrics() {
         </div>
 
         <p className="text-xs text-[#625E59] m-0 truncate font-mono">
-          Across {elapsedDaysThisMonth} active days
+          {elapsedDaysThisMonth} days elapsed
         </p>
       </div>
 
@@ -137,9 +137,9 @@ export function BentoMetrics() {
 
         <p className="text-xs text-[#625E59] m-0 truncate font-mono">
           {topCategory ? (
-            `${formatCurrency(topCategoryAmount, currency)} total spent`
+            `${formatCurrency(topCategoryAmount, currency)} spent`
           ) : (
-            'No expenses recorded'
+            'No expenses'
           )}
         </p>
       </div>

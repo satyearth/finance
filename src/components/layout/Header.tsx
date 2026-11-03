@@ -212,7 +212,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
                     }}
                     className="text-[11px] font-mono font-semibold text-[#E65B3F] hover:underline"
                   >
-                    Jump to Current Month
+                    Current Month
                   </button>
                   <button
                     type="button"
@@ -246,7 +246,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
               title="Record new expense (N)"
             >
               <IconPlus size={14} stroke={2.5} />
-              <span>New Entry</span>
+              <span>Add expense</span>
               <span className="hidden md:inline-block ml-1 text-[10px] bg-black/20 px-1 py-0.5 rounded-[1px] font-mono opacity-80 leading-none">
                 N
               </span>
