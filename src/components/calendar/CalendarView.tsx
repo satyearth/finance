@@ -8,6 +8,7 @@ import {
 } from '@tabler/icons-react';
 import { useFinance } from '@/context/FinanceContext';
 import { formatCurrency } from '@/utils/formatters';
+import { WEEKDAYS_SHORT } from '@/constants/categories';
 import { DayDetailsModal } from './DayDetailsModal';
 import { Transaction } from '@/types/finance';
 
@@ -40,12 +41,25 @@ function getBillShortName(title: string): string {
   return title.split(' ')[0] || 'Bill';
 }
 
+interface CellData {
+  dayNumber: number;
+  isCurrentMonth: boolean;
+  dateString: string;
+  isToday: boolean;
+  settled: number;
+  bill?: {
+    name: string;
+    amount: number;
+  };
+  itemsCount: number;
+  hasAnyTransaction: boolean;
+}
+
 /**
  * Monthly calendar forecasting and cashflow timeline view.
  * Highlights settled expenses on or before today and forecasts upcoming scheduled bills.
  */
 export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarViewProps) {
-
   const {
     selectedMonth,
     filteredTransactions,
@@ -72,21 +86,6 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
   const firstDayIndex = new Date(selectedMonth.year, selectedMonth.month, 1).getDay();
   const daysInMonth = new Date(selectedMonth.year, selectedMonth.month + 1, 0).getDate();
   const daysInPrevMonth = new Date(selectedMonth.year, selectedMonth.month, 0).getDate();
-
-  // Calendar cells
-  interface CellData {
-    dayNumber: number;
-    isCurrentMonth: boolean;
-    dateString: string;
-    isToday: boolean;
-    settled: number;
-    bill?: {
-      name: string;
-      amount: number;
-    };
-    itemsCount: number;
-    hasAnyTransaction: boolean;
-  }
 
   const calendarCells: CellData[] = [];
 
@@ -162,8 +161,6 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
     });
   }
 
-  const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-
   const handleCellClick = (cell: CellData) => {
     if (!cell.isCurrentMonth) return;
     setSelectedDay(cell.dayNumber);
@@ -235,7 +232,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
 
       {/* 2. Weekday Column Headers (Grid-synchronized with identical 1px dividers) */}
       <div className="grid grid-cols-7 gap-[1px] bg-[#DED9D2] border-b border-[#DED9D2]">
-        {weekDays.map((d, i) => (
+        {WEEKDAYS_SHORT.map((d, i) => (
           <div
             key={d}
             className={`bg-[#F7F5F2] py-2 text-center text-[11px] font-mono font-semibold tracking-wider ${
@@ -255,7 +252,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
 
           return (
             <div
-              key={idx}
+              key={item.dateString}
               onClick={() => handleCellClick(item)}
               className={`min-h-[90px] sm:min-h-[115px] p-2 flex flex-col justify-between transition-colors relative group ${
                 !item.isCurrentMonth
@@ -292,8 +289,8 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
                       type="button"
                       onClick={(e) => handleDirectAdd(e, item.dateString)}
                       className="opacity-0 group-hover:opacity-100 w-5 h-5 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#E65B3F] hover:bg-[#F9EEE9] hover:text-[#E65B3F] text-[#625E59] flex items-center justify-center transition-all active:translate-y-[1px]"
-                      title={`Add transaction`}
-                      aria-label={`Add transaction`}
+                      title="Add transaction"
+                      aria-label="Add transaction"
                     >
                       <IconPlus className="w-3 h-3" stroke={2.5} />
                     </button>

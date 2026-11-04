@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   IconChevronLeft,
   IconChevronRight,
@@ -10,6 +10,8 @@ import {
   IconPlus,
 } from '@tabler/icons-react';
 import { useFinance } from '@/context/FinanceContext';
+import { MONTH_NAMES_SHORT } from '@/constants/categories';
+import { getCurrentMonthKey } from '@/utils/formatters';
 
 /**
  * Props for Header component.
@@ -34,21 +36,21 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
     setSelectedMonthYear,
   } = useFinance();
 
-  const [isMonthPickerOpen, setIsMonthPickerOpen] = React.useState(false);
-  const [pickerYear, setPickerYear] = React.useState(selectedMonth.year);
-  const popoverRef = React.useRef<HTMLDivElement>(null);
+  const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
+  const [pickerYear, setPickerYear] = useState(selectedMonth.year);
+  const popoverRef = useRef<HTMLDivElement>(null);
 
-  const today = new Date();
-  const currentMonthKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+  const currentMonthKey = getCurrentMonthKey();
   const isCurrentMonth = selectedMonth.key === currentMonthKey;
+  const today = new Date();
 
   // Sync picker year when selectedMonth changes
-  React.useEffect(() => {
+  useEffect(() => {
     setPickerYear(selectedMonth.year);
   }, [selectedMonth.year]);
 
   // Close popup on outside click or Escape key
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isMonthPickerOpen) return;
 
     const handleClickOutside = (e: MouseEvent) => {
@@ -70,11 +72,6 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isMonthPickerOpen]);
-
-  const monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-  ];
 
   const handleSelectMonth = (monthIdx: number) => {
     setSelectedMonthYear(pickerYear, monthIdx);
@@ -174,7 +171,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
 
                 {/* 12 Months Grid */}
                 <div className="grid grid-cols-3 gap-1.5 py-1">
-                  {monthNames.map((name, idx) => {
+                  {MONTH_NAMES_SHORT.map((name, idx) => {
                     const isSelected =
                       selectedMonth.year === pickerYear && selectedMonth.month === idx;
                     const isCurrent =

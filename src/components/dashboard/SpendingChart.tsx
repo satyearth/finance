@@ -3,7 +3,8 @@
 import React, { useMemo } from 'react';
 import { IconChartBar } from '@tabler/icons-react';
 import { useFinance } from '@/context/FinanceContext';
-import { formatCurrency } from '@/utils/formatters';
+import { formatCurrency, getTodayDateString } from '@/utils/formatters';
+import { MONTH_NAMES_SHORT } from '@/constants/categories';
 
 /**
  * Data bucket representation for timeline intervals.
@@ -21,7 +22,6 @@ interface ChartPoint {
  * displaying settled expenses and upcoming scheduled bills with hover tooltips.
  */
 export function SpendingChart() {
-
   const {
     filteredTransactions,
     selectedMonth,
@@ -30,18 +30,24 @@ export function SpendingChart() {
 
   const chartPoints = useMemo<ChartPoint[]>(() => {
     const daysInMonth = new Date(selectedMonth.year, selectedMonth.month + 1, 0).getDate();
-    const monthShort = new Date(selectedMonth.year, selectedMonth.month, 1).toLocaleDateString('en-US', {
-      month: 'short',
-    });
+    const monthShort = MONTH_NAMES_SHORT[selectedMonth.month] || 'Month';
 
     const today = new Date();
     const isCurrentMonth =
       today.getFullYear() === selectedMonth.year && today.getMonth() === selectedMonth.month;
     const todayDay = today.getDate();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(todayDay).padStart(2, '0')}`;
+    const todayStr = getTodayDateString();
     const isPastMonth =
       selectedMonth.year < today.getFullYear() ||
       (selectedMonth.year === today.getFullYear() && selectedMonth.month < today.getMonth());
+
+    // Pre-parse transactions once: extract day number and settled status
+    const parsedTxs = filteredTransactions.map((t) => {
+      const parts = t.date ? t.date.split('-') : [];
+      const day = parts.length === 3 ? parseInt(parts[2], 10) : 0;
+      const isSettled = isPastMonth || (isCurrentMonth && t.date <= todayStr);
+      return { day, amount: t.amount, isSettled };
+    });
 
     // Generate 7 chronological intervals covering all days 1..daysInMonth
     const numBuckets = 7;
@@ -61,22 +67,12 @@ export function SpendingChart() {
       let settled = 0;
       let scheduled = 0;
 
-      for (const t of filteredTransactions) {
-        const parts = t.date.split('-');
-        if (parts.length === 3) {
-          const day = parseInt(parts[2], 10);
-          if (day >= b.startDay && day <= b.endDay) {
-            if (isPastMonth) {
-              settled += t.amount;
-            } else if (isCurrentMonth) {
-              if (t.date <= todayStr) {
-                settled += t.amount;
-              } else {
-                scheduled += t.amount;
-              }
-            } else {
-              scheduled += t.amount;
-            }
+      for (const t of parsedTxs) {
+        if (t.day >= b.startDay && t.day <= b.endDay) {
+          if (t.isSettled) {
+            settled += t.amount;
+          } else {
+            scheduled += t.amount;
           }
         }
       }

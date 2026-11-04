@@ -7,42 +7,91 @@ export const CATEGORIES: Record<CategoryId, CategoryMeta> = {
   groceries: {
     id: 'groceries',
     label: 'Groceries',
-    keywords: ['grocery', 'groceries', 'supermarket', 'mart', 'market', 'vegetables', 'veggies', 'fruits', 'milk', 'bread', 'eggs', 'cheese', 'butter', 'oil', 'rice', 'dal', 'flour', 'spices', 'provisions'],
+    keywords: [
+      'grocery', 'groceries', 'supermarket', 'mart', 'market', 'vegetables',
+      'veggies', 'fruits', 'milk', 'bread', 'eggs', 'cheese', 'butter', 'oil',
+      'rice', 'dal', 'flour', 'spices', 'provisions',
+    ],
   },
   food_dining: {
     id: 'food_dining',
     label: 'Food & Dining',
-    keywords: ['coffee', 'tea', 'cafe', 'starbucks', 'dinner', 'lunch', 'breakfast', 'brunch', 'restaurant', 'pizza', 'burger', 'swiggy', 'zomato', 'uber eats', 'doordash', 'takeout', 'bar', 'drinks', 'beer', 'bistro'],
+    keywords: [
+      'coffee', 'tea', 'cafe', 'starbucks', 'dinner', 'lunch', 'breakfast',
+      'brunch', 'restaurant', 'pizza', 'burger', 'swiggy', 'zomato',
+      'uber eats', 'doordash', 'takeout', 'bar', 'drinks', 'beer', 'bistro',
+    ],
   },
   bills: {
     id: 'bills',
     label: 'Bills & Utilities',
-    keywords: ['bill', 'bills', 'electricity', 'water', 'internet', 'wifi', 'broadband', 'phone', 'recharge', 'rent', 'maintenance', 'subscription', 'netflix', 'spotify', 'prime', 'cloud', 'aws', 'gas', 'insurance'],
+    keywords: [
+      'bill', 'bills', 'electricity', 'water', 'internet', 'wifi', 'broadband',
+      'phone', 'recharge', 'rent', 'maintenance', 'subscription', 'netflix',
+      'spotify', 'prime', 'cloud', 'aws', 'gas', 'insurance',
+    ],
   },
   electronics: {
     id: 'electronics',
     label: 'Electronics',
-    keywords: ['laptop', 'macbook', 'phone', 'iphone', 'android', 'ipad', 'tablet', 'monitor', 'keyboard', 'mouse', 'headphones', 'earbuds', 'cable', 'charger', 'gadget', 'tv', 'camera', 'hardware', 'drive'],
+    keywords: [
+      'laptop', 'macbook', 'phone', 'iphone', 'android', 'ipad', 'tablet',
+      'monitor', 'keyboard', 'mouse', 'headphones', 'earbuds', 'cable',
+      'charger', 'gadget', 'tv', 'camera', 'hardware', 'drive',
+    ],
   },
   personal_care: {
     id: 'personal_care',
     label: 'Personal Care',
-    keywords: ['haircut', 'salon', 'spa', 'massage', 'gym', 'fitness', 'skincare', 'perfume', 'shampoo', 'soap', 'grooming', 'medicine', 'pharmacy', 'doctor', 'dentist', 'cosmetics', 'therapy'],
+    keywords: [
+      'haircut', 'salon', 'spa', 'massage', 'gym', 'fitness', 'skincare',
+      'perfume', 'shampoo', 'soap', 'grooming', 'medicine', 'pharmacy',
+      'doctor', 'dentist', 'cosmetics', 'therapy',
+    ],
   },
   household: {
     id: 'household',
     label: 'Household',
-    keywords: ['furniture', 'chair', 'desk', 'decor', 'curtains', 'cleaning', 'detergent', 'laundry', 'kitchenware', 'appliances', 'tools', 'repair', 'plumbing', 'sheets', 'bedding', 'garden'],
+    keywords: [
+      'furniture', 'chair', 'desk', 'decor', 'curtains', 'cleaning',
+      'detergent', 'laundry', 'kitchenware', 'appliances', 'tools',
+      'repair', 'plumbing', 'sheets', 'bedding', 'garden',
+    ],
   },
   other: {
     id: 'other',
     label: 'Other',
-    keywords: ['miscellaneous', 'misc', 'gift', 'donation', 'books', 'stationery', 'travel', 'uber', 'taxi', 'fuel', 'petrol', 'flight', 'ticket', 'other'],
+    keywords: [
+      'miscellaneous', 'misc', 'gift', 'donation', 'books', 'stationery',
+      'travel', 'uber', 'taxi', 'fuel', 'petrol', 'flight', 'ticket', 'other',
+    ],
   },
 };
 
 /** Pre-computed array of all categories for dropdowns and filters */
 export const CATEGORY_LIST = Object.values(CATEGORIES);
+
+/**
+ * Aesthetic palette mapped to categories for visual distribution charting.
+ */
+export const CATEGORY_CHART_COLORS: Record<CategoryId, string> = {
+  food_dining: '#E65B3F',
+  bills: '#1B1A18',
+  groceries: '#2E6F54',
+  electronics: '#3B5998',
+  personal_care: '#8D5B4C',
+  household: '#5A6B7C',
+  other: '#7A756F',
+};
+
+/** Short month abbreviations */
+export const MONTH_NAMES_SHORT = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+] as const;
+
+/** Short weekday abbreviations */
+export const WEEKDAYS_SHORT = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'] as const;
 
 /**
  * Currency configuration with approximate conversion rates against base currency (INR).
@@ -83,4 +132,3 @@ export const DEFAULT_MONTHLY_BUDGET: Record<string, number> = {
   EUR: 1100,
   GBP: 950,
 };
-

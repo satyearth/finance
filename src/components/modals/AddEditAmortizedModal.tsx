@@ -1,19 +1,17 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   IconX,
   IconPlus,
   IconCheck,
-  IconSparkles,
-  IconSearch,
   IconReceipt,
   IconPencil,
   IconArrowLeft,
   IconHourglassEmpty,
 } from '@tabler/icons-react';
 import { AmortizedItem, CategoryId, Transaction } from '@/types/finance';
-import { CATEGORY_LIST, CATEGORIES } from '@/constants/categories';
+import { CATEGORY_LIST } from '@/constants/categories';
 import { CategoryIcon } from '@/components/common/CategoryIcon';
 import { useFinance } from '@/context/FinanceContext';
 import {
@@ -22,7 +20,12 @@ import {
   formatDate,
   convertToBaseCurrency,
   convertFromBaseCurrency,
+  addMonthsToDate,
+  calculateDaysDifference,
 } from '@/utils/formatters';
+import { AmortizedExpensePicker } from './amortized/AmortizedExpensePicker';
+import { AmortizedDurationPresets } from './amortized/AmortizedDurationPresets';
+import { AmortizedPreviewPill } from './amortized/AmortizedPreviewPill';
 
 /**
  * Props for AddEditAmortizedModal component.
@@ -38,60 +41,6 @@ interface AddEditAmortizedModalProps {
   initialTransaction?: Transaction | null;
 }
 
-/** Preset duration choices in months */
-const DURATION_PRESETS = [
-  { label: '1 mo', months: 1 },
-  { label: '2 mo', months: 2 },
-  { label: '3 mo', months: 3 },
-  { label: '6 mo', months: 6 },
-  { label: '1 yr', months: 12 },
-  { label: 'Ongoing', months: -1 },
-  { label: 'Custom', months: 0 },
-];
-
-/**
- * Adds a given number of months to an ISO date string (YYYY-MM-DD).
- *
- * @param dateStr - Base date string
- * @param monthsToAdd - Number of calendar months to add
- * @returns Projected finish date string
- */
-function addMonthsToDate(dateStr?: string, monthsToAdd: number = 0): string {
-  if (!dateStr || typeof dateStr !== 'string') return getTodayDateString();
-  try {
-    const parts = dateStr.split('-').map(Number);
-    if (parts.length < 3 || parts.some(isNaN)) return dateStr;
-    const [y, m, d] = parts;
-    const date = new Date(y, m - 1, d);
-    date.setMonth(date.getMonth() + monthsToAdd);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  } catch {
-    return dateStr || getTodayDateString();
-  }
-}
-
-/**
- * Calculates calendar days between two ISO date strings (YYYY-MM-DD).
- *
- * @param startStr - Start date
- * @param endStr - End date
- * @returns Number of days
- */
-function calculateDaysDifference(startStr?: string, endStr?: string): number {
-  if (!startStr || !endStr) return 30;
-  try {
-    const start = new Date(startStr);
-    const end = new Date(endStr);
-    const diffTime = end.getTime() - start.getTime();
-    return Math.max(1, Math.round(diffTime / (1000 * 60 * 60 * 24)));
-  } catch {
-    return 30;
-  }
-}
-
 /**
  * Modal dialog for product lifespan amortization tracking:
  * - Tab 1: Pick an already added expense to track its lifespan
@@ -104,7 +53,6 @@ export function AddEditAmortizedModal({
   editingItem,
   initialTransaction,
 }: AddEditAmortizedModalProps) {
-
   const {
     transactions,
     amortizedItems,
@@ -132,16 +80,20 @@ export function AddEditAmortizedModal({
   const [error, setError] = useState<string | null>(null);
 
   // Close on Escape key press
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
       }
-    };
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    if (!isOpen) return;
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, handleKeyDown]);
 
   // Initialize modal state on open or prop change
   useEffect(() => {
@@ -166,7 +118,7 @@ export function AddEditAmortizedModal({
       'title' in initialTransaction &&
       'amount' in initialTransaction
     ) {
-      // Opened directly with a selected transaction!
+      // Opened directly with a selected transaction
       setActiveTabMode('from_list');
       setSelectedTx(initialTransaction);
       setName(initialTransaction.title || '');
@@ -232,11 +184,9 @@ export function AddEditAmortizedModal({
     if (!Array.isArray(transactions)) return [];
     return transactions.filter((tx) => {
       if (!tx || typeof tx !== 'object') return false;
-      // Category filter
       if (selectedTxCategory !== 'all' && tx.category !== selectedTxCategory) {
         return false;
       }
-      // Search filter
       if (searchTxQuery.trim()) {
         const q = searchTxQuery.toLowerCase();
         const matchesTitle = tx.title ? tx.title.toLowerCase().includes(q) : false;
@@ -255,8 +205,7 @@ export function AddEditAmortizedModal({
     if (months === -1) {
       setEndDate('');
     } else if (months > 0 && startDate) {
-      const calculatedEnd = addMonthsToDate(startDate, months);
-      setEndDate(calculatedEnd);
+      setEndDate(addMonthsToDate(startDate, months));
     }
   };
 
@@ -427,134 +376,18 @@ export function AddEditAmortizedModal({
 
           {/* VIEW 1: SELECTING FROM EXISTING EXPENSES LIST */}
           {!editingItem && activeTabMode === 'from_list' && !selectedTx ? (
-            <div className="space-y-3.5">
-              <div className="space-y-0.5">
-                <label className="text-xs font-mono font-semibold text-[#1B1A18] block">
-                  Select an expense:
-                </label>
-              </div>
-
-              {/* Search input */}
-              <div className="relative">
-                <IconSearch
-                  size={14}
-                  stroke={2}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#625E59]"
-                />
-                <input
-                  type="text"
-                  placeholder="Search expenses..."
-                  value={searchTxQuery}
-                  onChange={(e) => setSearchTxQuery(e.target.value)}
-                  className="sf-input w-full h-9 pl-9 pr-3.5 text-xs"
-                />
-              </div>
-
-              {/* Category Filter Chips */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px]">
-                <button
-                  type="button"
-                  onClick={() => setSelectedTxCategory('all')}
-                  className={`px-2.5 py-1 rounded-none font-mono font-semibold whitespace-nowrap transition-colors ${
-                    selectedTxCategory === 'all'
-                      ? 'bg-[#E65B3F] text-white'
-                      : 'bg-white text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18]'
-                  }`}
-                >
-                  All ({(transactions || []).length})
-                </button>
-                {CATEGORY_LIST.map((cat) => {
-                  const count = (transactions || []).filter((t) => t && t.category === cat.id).length;
-                  if (count === 0) return null;
-                  return (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => setSelectedTxCategory(cat.id)}
-                      className={`px-2.5 py-1 rounded-none font-mono font-semibold whitespace-nowrap transition-colors ${
-                        selectedTxCategory === cat.id
-                          ? 'bg-[#E65B3F] text-white'
-                          : 'bg-white text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18]'
-                      }`}
-                    >
-                      {cat.label} ({count})
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Transactions List */}
-              <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
-                {selectableTransactions.length === 0 ? (
-                  <div className="p-8 text-center rounded-none bg-white border border-dashed border-[#DED9D2] space-y-2">
-                    <IconReceipt size={28} stroke={1.5} className="mx-auto text-[#625E59]" />
-                    <h4 className="text-xs font-mono font-bold uppercase text-[#1B1A18]">No matching expenses found</h4>
-                    <p className="text-xs text-[#625E59] max-w-xs mx-auto">
-                      {(transactions || []).length === 0
-                        ? 'No expenses recorded yet.'
-                        : 'No matching expenses.'}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setActiveTabMode('custom')}
-                      className="mt-2 inline-flex items-center gap-1 text-xs font-mono font-semibold text-[#E65B3F] hover:underline"
-                    >
-                      <IconPlus size={13} stroke={2} />
-                      <span>Add custom product</span>
-                    </button>
-                  </div>
-                ) : (
-                  selectableTransactions.map((tx) => {
-                    const alreadyTracked = trackedTxIds.get(tx.id);
-                    const catMeta = CATEGORIES[tx.category] || CATEGORIES.other;
-
-                    return (
-                      <div
-                        key={tx.id}
-                        onClick={() => handleSelectTransaction(tx)}
-                        className="group flex items-center justify-between p-3 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#1B1A18] transition-colors cursor-pointer gap-3"
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                          <div className="w-8 h-8 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#1B1A18] flex items-center justify-center shrink-0">
-                            <CategoryIcon category={tx.category} size={15} />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-2">
-                              <h5 className="text-xs font-semibold text-[#1B1A18] truncate">
-                                {tx.title}
-                              </h5>
-                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#625E59] shrink-0 font-medium">
-                                {catMeta.label}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 mt-0.5 text-[11px] font-mono text-[#625E59]">
-                              <span>{formatDate(tx.date)}</span>
-                              {alreadyTracked && (
-                                <span className="inline-flex items-center gap-1 font-bold text-[#E65B3F]">
-                                  &bull; ✓ Tracked ({alreadyTracked.durationMonths || '—'}m)
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3 shrink-0">
-                          <span className="min-w-[70px] text-right text-xs font-mono font-bold text-[#1B1A18] tabular-nums">
-                            {formatCurrency(tx.amount, currency)}
-                          </span>
-                          <button
-                            type="button"
-                            className="sf-button-primary h-7 px-2.5 text-[11px] uppercase tracking-wider font-mono rounded-[2px]"
-                          >
-                            Select
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
+            <AmortizedExpensePicker
+              transactions={transactions}
+              searchTxQuery={searchTxQuery}
+              onSearchChange={setSearchTxQuery}
+              selectedTxCategory={selectedTxCategory}
+              onCategoryChange={setSelectedTxCategory}
+              selectableTransactions={selectableTransactions}
+              trackedTxIds={trackedTxIds}
+              currency={currency}
+              onSelectTransaction={handleSelectTransaction}
+              onSwitchToCustom={() => setActiveTabMode('custom')}
+            />
           ) : (
             /* VIEW 2: CONFIGURE LIFESPAN (Selected Transaction or Custom Form) */
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -650,33 +483,12 @@ export function AddEditAmortizedModal({
               )}
 
               {/* Duration Selector Preset Chips */}
-              <div className="space-y-2">
-                <label className="text-xs font-mono font-semibold text-[#1B1A18] flex items-center justify-between">
-                  <span>Lifespan *</span>
-                  <span className="text-[11px] font-mono font-normal text-[#625E59]">
-                    {hasLifespan ? `${calculatedMonths} mo amortization` : 'Ongoing'}
-                  </span>
-                </label>
-                <div className="grid grid-cols-3 sm:grid-cols-7 gap-2">
-                  {DURATION_PRESETS.map((preset) => {
-                    const isSelected = selectedPresetMonths === preset.months;
-                    return (
-                      <button
-                        key={preset.label}
-                        type="button"
-                        onClick={() => handlePresetSelect(preset.months)}
-                        className={`h-8 px-1 text-xs font-mono font-semibold rounded-[2px] transition-colors text-center flex items-center justify-center ${
-                          isSelected
-                            ? 'bg-[#E65B3F] text-white border border-[#E65B3F] font-bold'
-                            : 'bg-white text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18]'
-                        }`}
-                      >
-                        {preset.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              <AmortizedDurationPresets
+                selectedPresetMonths={selectedPresetMonths}
+                onSelectPreset={handlePresetSelect}
+                hasLifespan={hasLifespan}
+                calculatedMonths={calculatedMonths}
+              />
 
               {/* Start and End Dates */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -722,46 +534,14 @@ export function AddEditAmortizedModal({
               </div>
 
               {/* Live Amortization Calculation Result Pill */}
-              <div className="p-4 rounded-[2px] bg-[#F9EEE9] border border-[#E65B3F]/30 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-[2px] bg-white border border-[#E65B3F]/30 flex items-center justify-center text-[#E65B3F] shrink-0">
-                    <IconSparkles size={16} stroke={2} />
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-mono font-bold text-[#A83F29] uppercase tracking-wider block">
-                      {hasLifespan ? 'Monthly Depreciation' : 'Lifespan'}
-                    </span>
-                    <span className="text-xs text-[#A83F29]/80 font-normal">
-                      {hasLifespan
-                        ? `${formatCurrency(parsedCost, currency)} · ${calculatedMonths} months`
-                        : 'Ongoing item'}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="text-right shrink-0">
-                  {hasLifespan ? (
-                    <>
-                      <span className="text-lg font-mono font-bold text-[#E65B3F] tabular-nums block leading-tight">
-                        {formatCurrency(monthlyCost, currency)}
-                        <span className="text-xs font-normal text-[#A83F29]"> / mo</span>
-                      </span>
-                      <span className="text-[11px] font-mono text-[#A83F29]">
-                        ~{formatCurrency(dailyCost, currency)} / day
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-sm font-mono font-bold text-[#1B1A18] tabular-nums block">
-                        {parsedCost > 0 ? formatCurrency(parsedCost, currency) : '—'}
-                      </span>
-                      <span className="text-[10px] text-[#625E59]">
-                        One-time cost
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
+              <AmortizedPreviewPill
+                hasLifespan={hasLifespan}
+                parsedCost={parsedCost}
+                calculatedMonths={calculatedMonths}
+                monthlyCost={monthlyCost}
+                dailyCost={dailyCost}
+                currency={currency}
+              />
 
               {/* Notes */}
               <div className="space-y-1.5">
@@ -798,11 +578,7 @@ export function AddEditAmortizedModal({
                   className="sf-button-primary h-9 px-5 text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 rounded-[2px]"
                 >
                   {editingItem ? <IconCheck size={14} stroke={2.5} /> : <IconPlus size={14} stroke={2.5} />}
-                  <span>
-                    {editingItem
-                      ? 'Save'
-                      : 'Add product'}
-                  </span>
+                  <span>{editingItem ? 'Save' : 'Add product'}</span>
                 </button>
               </div>
             </form>

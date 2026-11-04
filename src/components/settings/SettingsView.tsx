@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   IconCoins,
   IconDownload,
@@ -38,7 +38,6 @@ export function SettingsView({
   onOpenImportModal,
   onOpenResetConfirmModal,
 }: SettingsViewProps) {
-
   const {
     currency,
     setCurrency,
@@ -50,12 +49,22 @@ export function SettingsView({
 
   const [budgetInput, setBudgetInput] = useState('');
   const [budgetSaved, setBudgetSaved] = useState(false);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Sync initial budget value
   useEffect(() => {
     const converted = convertFromBaseCurrency(currentBudget || 0, currency);
     setBudgetInput(converted ? converted.toString() : '');
   }, [currentBudget, currency]);
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Auto-save budget on blur or Enter
   const handleBudgetBlur = useCallback(() => {
@@ -65,7 +74,8 @@ export function SettingsView({
       if (Math.abs(baseBudget - currentBudget) > 0.01) {
         setMonthlyBudget(selectedMonth.key, baseBudget);
         setBudgetSaved(true);
-        setTimeout(() => setBudgetSaved(false), 2000);
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(() => setBudgetSaved(false), 2000);
       }
     }
   }, [budgetInput, currentBudget, currency, selectedMonth.key, setMonthlyBudget]);
@@ -138,7 +148,6 @@ export function SettingsView({
               placeholder="0.00"
               aria-label="Monthly budget target amount"
             />
-            {/* Saved feedback */}
             {budgetSaved && (
               <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-[#E65B3F] animate-fadeIn">
                 <IconCheck size={12} stroke={2.5} />

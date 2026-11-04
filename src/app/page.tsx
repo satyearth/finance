@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { FinanceProvider, useFinance } from '@/context/FinanceContext';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
@@ -10,15 +11,49 @@ import { QuickExpenseBar } from '@/components/dashboard/QuickExpenseBar';
 import { BentoMetrics } from '@/components/dashboard/BentoMetrics';
 import { SpendingChart } from '@/components/dashboard/SpendingChart';
 import { AmortizedTrackerCard } from '@/components/dashboard/AmortizedTrackerCard';
-import { CalendarView } from '@/components/calendar/CalendarView';
-import { TransactionList } from '@/components/transactions/TransactionList';
-import { AnalyticsView } from '@/components/analytics/AnalyticsView';
-import { SettingsView } from '@/components/settings/SettingsView';
-import { AddEditExpenseModal } from '@/components/modals/AddEditExpenseModal';
-import { AddEditAmortizedModal } from '@/components/modals/AddEditAmortizedModal';
-import { ImportExportModal } from '@/components/modals/ImportExportModal';
-import { ResetConfirmModal } from '@/components/modals/ResetConfirmModal';
 import { Transaction, AmortizedItem } from '@/types/finance';
+
+// Code-split secondary views for optimal initial page bundle size
+const CalendarView = dynamic(
+  () => import('@/components/calendar/CalendarView').then((mod) => mod.CalendarView),
+  { ssr: false }
+);
+
+const TransactionList = dynamic(
+  () => import('@/components/transactions/TransactionList').then((mod) => mod.TransactionList),
+  { ssr: false }
+);
+
+const AnalyticsView = dynamic(
+  () => import('@/components/analytics/AnalyticsView').then((mod) => mod.AnalyticsView),
+  { ssr: false }
+);
+
+const SettingsView = dynamic(
+  () => import('@/components/settings/SettingsView').then((mod) => mod.SettingsView),
+  { ssr: false }
+);
+
+// Code-split heavy modal dialogs
+const AddEditExpenseModal = dynamic(
+  () => import('@/components/modals/AddEditExpenseModal').then((mod) => mod.AddEditExpenseModal),
+  { ssr: false }
+);
+
+const AddEditAmortizedModal = dynamic(
+  () => import('@/components/modals/AddEditAmortizedModal').then((mod) => mod.AddEditAmortizedModal),
+  { ssr: false }
+);
+
+const ImportExportModal = dynamic(
+  () => import('@/components/modals/ImportExportModal').then((mod) => mod.ImportExportModal),
+  { ssr: false }
+);
+
+const ResetConfirmModal = dynamic(
+  () => import('@/components/modals/ResetConfirmModal').then((mod) => mod.ResetConfirmModal),
+  { ssr: false }
+);
 
 /**
  * Main dashboard container managing tab switching, responsive layout,
@@ -40,9 +75,9 @@ function MainDashboard() {
   const [editingAmortItem, setEditingAmortItem] = useState<AmortizedItem | null>(null);
   const [selectedTxForAmort, setSelectedTxForAmort] = useState<Transaction | null>(null);
 
-  const handleOpenAddModal = (date?: string | unknown) => {
+  const handleOpenAddModal = (date?: string) => {
     setEditingTransaction(null);
-    setSelectedInitialDate(typeof date === 'string' ? date : undefined);
+    setSelectedInitialDate(date);
     setIsAddModalOpen(true);
   };
 
@@ -52,13 +87,9 @@ function MainDashboard() {
     setIsAddModalOpen(true);
   };
 
-  const handleOpenAddAmortModal = (tx?: Transaction | unknown) => {
+  const handleOpenAddAmortModal = (tx?: Transaction | null) => {
     setEditingAmortItem(null);
-    const validTx =
-      tx && typeof tx === 'object' && 'title' in tx && 'amount' in tx
-        ? (tx as Transaction)
-        : null;
-    setSelectedTxForAmort(validTx);
+    setSelectedTxForAmort(tx ?? null);
     setIsAmortModalOpen(true);
   };
 
@@ -69,7 +100,7 @@ function MainDashboard() {
   };
 
   // Global keyboard shortcut 'n' to open new expense modal
-  React.useEffect(() => {
+  useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (isAddModalOpen || isAmortModalOpen || isImportExportModalOpen || resetConfirmAction) {
         return;
@@ -99,7 +130,7 @@ function MainDashboard() {
         {/* Top Bar */}
         <Header
           onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
-          onOpenAddModal={handleOpenAddModal}
+          onOpenAddModal={() => handleOpenAddModal()}
         />
 
         {/* Dynamic Screen View Container */}
@@ -107,21 +138,12 @@ function MainDashboard() {
           {/* Dashboard Tab View */}
           {activeTab === 'dashboard' && (
             <div className="space-y-4 animate-fadeIn">
-              {/* Repositioned Standalone Quick Expense Search Bar (Above Hero Outflow Card) */}
               <QuickExpenseBar />
-
-              {/* 1. Top Hero Card: Outflow + Monthly Target Utilization */}
               <HeroBudgetCard />
-
-              {/* 2. Metric Cards Row */}
               <BentoMetrics />
-
-              {/* 3. Spending Chart Card */}
               <SpendingChart />
-
-              {/* 4. Product Lifespan & Monthly Amortization Tracker Card */}
               <AmortizedTrackerCard
-                onOpenAddModal={handleOpenAddAmortModal}
+                onOpenAddModal={() => handleOpenAddAmortModal(null)}
                 onEditItem={handleOpenEditAmortModal}
               />
             </div>
@@ -138,7 +160,7 @@ function MainDashboard() {
             <div className="w-full">
               <TransactionList
                 onEditTransaction={handleOpenEditModal}
-                onOpenAddModal={handleOpenAddModal}
+                onOpenAddModal={() => handleOpenAddModal()}
                 onTrackAmortization={(tx, existingItem) => {
                   if (existingItem) {
                     handleOpenEditAmortModal(existingItem);
@@ -171,45 +193,53 @@ function MainDashboard() {
       <MobileNav
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
-        onOpenAddModal={handleOpenAddModal}
+        onOpenAddModal={() => handleOpenAddModal()}
         onOpenImportExportModal={() => setIsImportExportModalOpen(true)}
       />
 
       {/* Mobile Bottom Quick Navigation */}
-      <MobileBottomBar onOpenAddModal={handleOpenAddModal} />
+      <MobileBottomBar onOpenAddModal={() => handleOpenAddModal()} />
 
-      {/* Global Modals */}
-      <AddEditExpenseModal
-        isOpen={isAddModalOpen}
-        onClose={() => {
-          setIsAddModalOpen(false);
-          setEditingTransaction(null);
-          setSelectedInitialDate(undefined);
-        }}
-        editingTransaction={editingTransaction}
-        initialDate={selectedInitialDate}
-      />
+      {/* Global Modals - Rendered only when active to prevent DOM bloat */}
+      {isAddModalOpen && (
+        <AddEditExpenseModal
+          isOpen={isAddModalOpen}
+          onClose={() => {
+            setIsAddModalOpen(false);
+            setEditingTransaction(null);
+            setSelectedInitialDate(undefined);
+          }}
+          editingTransaction={editingTransaction}
+          initialDate={selectedInitialDate}
+        />
+      )}
 
-      <AddEditAmortizedModal
-        isOpen={isAmortModalOpen}
-        onClose={() => {
-          setIsAmortModalOpen(false);
-          setEditingAmortItem(null);
-          setSelectedTxForAmort(null);
-        }}
-        editingItem={editingAmortItem}
-        initialTransaction={selectedTxForAmort}
-      />
+      {isAmortModalOpen && (
+        <AddEditAmortizedModal
+          isOpen={isAmortModalOpen}
+          onClose={() => {
+            setIsAmortModalOpen(false);
+            setEditingAmortItem(null);
+            setSelectedTxForAmort(null);
+          }}
+          editingItem={editingAmortItem}
+          initialTransaction={selectedTxForAmort}
+        />
+      )}
 
-      <ImportExportModal
-        isOpen={isImportExportModalOpen}
-        onClose={() => setIsImportExportModalOpen(false)}
-      />
+      {isImportExportModalOpen && (
+        <ImportExportModal
+          isOpen={isImportExportModalOpen}
+          onClose={() => setIsImportExportModalOpen(false)}
+        />
+      )}
 
-      <ResetConfirmModal
-        actionType={resetConfirmAction}
-        onClose={() => setResetConfirmAction(null)}
-      />
+      {resetConfirmAction && (
+        <ResetConfirmModal
+          actionType={resetConfirmAction}
+          onClose={() => setResetConfirmAction(null)}
+        />
+      )}
     </div>
   );
 }

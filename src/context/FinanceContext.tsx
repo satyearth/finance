@@ -16,13 +16,14 @@ import {
   generateSampleTransactions,
   generateSampleAmortizedItems,
 } from '@/utils/sampleData';
-import { getMonthYearLabel } from '@/utils/formatters';
+import { getMonthYearLabel, getTodayDateString, getCurrentMonthKey } from '@/utils/formatters';
+import { generateId } from '@/utils/id';
 import { fireConfettiBurst } from '@/utils/confetti';
 
 /**
  * Aggregated statistics for a specific category within the selected month.
  */
-interface CategoryStats {
+export interface CategoryStats {
   category: CategoryId;
   total: number;
   count: number;
@@ -95,7 +96,6 @@ interface FinanceContextType {
   updateAmortizedItem: (id: string, updates: Partial<Omit<AmortizedItem, 'id' | 'createdAt'>>) => void;
   deleteAmortizedItem: (id: string) => void;
 
-
   // Bulk / Data actions
   importTransactions: (newTransactions: Transaction[], replaceExisting: boolean) => void;
   resetToSampleData: () => void;
@@ -137,7 +137,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     };
   }, [currentDate]);
 
-  // Initialize from LocalStorage (respecting existing user data without forced seed resets)
+  // Initialize from LocalStorage
   useEffect(() => {
     try {
       const storedTx = localStorage.getItem(STORAGE_KEY_TX);
@@ -145,26 +145,21 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       const storedCurrency = localStorage.getItem(STORAGE_KEY_CURRENCY);
       const storedAmort = localStorage.getItem(STORAGE_KEY_AMORTIZED);
 
-      // 1. Transactions: if user already has data in storage, use it directly (even if empty array [])
+      // 1. Transactions
       if (storedTx !== null) {
         try {
           const parsed = JSON.parse(storedTx);
-          if (Array.isArray(parsed)) {
-            setTransactions(parsed);
-          } else {
-            setTransactions(INITIAL_SAMPLE_TRANSACTIONS);
-          }
+          setTransactions(Array.isArray(parsed) ? parsed : INITIAL_SAMPLE_TRANSACTIONS);
         } catch {
           setTransactions(INITIAL_SAMPLE_TRANSACTIONS);
         }
       } else {
-        // Seed first visit with sample transactions
         setTransactions(INITIAL_SAMPLE_TRANSACTIONS);
         localStorage.setItem(STORAGE_KEY_TX, JSON.stringify(INITIAL_SAMPLE_TRANSACTIONS));
       }
 
-      // 2. Budgets:
-      const currentMonthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+      // 2. Budgets
+      const currentMonthKey = getCurrentMonthKey();
       if (storedBudgets) {
         try {
           setMonthlyBudgets(JSON.parse(storedBudgets));
@@ -182,25 +177,20 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem(STORAGE_KEY_BUDGET, JSON.stringify(defaultBudgets));
       }
 
-      // 3. Currency:
+      // 3. Currency
       if (storedCurrency && ['INR', 'USD', 'EUR', 'GBP'].includes(storedCurrency)) {
         setCurrencyState(storedCurrency as CurrencyCode);
       }
 
-      // 4. Amortized Items: if user already has data in storage, use it directly (even if empty array [])
+      // 4. Amortized Items
       if (storedAmort !== null) {
         try {
           const parsedAmort = JSON.parse(storedAmort);
-          if (Array.isArray(parsedAmort)) {
-            setAmortizedItems(parsedAmort);
-          } else {
-            setAmortizedItems(INITIAL_SAMPLE_AMORTIZED_ITEMS);
-          }
+          setAmortizedItems(Array.isArray(parsedAmort) ? parsedAmort : INITIAL_SAMPLE_AMORTIZED_ITEMS);
         } catch {
           setAmortizedItems(INITIAL_SAMPLE_AMORTIZED_ITEMS);
         }
       } else {
-        // Seed first visit with sample amortized items
         setAmortizedItems(INITIAL_SAMPLE_AMORTIZED_ITEMS);
         localStorage.setItem(STORAGE_KEY_AMORTIZED, JSON.stringify(INITIAL_SAMPLE_AMORTIZED_ITEMS));
       }
@@ -259,7 +249,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     setCurrentDate(new Date(year, month, 1));
   }, []);
 
-
   // Filter transactions for currently selected month
   const filteredTransactions = useMemo(() => {
     return transactions.filter((t) => t.date && t.date.startsWith(selectedMonth.key));
@@ -267,7 +256,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
   // Current budget amount for this month (stored in base INR)
   const currentBudget = useMemo(() => {
-    if (monthlyBudgets[selectedMonth.key]) {
+    if (monthlyBudgets[selectedMonth.key] !== undefined) {
       return monthlyBudgets[selectedMonth.key];
     }
     return DEFAULT_MONTHLY_BUDGET.INR || 45000;
@@ -279,13 +268,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }, [filteredTransactions]);
 
   const today = useMemo(() => new Date(), []);
-  const todayDay = today.getDate();
-  const todayDateStr = useMemo(() => {
-    const y = today.getFullYear();
-    const m = String(today.getMonth() + 1).padStart(2, '0');
-    const d = String(today.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }, [today]);
+  const todayDateStr = useMemo(() => getTodayDateString(), []);
 
   const isCurrentMonth = useMemo(() => {
     return today.getFullYear() === selectedMonth.year && today.getMonth() === selectedMonth.month;
@@ -300,18 +283,15 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
   const elapsedDaysThisMonth = useMemo(() => {
     if (isCurrentMonth) {
-      return Math.max(1, todayDay);
+      return Math.max(1, today.getDate());
     }
     if (isPastMonth) {
       return new Date(selectedMonth.year, selectedMonth.month + 1, 0).getDate();
     }
     return 0;
-  }, [isCurrentMonth, isPastMonth, todayDay, selectedMonth]);
+  }, [isCurrentMonth, isPastMonth, today, selectedMonth]);
 
   // Settled vs Scheduled breakdown
-  // Current month: <= todayDateStr is settled, > todayDateStr is scheduled
-  // Past month: all transactions are settled
-  // Future month: all transactions are scheduled
   const { settledSpentThisMonth, scheduledSpentThisMonth, settledCount, scheduledCount } = useMemo(() => {
     let settled = 0;
     let scheduled = 0;
@@ -331,7 +311,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           countScheduled++;
         }
       } else {
-        // Future month
         scheduled += t.amount;
         countScheduled++;
       }
@@ -345,16 +324,13 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     };
   }, [filteredTransactions, isPastMonth, isCurrentMonth, todayDateStr]);
 
-  // Budget progress percentage (clamped appropriately in UI)
+  // Budget progress percentage
   const budgetPercentage = useMemo(() => {
     if (currentBudget <= 0) return 0;
     return Math.round((totalSpentThisMonth / currentBudget) * 100);
   }, [totalSpentThisMonth, currentBudget]);
 
-  // Daily spend pace:
-  // - For current month: settledSpentThisMonth / elapsedDaysThisMonth
-  // - For past month: totalSpentThisMonth / daysInMonth
-  // - For future month: 0
+  // Daily spend pace
   const dailySpendAverage = useMemo(() => {
     if (isCurrentMonth && elapsedDaysThisMonth > 0) {
       return Math.round(settledSpentThisMonth / elapsedDaysThisMonth);
@@ -364,7 +340,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     }
     return 0;
   }, [isCurrentMonth, isPastMonth, settledSpentThisMonth, totalSpentThisMonth, elapsedDaysThisMonth]);
-
 
   // Category stats calculation
   const categoryStats = useMemo<CategoryStats[]>(() => {
@@ -410,7 +385,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     (data: Omit<Transaction, 'id' | 'createdAt'>): Transaction => {
       const newTx: Transaction = {
         ...data,
-        id: `tx-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        id: generateId('tx'),
         createdAt: Date.now(),
       };
       const updated = [newTx, ...transactions];
@@ -443,7 +418,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       if (replaceExisting) {
         combined = newTransactions;
       } else {
-        // Merge without duplicating IDs
         const existingIds = new Set(transactions.map((t) => t.id));
         const nonDuplicate = newTransactions.filter((t) => !existingIds.has(t.id));
         combined = [...nonDuplicate, ...transactions];
@@ -468,7 +442,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     (data: Omit<AmortizedItem, 'id' | 'createdAt'>): AmortizedItem => {
       const newItem: AmortizedItem = {
         ...data,
-        id: `amort-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        id: generateId('amort'),
         createdAt: Date.now(),
       };
       const updated = [newItem, ...amortizedItems];
@@ -510,7 +484,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     const freshAmort = generateSampleAmortizedItems();
     persistTransactions(freshTx);
     persistAmortizedItems(freshAmort);
-    const currentMonthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+    const currentMonthKey = getCurrentMonthKey();
     const defaultBudgets: Record<string, number> = {
       [currentMonthKey]: DEFAULT_MONTHLY_BUDGET.INR,
     };
@@ -571,7 +545,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         importTransactions,
         resetToSampleData,
         clearAllData,
-
       }}
     >
       {children}

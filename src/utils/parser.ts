@@ -50,6 +50,26 @@ const CATEGORY_ALIASES: Array<{ phrase: string; category: CategoryId }> = [
   { phrase: 'misc', category: 'other' },
 ];
 
+/** Precompiled alias regular expressions to avoid runtime compilation per keystroke */
+const PRECOMPILED_ALIASES = CATEGORY_ALIASES.map(({ phrase, category }) => ({
+  phrase,
+  category,
+  testRegex: new RegExp(`\\b${phrase}\\b`, 'i'),
+  removeRegex: new RegExp(`\\b${phrase}\\b`, 'gi'),
+}));
+
+/** Precompiled category keyword regular expressions */
+const PRECOMPILED_KEYWORDS = CATEGORY_LIST.map((cat) => ({
+  id: cat.id,
+  matchers: cat.keywords.map((kw) => ({
+    keyword: kw,
+    regex: new RegExp(`\\b${kw}\\b`, 'i'),
+  })),
+}));
+
+const EXPLICIT_CURRENCY_REGEX = /(?:(?:₹|\$|€|£|rs\.?|inr|usd)\s*([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)|([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)\s*(?:rs\.?|inr|usd|bucks))/i;
+const ALL_NUMBERS_REGEX = /\b([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)\b/g;
+
 /**
  * Intelligent natural language parser for quick expense inputs.
  *
@@ -79,8 +99,7 @@ export function parseNaturalLanguageExpense(input: string): ParsedExpense {
   // =========================================================================
 
   // 1a. Try to match explicit currency-tagged amount first (e.g. ₹1850, $45.50, 150rs)
-  const explicitCurrencyRegex = /(?:(?:₹|\$|€|£|rs\.?|inr|usd)\s*([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)|([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)\s*(?:rs\.?|inr|usd|bucks))/i;
-  const explicitMatch = trimmed.match(explicitCurrencyRegex);
+  const explicitMatch = trimmed.match(EXPLICIT_CURRENCY_REGEX);
 
   let amount = 0;
   let textWithoutAmount = trimmed;
@@ -97,13 +116,12 @@ export function parseNaturalLanguageExpense(input: string): ParsedExpense {
 
   // 1b. If no explicit currency match, scan for candidate numbers
   if (amount === 0) {
-    const allNumbersRegex = /\b([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)\b/g;
-    const matches = Array.from(trimmed.matchAll(allNumbersRegex));
+    const matches = Array.from(trimmed.matchAll(ALL_NUMBERS_REGEX));
 
     if (matches.length > 0) {
       let chosenMatch = matches[matches.length - 1]; // default to last number
 
-      // If there are multiple numbers (e.g. "Dinner with 2 friends 1500"), choose the intended price (highest value)
+      // If multiple numbers (e.g. "Dinner with 2 friends 1500"), choose the intended price (highest value)
       if (matches.length > 1) {
         let maxVal = -1;
         let maxMatch = matches[0];
@@ -140,25 +158,23 @@ export function parseNaturalLanguageExpense(input: string): ParsedExpense {
   // =========================================================================
   const lowerText = textWithoutAmount.toLowerCase();
   let detectedCategory: CategoryId = 'other';
-  let categoryTokenToRemove = '';
+  let categoryRemoveRegex: RegExp | null = null;
 
   // Check alias list (multi-word phrases checked first, then single words)
-  for (const { phrase, category } of CATEGORY_ALIASES) {
-    const phraseRegex = new RegExp(`\\b${phrase}\\b`, 'i');
-    if (phraseRegex.test(lowerText)) {
-      detectedCategory = category;
-      categoryTokenToRemove = phrase;
+  for (const item of PRECOMPILED_ALIASES) {
+    if (item.testRegex.test(lowerText)) {
+      detectedCategory = item.category;
+      categoryRemoveRegex = item.removeRegex;
       break;
     }
   }
 
   // If not found via alias, check keyword mappings in CATEGORIES
-  if (detectedCategory === 'other' && !categoryTokenToRemove) {
-    for (const cat of CATEGORY_LIST) {
-      for (const kw of cat.keywords) {
-        const kwRegex = new RegExp(`\\b${kw}\\b`, 'i');
-        if (kwRegex.test(lowerText)) {
-          detectedCategory = cat.id;
+  if (detectedCategory === 'other' && !categoryRemoveRegex) {
+    for (const group of PRECOMPILED_KEYWORDS) {
+      for (const matcher of group.matchers) {
+        if (matcher.regex.test(lowerText)) {
+          detectedCategory = group.id;
           break;
         }
       }
@@ -170,9 +186,8 @@ export function parseNaturalLanguageExpense(input: string): ParsedExpense {
   // STEP 3: Clean and Format Title
   // =========================================================================
   let cleanedTitle = textWithoutAmount;
-  if (categoryTokenToRemove) {
-    const removeRegex = new RegExp(`\\b${categoryTokenToRemove}\\b`, 'gi');
-    cleanedTitle = cleanedTitle.replace(removeRegex, ' ');
+  if (categoryRemoveRegex) {
+    cleanedTitle = cleanedTitle.replace(categoryRemoveRegex, ' ');
   }
 
   // Clean extra spaces and punctuation while preserving word characters and hyphens
@@ -180,7 +195,6 @@ export function parseNaturalLanguageExpense(input: string): ParsedExpense {
     .replace(/[^\w\s-]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-
 
   // If cleanedTitle is empty, fallback to category label or "Expense"
   if (!cleanedTitle) {
@@ -204,4 +218,3 @@ export function parseNaturalLanguageExpense(input: string): ParsedExpense {
     isValid,
   };
 }
-

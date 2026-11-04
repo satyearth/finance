@@ -12,7 +12,7 @@ import { useFinance } from '@/context/FinanceContext';
 import { Transaction, CategoryId } from '@/types/finance';
 import { CategoryBadge } from '@/components/common/CategoryBadge';
 import { CATEGORY_LIST } from '@/constants/categories';
-import { formatCurrency, convertToBaseCurrency } from '@/utils/formatters';
+import { formatCurrency, convertToBaseCurrency, formatFullDate } from '@/utils/formatters';
 
 /**
  * Props for DayDetailsModal component.
@@ -35,7 +35,6 @@ export function DayDetailsModal({
   onClose,
   onEditTransaction,
 }: DayDetailsModalProps) {
-
   const { transactions, addTransaction, deleteTransaction, currency } = useFinance();
   const [quickTitle, setQuickTitle] = useState('');
   const [quickAmount, setQuickAmount] = useState('');
@@ -57,15 +56,7 @@ export function DayDetailsModal({
 
   const dayTransactions = transactions.filter((t) => t.date === dateString);
   const dayTotal = dayTransactions.reduce((acc, t) => acc + t.amount, 0);
-
-  const [y, m, d] = dateString.split('-').map(Number);
-  const dateObj = new Date(y, m - 1, d);
-  const formattedDayTitle = dateObj.toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  const formattedDayTitle = formatFullDate(dateString);
 
   const handleQuickAddForDay = (e: React.FormEvent) => {
     e.preventDefault();

@@ -18,6 +18,7 @@ export function HeroBudgetCard() {
     totalSpentThisMonth,
     settledSpentThisMonth,
     scheduledSpentThisMonth,
+    budgetPercentage,
     currency,
   } = useFinance();
 
@@ -31,7 +32,6 @@ export function HeroBudgetCard() {
   }, [currentBudget, currency]);
 
   const remaining = currentBudget - totalSpentThisMonth;
-  const percentUsed = currentBudget > 0 ? Math.round((totalSpentThisMonth / currentBudget) * 100) : 0;
   const isOverBudget = remaining < 0;
 
   const handleSaveBudget = () => {
@@ -108,7 +108,7 @@ export function HeroBudgetCard() {
                 ? 'bg-red-50 text-red-700 border border-red-200'
                 : 'bg-[#F9EEE9] text-[#A83F29] border border-[#E65B3F]/30'
             }`}>
-              {percentUsed}%
+              {budgetPercentage}%
             </span>
           ) : (
             <span className="px-2 py-0.5 rounded-[2px] text-xs font-mono text-[#625E59] bg-[#F7F5F2] border border-[#DED9D2]">
@@ -127,7 +127,7 @@ export function HeroBudgetCard() {
               className={`h-full rounded-[2px] transition-all duration-700 ease-out ${
                 currentBudget === 0 ? 'bg-transparent' : isOverBudget ? 'bg-[#A33B27]' : 'bg-[#E65B3F]'
               }`}
-              style={{ width: `${currentBudget === 0 ? 0 : Math.min(percentUsed, 100)}%` }}
+              style={{ width: `${currentBudget === 0 ? 0 : Math.min(budgetPercentage, 100)}%` }}
             />
           </div>
         </div>

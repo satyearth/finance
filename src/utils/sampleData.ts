@@ -1,16 +1,17 @@
 import { Transaction, AmortizedItem } from '@/types/finance';
 
 /**
- * Generates an ISO date string (YYYY-MM-DD) dynamically anchored to the current month.
+ * Generates an ISO date string (YYYY-MM-DD) dynamically anchored to the target month,
+ * safely preventing month-end date overflow issues.
  *
  * @param day - Target day of month (1-31)
  * @param monthOffset - Optional month offset (0 = current month, -1 = previous, +1 = next)
  */
 function getSampleDateStr(day: number, monthOffset: number = 0): string {
-  const d = new Date();
-  d.setMonth(d.getMonth() + monthOffset);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const now = new Date();
+  const target = new Date(now.getFullYear(), now.getMonth() + monthOffset, day);
+  const year = target.getFullYear();
+  const month = String(target.getMonth() + 1).padStart(2, '0');
   const dayStr = String(day).padStart(2, '0');
   return `${year}-${month}-${dayStr}`;
 }
@@ -31,7 +32,6 @@ export function generateSampleTransactions(): Transaction[] {
       notes: 'Morning coffee catchup with team',
       createdAt: Date.now() - 3 * 86400000,
     },
-
     {
       id: 'tx-02',
       title: "Nature's Basket Organic Veggies & Fruits",
@@ -147,7 +147,7 @@ export function generateSampleTransactions(): Transaction[] {
       createdAt: Date.now(),
     },
 
-    // Future Dates: Strictly Recurring Utility Bills & Subscriptions ONLY
+    // Future Dates: Recurring Utility Bills & Subscriptions ONLY
     {
       id: 'tx-14',
       title: 'Tata Power Electricity Bill',
@@ -225,7 +225,6 @@ export function generateSampleAmortizedItems(): AmortizedItem[] {
       status: 'active',
       createdAt: Date.now() - 86400000,
     },
-
     {
       id: 'amort-02',
       name: 'Optimum Nutrition Gold Standard Whey (1kg)',

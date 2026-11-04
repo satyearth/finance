@@ -16,20 +16,7 @@ import { useFinance } from '@/context/FinanceContext';
 import { formatCurrency } from '@/utils/formatters';
 import { CategoryIcon } from '@/components/common/CategoryIcon';
 import { CategoryBadge } from '@/components/common/CategoryBadge';
-import { CATEGORIES } from '@/constants/categories';
-
-/**
- * Aesthetic palette mapped to categories for visual distribution charting.
- */
-const CATEGORY_CHART_COLORS: Record<string, string> = {
-  food_dining: '#E65B3F',
-  bills: '#1B1A18',
-  groceries: '#2E6F54',
-  electronics: '#3B5998',
-  personal_care: '#8D5B4C',
-  household: '#5A6B7C',
-  other: '#7A756F',
-};
+import { CATEGORIES, CATEGORY_CHART_COLORS } from '@/constants/categories';
 
 type CategorySortOption = 'amount-desc' | 'count-desc' | 'name-asc';
 
@@ -589,4 +576,3 @@ export function AnalyticsView() {
     </div>
   );
 }
-

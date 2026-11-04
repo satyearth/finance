@@ -13,13 +13,22 @@ import { CURRENCIES, CATEGORIES } from '@/constants/categories';
  * and keyboard shortcuts ('/' or 'Cmd/Ctrl + K') to quickly focus.
  */
 export function QuickExpenseBar() {
-
   const { addTransaction, currency, selectedMonth } = useFinance();
   const currencySymbol = CURRENCIES[currency]?.symbol || '₹';
   const [inputVal, setInputVal] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [justAddedMsg, setJustAddedMsg] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const addedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clear timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (addedTimeoutRef.current) {
+        clearTimeout(addedTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Live NLP preview
   const preview = parseNaturalLanguageExpense(inputVal);
@@ -41,7 +50,8 @@ export function QuickExpenseBar() {
     });
 
     setJustAddedMsg(`${finalTitle} (${currencySymbol}${preview.amount.toLocaleString()})`);
-    setTimeout(() => setJustAddedMsg(null), 2500);
+    if (addedTimeoutRef.current) clearTimeout(addedTimeoutRef.current);
+    addedTimeoutRef.current = setTimeout(() => setJustAddedMsg(null), 2500);
 
     setInputVal('');
     inputRef.current?.blur();
@@ -83,7 +93,7 @@ export function QuickExpenseBar() {
             onChange={(e) => setInputVal(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder='e.g. Coffee ₹250 Food'
+            placeholder="e.g. Coffee ₹250 Food"
             className="w-full text-xs sm:text-sm font-medium text-[#1B1A18] placeholder:text-[#625E59] bg-transparent outline-none font-sans"
           />
 

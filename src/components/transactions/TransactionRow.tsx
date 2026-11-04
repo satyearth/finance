@@ -14,6 +14,8 @@ import { useFinance } from '@/context/FinanceContext';
 interface TransactionRowProps {
   /** The transaction item to display */
   transaction: Transaction;
+  /** Linked amortized item if currently tracked */
+  amortizedItem?: AmortizedItem;
   /** Callback to edit this transaction */
   onEdit: (tx: Transaction) => void;
   /** Optional callback to track product lifespan for this transaction */
@@ -26,20 +28,12 @@ interface TransactionRowProps {
  */
 export function TransactionRow({
   transaction,
+  amortizedItem,
   onEdit,
   onTrackAmortization,
 }: TransactionRowProps) {
-
-  const { deleteTransaction, currency, amortizedItems } = useFinance();
+  const { deleteTransaction, currency } = useFinance();
   const catMeta = CATEGORIES[transaction.category] || CATEGORIES.other;
-
-  // Check if this transaction is already being tracked in Amortization
-  const amortizedItem = amortizedItems.find(
-    (item) =>
-      item.transactionId === transaction.id ||
-      (item.name.toLowerCase() === transaction.title.toLowerCase() &&
-        item.totalCost === transaction.amount)
-  );
 
   return (
     <div className="group flex items-center justify-between p-3 sm:p-3.5 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#1B1A18] hover:bg-[#FDFCFB] transition-all gap-3 font-sans">

@@ -1,4 +1,22 @@
 import { Transaction } from '@/types/finance';
+import { generateId } from '@/utils/id';
+
+/**
+ * Triggers an immediate browser download for a Blob payload.
+ *
+ * @param blob - The file content blob
+ * @param filename - Target filename for download
+ */
+function triggerFileDownload(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
 /**
  * Serializes transactions array to formatted JSON and triggers a browser file download.
@@ -9,14 +27,7 @@ import { Transaction } from '@/types/finance';
 export function exportToJSON(transactions: Transaction[], filename = 'satyfinance_backup.json'): void {
   const dataStr = JSON.stringify(transactions, null, 2);
   const blob = new Blob([dataStr], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  triggerFileDownload(blob, filename);
 }
 
 /**
@@ -39,14 +50,7 @@ export function exportToCSV(transactions: Transaction[], filename = 'satyfinance
 
   const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  triggerFileDownload(blob, filename);
 }
 
 /**
@@ -76,7 +80,7 @@ export function parseImportedJSON(jsonString: string): { success: boolean; data?
         const amountNum = typeof txObj.amount === 'number' ? txObj.amount : parseFloat(String(txObj.amount));
         if (typeof txObj.title === 'string' && !isNaN(amountNum)) {
           validTransactions.push({
-            id: typeof txObj.id === 'string' ? txObj.id : `tx-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+            id: typeof txObj.id === 'string' ? txObj.id : generateId('tx'),
             title: txObj.title.trim(),
             amount: Math.abs(amountNum),
             category: (typeof txObj.category === 'string' ? txObj.category : 'other') as Transaction['category'],
@@ -100,4 +104,3 @@ export function parseImportedJSON(jsonString: string): { success: boolean; data?
     };
   }
 }
-

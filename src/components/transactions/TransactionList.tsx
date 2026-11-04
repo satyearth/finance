@@ -42,11 +42,23 @@ export function TransactionList({
   onOpenAddModal,
   onTrackAmortization,
 }: TransactionListProps) {
-  const { filteredTransactions, totalSpentThisMonth, selectedMonth, currency } = useFinance();
+  const { filteredTransactions, totalSpentThisMonth, selectedMonth, currency, amortizedItems } = useFinance();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | 'all'>('all');
   const [sortOption, setSortOption] = useState<SortOption>('date-desc');
+
+  // Pre-indexed map for O(1) amortized lookup per transaction
+  const amortizedLookup = useMemo(() => {
+    const map = new Map<string, AmortizedItem>();
+    for (const item of amortizedItems) {
+      if (item.transactionId) {
+        map.set(item.transactionId, item);
+      }
+      map.set(`${item.name.toLowerCase()}:::${item.totalCost}`, item);
+    }
+    return map;
+  }, [amortizedItems]);
 
   // Filter & sort pipeline
   const processedTransactions = useMemo(() => {
@@ -103,7 +115,12 @@ export function TransactionList({
   const countsPerCategory = useMemo(() => {
     const counts: Record<string, number> = { all: filteredTransactions.length };
     for (const cat of CATEGORY_LIST) {
-      counts[cat.id] = filteredTransactions.filter((t) => t.category === cat.id).length;
+      counts[cat.id] = 0;
+    }
+    for (const t of filteredTransactions) {
+      if (counts[t.category] !== undefined) {
+        counts[t.category]++;
+      }
     }
     return counts;
   }, [filteredTransactions]);
@@ -321,7 +338,7 @@ export function TransactionList({
         <div className="hidden sm:flex items-center justify-between px-3 sm:px-3.5 py-2 text-[11px] font-mono uppercase tracking-wider text-[#625E59] bg-[#F7F5F2] border border-[#DED9D2] rounded-[2px] select-none font-semibold">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <span className="w-8 text-center shrink-0">Type</span>
-            <span className="min-w-0 flex-1">Item & Category</span>
+            <span className="min-w-0 flex-1">Item &amp; Category</span>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <span className="min-w-[90px] text-right">Amount</span>
@@ -367,17 +384,23 @@ export function TransactionList({
             </div>
           </div>
         ) : (
-          processedTransactions.map((tx) => (
-            <TransactionRow
-              key={tx.id}
-              transaction={tx}
-              onEdit={onEditTransaction}
-              onTrackAmortization={onTrackAmortization}
-            />
-          ))
+          processedTransactions.map((tx) => {
+            const amortizedItem =
+              amortizedLookup.get(tx.id) ||
+              amortizedLookup.get(`${tx.title.toLowerCase()}:::${tx.amount}`);
+
+            return (
+              <TransactionRow
+                key={tx.id}
+                transaction={tx}
+                amortizedItem={amortizedItem}
+                onEdit={onEditTransaction}
+                onTrackAmortization={onTrackAmortization}
+              />
+            );
+          })
         )}
       </div>
     </div>
   );
 }
-
