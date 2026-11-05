@@ -71,12 +71,19 @@ export function MobileNav({
       <div className="relative w-4/5 max-w-xs bg-white border-r border-[#DED9D2] h-full flex flex-col z-10 p-5 overflow-hidden font-sans">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[#DED9D2]">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 bg-[#E65B3F] rotate-45 shrink-0" />
-            <span className="font-extrabold text-xl tracking-tight text-[#1B1A18] font-display">
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab('dashboard');
+              onClose();
+            }}
+            className="group text-left cursor-pointer focus:outline-none"
+            title="Go to Dashboard"
+          >
+            <span className="font-extrabold text-xl tracking-tight text-[#1B1A18] font-display group-hover:text-[#E65B3F] transition-colors">
               Satyfinance
             </span>
-          </div>
+          </button>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-[2px] text-[#1B1A18] hover:bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center transition-colors"

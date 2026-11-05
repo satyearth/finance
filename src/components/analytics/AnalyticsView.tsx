@@ -37,7 +37,6 @@ export function AnalyticsView() {
     currentBudget,
     dailySpendAverage,
     currency,
-    selectedMonth,
   } = useFinance();
 
   const [categorySort, setCategorySort] = useState<CategorySortOption>('amount-desc');
@@ -97,14 +96,9 @@ export function AnalyticsView() {
             <IconChartBar size={20} stroke={2} />
           </div>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-base sm:text-lg font-mono font-bold text-[#1B1A18] uppercase tracking-wider">
-                Analytics
-              </h1>
-              <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#625E59]">
-                {selectedMonth.label}
-              </span>
-            </div>
+            <h1 className="text-base sm:text-lg font-mono font-bold text-[#1B1A18] uppercase tracking-wider">
+              Analytics
+            </h1>
           </div>
         </div>
 

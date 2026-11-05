@@ -53,8 +53,17 @@ body {
 
 /* Global focus-visible indicator & tactile button feel */
 :focus-visible {
-  outline: 1.5px solid #E65B3F !important;
-  outline-offset: 1px !important;
+  outline: 1.5px solid #E65B3F;
+  outline-offset: 1px;
+}
+
+input:focus-visible,
+input:focus,
+textarea:focus-visible,
+textarea:focus,
+select:focus-visible,
+select:focus {
+  outline: none !important;
 }
 
 button:active {

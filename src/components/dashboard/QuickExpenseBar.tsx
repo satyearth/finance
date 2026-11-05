@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { IconSparkles } from '@tabler/icons-react';
+import { IconSearch } from '@tabler/icons-react';
 import { useFinance } from '@/context/FinanceContext';
 import { parseNaturalLanguageExpense } from '@/utils/parser';
 import { getTodayDateString, convertToBaseCurrency } from '@/utils/formatters';
@@ -78,13 +78,14 @@ export function QuickExpenseBar() {
   return (
     <form onSubmit={handleTrackSubmit} className="w-full font-sans">
       <div
-        className={`flex items-center justify-between sf-card-white px-3.5 sm:px-4 py-2 min-h-[48px] gap-3 transition-all ${
-          isFocused ? 'border-[#E65B3F] ring-1 ring-[#E65B3F]' : ''
+        onClick={() => inputRef.current?.focus()}
+        className={`flex items-center justify-between sf-card-white px-3.5 sm:px-4 py-2 min-h-[48px] gap-3 transition-all cursor-text rounded-[2px] ${
+          isFocused ? '!border-[#E65B3F]' : ''
         }`}
       >
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-7 h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center shrink-0 text-[#E65B3F]">
-            <IconSparkles size={15} stroke={2} />
+          <div className="flex items-center justify-center shrink-0 text-[#625E59]">
+            <IconSearch size={17} stroke={2.2} />
           </div>
           <input
             ref={inputRef}
@@ -94,7 +95,8 @@ export function QuickExpenseBar() {
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             placeholder="e.g. Coffee ₹250 Food"
-            className="w-full text-xs sm:text-sm font-medium text-[#1B1A18] placeholder:text-[#625E59] bg-transparent outline-none font-sans"
+            className="w-full text-xs sm:text-sm font-medium text-[#1B1A18] placeholder:text-[#625E59] bg-transparent outline-none border-none focus:outline-none focus:ring-0 focus-visible:outline-none font-sans"
+            style={{ outline: 'none', border: 'none', boxShadow: 'none' }}
           />
 
           {justAddedMsg && (

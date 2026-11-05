@@ -33,12 +33,16 @@ export function Sidebar() {
       <div className="flex flex-col gap-6">
         {/* Brand Name */}
         <div className="px-3 pt-2 pb-1">
-          <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 bg-[#E65B3F] rotate-45 shrink-0" />
-            <span className="font-extrabold text-xl tracking-tight text-[#1B1A18] leading-none font-display">
+          <button
+            type="button"
+            onClick={() => setActiveTab('dashboard')}
+            className="group text-left cursor-pointer focus:outline-none block"
+            title="Go to Dashboard"
+          >
+            <span className="font-extrabold text-xl tracking-tight text-[#1B1A18] leading-none font-display group-hover:text-[#E65B3F] transition-colors">
               Satyfinance
             </span>
-          </div>
+          </button>
         </div>
 
         {/* Navigation Menu */}

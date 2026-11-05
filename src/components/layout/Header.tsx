@@ -25,7 +25,7 @@ interface HeaderProps {
 
 /**
  * Satyfinance Header:
- * Editorial header with month navigation switcher and quick action.
+ * Editorial header with unified month switcher and quick action.
  */
 export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
   const {
@@ -81,7 +81,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
   return (
     <header className="w-full select-none py-3 px-6 sm:px-8 font-sans border-b border-[#DED9D2] bg-white sticky top-0 z-20">
       <div className="max-w-[1360px] mx-auto flex items-center justify-between w-full min-h-[38px]">
-        {/* Left: Month Switcher & Popover Trigger */}
+        {/* Left: Unified Month Switcher & Popover Trigger */}
         <div className="flex items-center gap-2 relative">
           {onToggleMobileMenu && (
             <button
@@ -93,23 +93,56 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
             </button>
           )}
 
-          {/* Month Switcher Capsule */}
+          {/* Unified Month Switcher Capsule */}
           <div className="relative" ref={popoverRef}>
             <div className="flex items-center h-8.5 bg-[#F7F5F2] border border-[#DED9D2] rounded-[2px] p-0.5">
+              {/* Quick Jump: This Month */}
               <button
+                type="button"
+                onClick={goToCurrentMonth}
+                disabled={isCurrentMonth}
+                className={`h-7 px-2.5 text-xs font-mono rounded-[2px] transition-all flex items-center justify-center ${
+                  isCurrentMonth
+                    ? 'text-[#756D66]/50 cursor-default select-none'
+                    : 'text-[#E65B3F] font-bold hover:bg-white hover:text-[#DC5238] shadow-xs cursor-pointer'
+                }`}
+                title={isCurrentMonth ? 'Currently viewing active month' : 'Return to current month'}
+              >
+                <span>This Month</span>
+              </button>
+
+              <div className="w-[1px] h-4 bg-[#DED9D2] mx-0.5 shrink-0" />
+
+              {/* Prev Month */}
+              <button
+                type="button"
                 onClick={goToPreviousMonth}
-                className="w-7 h-7 flex items-center justify-center rounded-[2px] hover:bg-[#EBE6E0] text-[#1B1A18] transition-colors"
+                className="w-7 h-7 flex items-center justify-center rounded-[2px] hover:bg-white text-[#1B1A18] transition-colors"
                 title="Previous month"
                 aria-label="Previous month"
               >
                 <IconChevronLeft size={15} stroke={2} />
               </button>
 
+              {/* Next Month */}
+              <button
+                type="button"
+                onClick={goToNextMonth}
+                className="w-7 h-7 flex items-center justify-center rounded-[2px] hover:bg-white text-[#1B1A18] transition-colors"
+                title="Next month"
+                aria-label="Next month"
+              >
+                <IconChevronRight size={15} stroke={2} />
+              </button>
+
+              <div className="w-[1px] h-4 bg-[#DED9D2] mx-0.5 shrink-0" />
+
+              {/* Month Picker Trigger */}
               <button
                 type="button"
                 onClick={() => setIsMonthPickerOpen((prev) => !prev)}
-                className="flex items-center gap-2 px-2.5 h-7 rounded-[2px] hover:bg-[#EBE6E0] text-[#1B1A18] transition-colors"
-                title="Click to jump to another month or year"
+                className="flex items-center gap-1.5 px-2.5 h-7 rounded-[2px] hover:bg-white text-[#1B1A18] transition-colors"
+                title="Click to select specific month and year"
                 aria-expanded={isMonthPickerOpen}
                 aria-haspopup="dialog"
                 aria-label="Select month"
@@ -125,15 +158,6 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
                     isMonthPickerOpen ? 'rotate-180' : ''
                   }`}
                 />
-              </button>
-
-              <button
-                onClick={goToNextMonth}
-                className="w-7 h-7 flex items-center justify-center rounded-[2px] hover:bg-[#EBE6E0] text-[#1B1A18] transition-colors"
-                title="Next month"
-                aria-label="Next month"
-              >
-                <IconChevronRight size={15} stroke={2} />
               </button>
             </div>
 
@@ -209,7 +233,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
                     }}
                     className="text-[11px] font-mono font-semibold text-[#E65B3F] hover:underline"
                   >
-                    Current Month
+                    This Month
                   </button>
                   <button
                     type="button"
@@ -222,16 +246,6 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
               </div>
             )}
           </div>
-
-          {!isCurrentMonth && (
-            <button
-              onClick={goToCurrentMonth}
-              className="hidden sm:inline-flex items-center h-8.5 text-xs font-semibold px-3 rounded-[2px] bg-[#F7F5F2] hover:bg-[#EBE6E0] border border-[#DED9D2] text-[#1B1A18] transition-colors"
-              title="Return to current month"
-            >
-              Current Month
-            </button>
-          )}
         </div>
 
         {/* Right: Quick Action */}

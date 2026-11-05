@@ -6,7 +6,6 @@ import {
   IconPlus,
   IconPencil,
   IconTrash,
-  IconSparkles,
   IconCalendarTime,
   IconCheck,
 } from '@tabler/icons-react';
@@ -87,10 +86,7 @@ export function AmortizedTrackerCard({
 
       {/* 2. Items List / Grid */}
       {amortizedItems.length === 0 ? (
-        <div className="text-center py-10 px-4 rounded-[2px] bg-white border border-dashed border-[#DED9D2] space-y-2">
-          <div className="w-9 h-9 mx-auto rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F]">
-            <IconSparkles size={18} stroke={2} />
-          </div>
+        <div className="text-center py-8 px-4 rounded-[2px] bg-white border border-dashed border-[#DED9D2] space-y-1">
           <h4 className="text-xs font-mono font-bold uppercase text-[#1B1A18]">No products yet</h4>
           <p className="text-xs text-[#625E59] max-w-sm mx-auto">
             Track product value over time.

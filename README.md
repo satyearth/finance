@@ -1,59 +1,49 @@
 # Satyfinance
 
-Satyfinance is a personal finance workspace designed to track daily expenses, visualize monthly cashflow, and calculate the true cost of items that last across multiple months.
+**Satyfinance** is an intelligent personal finance and wealth workspace designed to give you clarity over your daily spending, future financial obligations, and the true amortized cost of high-value, long-lasting purchases.
 
 ---
 
 ## What This Website Does
 
-### 1. Expense Tracking & Quick Input
-* Add and manage daily expenses across categories like Groceries, Food & Dining, Bills, Electronics, and Personal Care.
-* **Quick Add Bar:** Quickly enter expenses using natural text (e.g. `Coffee 150 Groceries` or `Electricity bill ₹1850`), and the app automatically extracts the amount and category.
-
-### 2. Product Lifespan & Amortization (Key Feature)
-* Most expense apps record the entire price of an item in the month you buy it, which distorts your monthly budget.
-* This feature lets you track items that last multiple months (such as personal care products, supplements, or annual subscriptions) to see their **real monthly cost** (e.g., a ₹600 item lasting 3 months = ₹200/month) and daily burn rate with active progress bars.
-
-### 3. Budget & Monthly Outflow
-* Set your target monthly budget.
-* View total outflow, settled payments vs scheduled dues, headroom left, and average daily spend.
-
-### 4. Interactive Calendar View
-* View your expenses organized on a monthly calendar.
-* See scheduled payments vs settled expenses day-by-day.
-* Click on any date to view details or add an expense directly on that day.
-
-### 5. Analytics & Spending Charts
-* Visual charts showing category-wise spending distributions and month-to-month trends.
-
-### 6. Offline & Privacy-First
-* All data is stored directly in your browser via `localStorage`.
-* No account, signup, or external server needed.
-* Includes one-click JSON/CSV export and import to backup or transfer your data.
+### 1. Natural Language Quick Add (Smart Expense Logging)
+* **Zero-Friction Logging:** Type expenses naturally in plain English (e.g., `Coffee 150 food`, `Electricity bill ₹1850 due next friday`, `New running shoes 4500`).
+* **Intelligent Auto-Parsing:** Automatically extracts the amount, title, expense category, date, and status without forcing you to click through multiple dropdowns.
+* **Settled vs. Scheduled:** Supports both completed transactions and upcoming bill commitments/dues.
 
 ---
 
-## How to Run Locally
-
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-
-3. **Open in your browser:**
-   Go to [http://localhost:3000](http://localhost:3000).
+### 2. Product Lifespan & Amortization Engine (Core Feature)
+Traditional expense trackers distort your monthly budget by recording the full purchase price of an item in the month you buy it. Satyfinance fixes this with lifespan amortization:
+* **True Monthly Cost:** Amortizes purchases that last multiple weeks or months (e.g., perfumes, skincare, whey protein, electronics, yearly software subscriptions) across their actual usage duration.
+* **Daily Burn Rate:** Calculates the exact per-day and per-month cost of your belongings.
+* **Active Lifespan Tracking:** Live progress meters show how many days are left before an item expires or runs out, keeping your recurring replenishment on schedule.
 
 ---
 
-## Built With
+### 3. Bento Dashboard & Budget Monitoring
+* **Target Budget Tracking:** Set monthly spending limits and monitor remaining headroom in real-time.
+* **Outflow Breakdown:** Clear separation between already settled spending and upcoming scheduled liabilities.
+* **Daily Spend Velocity:** Dynamically calculates your safe daily spending allowance for the remainder of the month.
+* **Visual Status Indicators:** Instant visual feedback when spending approaches or exceeds budget limits.
 
-* **Next.js 14** (App Router)
-* **React 18**
-* **TypeScript**
-* **Tailwind CSS**
-* **Tabler Icons**
+---
+
+### 4. Interactive Financial Calendar
+* **Monthly Day-by-Day View:** See your exact cash outflows and scheduled payments plotted across the days of the month.
+* **Due Date Tracking:** Visual markers for upcoming bill deadlines so you never miss a payment.
+* **Date Drill-Down:** Click any date to inspect transactions, view that day's financial summary, or add new records directly.
+
+---
+
+### 5. Analytics & Visual Insights
+* **Category Distribution:** Comprehensive breakdown of spending across categories (Groceries, Dining, Bills, Tech, Health, Travel, etc.).
+* **Cashflow Trends:** Month-over-month comparisons to identify spending patterns and optimize savings.
+* **Amortization vs. Cash Outflow:** Understand the difference between cash leaving your wallet and the amortized value being consumed.
+
+---
+
+### 6. 100% Privacy-First & Offline Storage
+* **Local Data Ownership:** All data is stored directly in your browser's `localStorage`—no servers, no third-party tracking, and no account or login required.
+* **Full Data Portability:** Export your entire workspace to clean JSON or CSV formats at any time for offline backups or spreadsheet analysis.
+* **Instant Backup & Restore:** Import existing data files with automatic validation to seamlessly transfer records between devices.
