@@ -176,7 +176,7 @@ export function SettingsView({
 
         {/* Quick Presets */}
         <div className="pt-2 border-t border-[#F0ECE1] flex flex-wrap items-center gap-1.5 sm:gap-2">
-          <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#756D66] font-semibold mr-1">
+          <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#756D66] font-semibold mr-1 whitespace-nowrap">
             Presets:
           </span>
           {[25000, 35000, 45000, 50000, 60000, 75000, 100000].map((preset) => {
@@ -193,7 +193,7 @@ export function SettingsView({
                   if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
                   saveTimeoutRef.current = setTimeout(() => setBudgetSaved(false), 2000);
                 }}
-                className={`text-[11px] sm:text-xs font-mono px-2 sm:px-2.5 py-1 rounded-[2px] transition-all border tabular-nums ${
+                className={`text-[11px] sm:text-xs font-mono px-2 sm:px-2.5 py-1 rounded-[2px] transition-all border tabular-nums whitespace-nowrap shrink-0 ${
                   isCurrent
                     ? 'bg-[#E65B3F] text-white border-[#E65B3F] font-bold shadow-sm'
                     : 'bg-[#F7F5F2] hover:bg-[#EFECE6] text-[#1B1A18] border-[#DED9D2]'

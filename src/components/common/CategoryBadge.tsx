@@ -40,10 +40,10 @@ export function CategoryBadge({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] border border-[#DED9D2] bg-[#F7F5F2] text-[#1B1A18] text-[11px] font-mono font-bold uppercase tracking-wider ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] border border-[#DED9D2] bg-[#F7F5F2] text-[#1B1A18] text-[11px] font-mono font-bold uppercase tracking-wider max-w-full truncate whitespace-nowrap shrink-0 ${className}`}
     >
-      <CategoryIcon category={category} size={12} stroke={2} className="text-[#E65B3F]" />
-      <span>{meta.label}</span>
+      <CategoryIcon category={category} size={12} stroke={2} className="text-[#E65B3F] shrink-0" />
+      <span className="truncate whitespace-nowrap">{meta.label}</span>
     </span>
   );
 }

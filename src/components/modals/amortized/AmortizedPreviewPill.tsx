@@ -43,20 +43,20 @@ export function AmortizedPreviewPill({
       <div className="text-right shrink-0">
         {hasLifespan ? (
           <>
-            <span className="text-base sm:text-lg font-mono font-bold text-[#E65B3F] tabular-nums block leading-tight">
+            <span className="text-sm xs:text-base sm:text-lg font-mono font-bold text-[#E65B3F] tabular-nums block leading-tight whitespace-nowrap">
               {formatCurrency(monthlyCost, currency)}
               <span className="text-[10px] sm:text-xs font-normal text-[#A83F29]"> / mo</span>
             </span>
-            <span className="text-[10px] sm:text-[11px] font-mono text-[#A83F29]">
+            <span className="text-[9.5px] xs:text-[10px] sm:text-[11px] font-mono text-[#A83F29] whitespace-nowrap block">
               ~{formatCurrency(dailyCost, currency)} / day
             </span>
           </>
         ) : (
           <>
-            <span className="text-xs sm:text-sm font-mono font-bold text-[#1B1A18] tabular-nums block">
+            <span className="text-xs sm:text-sm font-mono font-bold text-[#1B1A18] tabular-nums block whitespace-nowrap">
               {parsedCost > 0 ? formatCurrency(parsedCost, currency) : '—'}
             </span>
-            <span className="text-[9px] sm:text-[10px] text-[#625E59]">
+            <span className="text-[9px] sm:text-[10px] text-[#625E59] whitespace-nowrap block">
               One-time cost
             </span>
           </>

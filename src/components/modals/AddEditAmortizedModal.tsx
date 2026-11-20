@@ -298,14 +298,14 @@ export function AddEditAmortizedModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 sf-modal-backdrop animate-fadeIn font-sans"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sf-modal-backdrop animate-fadeIn font-sans"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="amort-modal-title"
     >
       <div
-        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden relative font-sans shadow-xl flex flex-col max-h-[94vh]"
+        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden relative font-sans shadow-xl flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

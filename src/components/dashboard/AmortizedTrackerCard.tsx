@@ -52,10 +52,10 @@ export function AmortizedTrackerCard({
             <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
               <IconHourglassEmpty size={14} stroke={2} className="sm:w-4 sm:h-4" />
             </div>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18] whitespace-nowrap">
               Product Lifespan
             </h3>
-            <span className="sf-badge text-[10px] sm:text-xs">
+            <span className="sf-badge text-[10px] sm:text-xs whitespace-nowrap">
               <span className="w-1.5 h-1.5 bg-[#E65B3F]" />
               {activeAmortizedCount} Active {activeAmortizedCount === 1 ? 'item' : 'items'}
             </span>
@@ -63,20 +63,20 @@ export function AmortizedTrackerCard({
         </div>
 
         {/* Action Button & Summary Pill */}
-        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 self-start sm:self-auto shrink-0">
-          <div className="inline-flex items-center h-8 sm:h-9 gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 rounded-[2px] bg-[#F9EEE9] border border-[#E65B3F]/30 text-xs shrink-0">
-            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider font-semibold text-[#A83F29]">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 self-start sm:self-auto shrink-0 w-full sm:w-auto justify-between sm:justify-start">
+          <div className="inline-flex items-center h-8 sm:h-9 gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 rounded-[2px] bg-[#F9EEE9] border border-[#E65B3F]/30 text-xs shrink-0 whitespace-nowrap">
+            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider font-semibold text-[#A83F29] whitespace-nowrap">
               Monthly Cost
             </span>
-            <span className="font-mono font-bold text-[#A83F29] tabular-nums">
+            <span className="font-mono font-bold text-[#A83F29] tabular-nums whitespace-nowrap">
               {formatCurrency(totalMonthlyAmortizedCost, currency)}
             </span>
-            <span className="text-[9px] sm:text-[10px] text-[#A83F29]/80 font-mono">/ mo</span>
+            <span className="text-[9px] sm:text-[10px] text-[#A83F29]/80 font-mono whitespace-nowrap">/ mo</span>
           </div>
 
           <button
             onClick={() => onOpenAddModal()}
-            className="sf-button-primary h-8 sm:h-9 text-xs uppercase tracking-wider px-3 sm:px-3.5 flex items-center justify-center gap-1.5 shrink-0 rounded-[2px]"
+            className="sf-button-primary h-8 sm:h-9 text-xs uppercase tracking-wider px-3 sm:px-3.5 flex items-center justify-center gap-1.5 shrink-0 rounded-[2px] whitespace-nowrap ml-auto sm:ml-0"
           >
             <IconPlus size={14} stroke={2.5} />
             <span>Add product</span>

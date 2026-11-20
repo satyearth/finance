@@ -30,8 +30,17 @@
   --sf-accent-hover: #DC5238;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+img,
+canvas,
+iframe,
+video {
+  max-width: 100%;
 }
 
 html {

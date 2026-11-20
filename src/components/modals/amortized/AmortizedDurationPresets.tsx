@@ -42,7 +42,7 @@ export function AmortizedDurationPresets({
               key={preset.label}
               type="button"
               onClick={() => onSelectPreset(preset.months)}
-              className={`h-8 px-1 text-xs font-mono font-semibold rounded-[2px] transition-colors text-center flex items-center justify-center ${
+              className={`h-8 px-1 text-xs font-mono font-semibold rounded-[2px] transition-colors text-center flex items-center justify-center whitespace-nowrap truncate ${
                 isSelected
                   ? 'bg-[#E65B3F] text-white border border-[#E65B3F] font-bold'
                   : 'bg-white text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18]'

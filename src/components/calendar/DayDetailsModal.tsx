@@ -79,14 +79,14 @@ export function DayDetailsModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 sf-modal-backdrop animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sf-modal-backdrop animate-fadeIn"
       onClick={onClose}
       aria-modal="true"
       role="dialog"
       aria-label={`Transactions for ${formattedDayTitle}`}
     >
       <div
-        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden flex flex-col max-h-[94vh] relative font-sans shadow-xl"
+        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden flex flex-col max-h-[92vh] relative font-sans shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}

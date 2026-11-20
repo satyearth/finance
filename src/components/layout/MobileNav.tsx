@@ -203,7 +203,7 @@ export function MobileBottomBar({
               stroke={isActive ? 2.2 : 1.8}
               className={isActive ? 'text-[#E65B3F]' : 'text-[#756D66]'}
             />
-            <span className="font-display text-[10px] sm:text-[11px] leading-tight truncate max-w-[56px] text-center">
+            <span className="font-display text-[10px] sm:text-[11px] leading-tight truncate whitespace-nowrap max-w-[56px] text-center">
               {item.label}
             </span>
           </button>

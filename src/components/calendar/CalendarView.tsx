@@ -203,27 +203,27 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
 
         {/* Right: Aggregated Summary Chips */}
         <div className="grid grid-cols-3 sm:flex items-center gap-1.5 sm:gap-2 w-full md:w-auto">
-          <div className="px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-0">
-            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate">
+          <div className="px-1.5 xs:px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-center xs:text-right min-w-0 overflow-hidden">
+            <span className="text-[8.5px] xs:text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate whitespace-nowrap">
               Settled
             </span>
-            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block">
+            <span className="text-[10px] xs:text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block whitespace-nowrap">
               {formatCurrency(settledSpentThisMonth, currency)}
             </span>
           </div>
-          <div className="px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-0">
-            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate">
+          <div className="px-1.5 xs:px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-center xs:text-right min-w-0 overflow-hidden">
+            <span className="text-[8.5px] xs:text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate whitespace-nowrap">
               Scheduled
             </span>
-            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block">
+            <span className="text-[10px] xs:text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block whitespace-nowrap">
               {formatCurrency(scheduledSpentThisMonth, currency)}
             </span>
           </div>
-          <div className="px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F9EEE9] border border-[#E65B3F]/30 text-right min-w-0">
-            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#A83F29] block leading-tight truncate">
+          <div className="px-1.5 xs:px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F9EEE9] border border-[#E65B3F]/30 text-center xs:text-right min-w-0 overflow-hidden">
+            <span className="text-[8.5px] xs:text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#A83F29] block leading-tight truncate whitespace-nowrap">
               Total
             </span>
-            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#E65B3F] tabular-nums truncate block">
+            <span className="text-[10px] xs:text-[11px] sm:text-xs font-mono font-bold text-[#E65B3F] tabular-nums truncate block whitespace-nowrap">
               {formatCurrency(totalSpentThisMonth, currency)}
             </span>
           </div>
@@ -245,7 +245,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
       </div>
 
       {/* 3. Calendar Day Grid */}
-      <div className="grid grid-cols-7 gap-[1px] bg-[#DED9D2]">
+      <div className="grid grid-cols-7 gap-[1px] bg-[#DED9D2] w-full overflow-hidden">
         {calendarCells.map((item, idx) => {
           const isSelected = item.isCurrentMonth && selectedDay === item.dayNumber;
           const isWeekend = idx % 7 === 0 || idx % 7 === 6;
@@ -254,7 +254,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
             <div
               key={item.dateString}
               onClick={() => handleCellClick(item)}
-              className={`min-h-[64px] sm:min-h-[90px] md:min-h-[115px] p-1 sm:p-2 flex flex-col justify-between transition-colors relative group ${
+              className={`min-h-[64px] sm:min-h-[90px] md:min-h-[115px] p-1 sm:p-2 flex flex-col justify-between transition-colors relative group overflow-hidden ${
                 !item.isCurrentMonth
                   ? 'bg-[#FAF8F5] opacity-40 select-none cursor-default'
                   : isSelected

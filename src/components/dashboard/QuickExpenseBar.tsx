@@ -100,17 +100,17 @@ export function QuickExpenseBar() {
           />
 
           {justAddedMsg && (
-            <span className="inline-flex items-center h-6 text-[10px] sm:text-xs font-mono font-bold text-[#2A7E3B] bg-[#EBF7EE] border border-[#2A7E3B]/30 px-2 rounded-[2px] animate-fadeIn shrink-0 truncate max-w-[140px] sm:max-w-none">
+            <span className="inline-flex items-center h-6 text-[10px] sm:text-xs font-mono font-bold text-[#2A7E3B] bg-[#EBF7EE] border border-[#2A7E3B]/30 px-2 rounded-[2px] animate-fadeIn shrink-0 truncate whitespace-nowrap max-w-[130px] sm:max-w-none">
               Added: {justAddedMsg}
             </span>
           )}
 
           {preview && preview.amount > 0 && !justAddedMsg && (
             <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 animate-fadeIn">
-              <span className="hidden xs:inline-flex items-center h-6 text-[9px] sm:text-[10px] font-mono uppercase font-bold text-[#625E59] bg-[#F7F5F2] border border-[#DED9D2] px-1.5 sm:px-2 rounded-[2px]">
+              <span className="hidden xs:inline-flex items-center h-6 text-[9px] sm:text-[10px] font-mono uppercase font-bold text-[#625E59] bg-[#F7F5F2] border border-[#DED9D2] px-1.5 sm:px-2 rounded-[2px] whitespace-nowrap">
                 {CATEGORIES[preview.category]?.label || 'Expense'}
               </span>
-              <span className="inline-flex items-center h-6 text-[11px] sm:text-xs font-mono font-bold text-[#A83F29] bg-[#F9EEE9] border border-[#E65B3F]/30 px-1.5 sm:px-2.5 rounded-[2px] tabular-nums">
+              <span className="inline-flex items-center h-6 text-[11px] sm:text-xs font-mono font-bold text-[#A83F29] bg-[#F9EEE9] border border-[#E65B3F]/30 px-1.5 sm:px-2.5 rounded-[2px] tabular-nums whitespace-nowrap">
                 {currencySymbol}{preview.amount.toLocaleString()}
               </span>
             </div>
@@ -120,7 +120,7 @@ export function QuickExpenseBar() {
         <button
           type="submit"
           disabled={!canSubmit}
-          className={`h-7 sm:h-8 sf-button-primary text-[11px] sm:text-xs uppercase tracking-wider px-2.5 sm:px-3.5 shrink-0 transition-opacity flex items-center justify-center rounded-[2px] ${
+          className={`h-7 sm:h-8 sf-button-primary text-[11px] sm:text-xs uppercase tracking-wider px-2.5 sm:px-3.5 shrink-0 transition-opacity flex items-center justify-center rounded-[2px] whitespace-nowrap ${
             !canSubmit ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >

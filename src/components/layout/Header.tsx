@@ -79,7 +79,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
   };
 
   return (
-    <header className="w-full select-none py-2.5 sm:py-3 px-3 sm:px-6 md:px-8 font-sans border-b border-[#DED9D2] bg-white sticky top-0 z-20">
+    <header className="w-full select-none py-2.5 sm:py-3 px-4 sm:px-6 md:px-8 font-sans border-b border-[#DED9D2] bg-white sticky top-0 z-20">
       <div className="max-w-[1360px] mx-auto flex items-center justify-between w-full min-h-[38px] gap-2">
         {/* Left: Unified Month Switcher & Popover Trigger */}
         <div className="flex items-center gap-1.5 sm:gap-2 relative min-w-0">
@@ -165,7 +165,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
             {/* Calendar / Month Selector Popover */}
             {isMonthPickerOpen && (
               <div
-                className="absolute top-full left-0 sm:left-auto mt-2 z-50 w-72 max-w-[calc(100vw-24px)] bg-white/95 backdrop-blur-md border border-[#DED9D2] shadow-xl rounded-[2px] p-3 font-sans animate-scaleUp"
+                className="absolute top-full left-0 sm:left-auto mt-2 z-50 w-72 max-w-[calc(100vw-32px)] bg-white/95 backdrop-blur-md border border-[#DED9D2] shadow-xl rounded-[2px] p-3 font-sans animate-scaleUp"
                 role="dialog"
                 aria-label="Month picker"
               >

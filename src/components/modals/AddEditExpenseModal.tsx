@@ -123,14 +123,14 @@ export function AddEditExpenseModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 sf-modal-backdrop animate-fadeIn font-sans"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sf-modal-backdrop animate-fadeIn font-sans"
       onClick={onClose}
       aria-modal="true"
       role="dialog"
       aria-label={editingTransaction ? 'Edit Expense' : 'Record New Expense'}
     >
       <div
-        className="w-full max-w-md rounded-[2px] sf-modal overflow-hidden relative font-sans shadow-xl flex flex-col max-h-[94vh]"
+        className="w-full max-w-md rounded-[2px] sf-modal overflow-hidden relative font-sans shadow-xl flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}

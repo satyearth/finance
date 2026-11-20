@@ -52,42 +52,48 @@ export function HeroBudgetCard() {
         <div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 bg-[#E65B3F] rotate-45 shrink-0" />
-            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#625E59] font-bold">
+            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#625E59] font-bold truncate">
               {selectedMonth.label} Monthly Spend
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#1B1A18] tracking-tight leading-none tabular-nums mt-1.5 sm:mt-2 truncate">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#1B1A18] tracking-tight leading-none tabular-nums mt-1.5 sm:mt-2 truncate whitespace-nowrap">
             {formatCurrency(totalSpentThisMonth, currency)}
           </h1>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-1">
-          <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] bg-white border border-[#DED9D2] text-[11px] sm:text-xs font-mono">
-            <span className="w-1.5 h-1.5 bg-[#1B1A18] shrink-0" />
-            <span className="text-[#625E59]">Settled:</span>
+        <div className="grid grid-cols-2 xs:flex xs:flex-wrap items-center gap-1.5 sm:gap-2 pt-1">
+          <span className="inline-flex items-center justify-between xs:justify-start gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] bg-white border border-[#DED9D2] text-[10px] xs:text-[11px] sm:text-xs font-mono whitespace-nowrap">
+            <span className="inline-flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-[#1B1A18] shrink-0" />
+              <span className="text-[#625E59]">Settled:</span>
+            </span>
             <strong className="font-bold text-[#1B1A18] tabular-nums">{formatCurrency(settledSpentThisMonth, currency)}</strong>
           </span>
 
-          <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] bg-white border border-[#DED9D2] text-[11px] sm:text-xs font-mono">
-            <span className="w-1.5 h-1.5 bg-[#625E59] shrink-0" />
-            <span className="text-[#625E59]">Scheduled:</span>
+          <span className="inline-flex items-center justify-between xs:justify-start gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] bg-white border border-[#DED9D2] text-[10px] xs:text-[11px] sm:text-xs font-mono whitespace-nowrap">
+            <span className="inline-flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-[#625E59] shrink-0" />
+              <span className="text-[#625E59]">Scheduled:</span>
+            </span>
             <strong className="font-bold text-[#1B1A18] tabular-nums">{formatCurrency(scheduledSpentThisMonth, currency)}</strong>
           </span>
 
           {currentBudget > 0 ? (
-            <span className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] text-[11px] sm:text-xs font-mono border ${
+            <span className={`col-span-2 xs:col-span-1 inline-flex items-center justify-between xs:justify-start gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] text-[10px] xs:text-[11px] sm:text-xs font-mono border whitespace-nowrap ${
               isOverBudget ? 'bg-red-50 text-red-700 border-red-200' : 'bg-[#F9EEE9] text-[#A83F29] border-[#E65B3F]/30'
             }`}>
-              <span className={`w-1.5 h-1.5 shrink-0 ${isOverBudget ? 'bg-red-600' : 'bg-[#E65B3F]'}`} />
-              <span>{isOverBudget ? 'Over target:' : 'Remaining:'}</span>
+              <span className="inline-flex items-center gap-1">
+                <span className={`w-1.5 h-1.5 shrink-0 ${isOverBudget ? 'bg-red-600' : 'bg-[#E65B3F]'}`} />
+                <span>{isOverBudget ? 'Over target:' : 'Remaining:'}</span>
+              </span>
               <strong className="font-bold tabular-nums">{formatCurrency(Math.abs(remaining), currency)}</strong>
             </span>
           ) : (
             <button
               type="button"
               onClick={() => setIsEditingBudget(true)}
-              className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] text-[11px] sm:text-xs font-mono bg-[#F7F5F2] text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18] hover:text-[#1B1A18] transition-colors cursor-pointer"
+              className="col-span-2 xs:col-span-1 inline-flex items-center justify-between xs:justify-start gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] text-[10px] xs:text-[11px] sm:text-xs font-mono bg-[#F7F5F2] text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18] hover:text-[#1B1A18] transition-colors cursor-pointer whitespace-nowrap"
             >
               <span className="w-1.5 h-1.5 bg-[#625E59] shrink-0" />
               <span>Target: <strong className="font-bold text-[#E65B3F]">+ Set target</strong></span>
@@ -133,13 +139,13 @@ export function HeroBudgetCard() {
         </div>
 
         {/* Legend */}
-        <div className="flex items-center justify-between text-xs text-[#625E59] font-medium pt-1">
-          <span className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] sm:text-xs text-[#625E59] font-medium pt-1">
+          <span className="flex items-center gap-1.5 whitespace-nowrap">
             <span className="w-2 h-2 rounded-[1px] bg-[#E65B3F] shrink-0" />
             <span>Spent <strong className="font-mono font-bold text-[#1B1A18] tabular-nums">{formatCurrency(totalSpentThisMonth, currency)}</strong></span>
           </span>
 
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5 whitespace-nowrap">
             <span className="w-2 h-2 rounded-[1px] bg-[#DED9D2] shrink-0" />
             {isEditingBudget ? (
               <span className="flex items-center gap-1.5 bg-white border border-[#E65B3F] px-2 py-0.5 rounded-[2px]">
@@ -163,7 +169,7 @@ export function HeroBudgetCard() {
             ) : (
               <button
                 onClick={() => setIsEditingBudget(true)}
-                className="hover:text-[#1B1A18] transition-colors flex items-center gap-1 group"
+                className="hover:text-[#1B1A18] transition-colors flex items-center gap-1 group whitespace-nowrap"
                 title="Click to edit target"
               >
                 <span>Target:</span>

@@ -47,12 +47,12 @@ export function TransactionRow({
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0">
               <h4
-                className="text-xs sm:text-sm font-semibold text-[#1B1A18] truncate max-w-[170px] xs:max-w-[220px] sm:max-w-md font-sans"
+                className="text-xs sm:text-sm font-semibold text-[#1B1A18] truncate max-w-[130px] xs:max-w-[180px] sm:max-w-md font-sans"
                 title={transaction.title}
               >
                 {transaction.title}
               </h4>
-              <span className="text-[10px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#625E59] shrink-0 font-medium font-mono">
+              <span className="text-[10px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#625E59] shrink-0 font-medium font-mono whitespace-nowrap">
                 {catMeta.label}
               </span>
 
@@ -61,13 +61,13 @@ export function TransactionRow({
                 <button
                   type="button"
                   onClick={() => onTrackAmortization?.(transaction, amortizedItem)}
-                  className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-[2px] text-[9px] sm:text-[10px] font-mono font-bold bg-[#F9EEE9] text-[#A83F29] border border-[#E65B3F]/30 transition-all hover:bg-[#F3E2DB] active:scale-95"
+                  className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-[2px] text-[9px] sm:text-[10px] font-mono font-bold bg-[#F9EEE9] text-[#A83F29] border border-[#E65B3F]/30 transition-all hover:bg-[#F3E2DB] active:scale-95 shrink-0 whitespace-nowrap"
                   title="Lifespan tracking is active. Click to view or edit."
                 >
                   <IconHourglassEmpty size={10} stroke={2.5} />
                   <span>
                     {amortizedItem.durationMonths
-                      ? `${amortizedItem.durationMonths}m (${formatCurrency(amortizedItem.monthlyCost || 0, currency)}/mo)`
+                      ? `${amortizedItem.durationMonths}m`
                       : 'Amortized'}
                   </span>
                 </button>
@@ -75,7 +75,7 @@ export function TransactionRow({
             </div>
 
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-[11px] sm:text-xs text-[#625E59] font-mono tabular-nums shrink-0 font-medium">
+              <span className="text-[11px] sm:text-xs text-[#625E59] font-mono tabular-nums shrink-0 font-medium whitespace-nowrap">
                 {formatDate(transaction.date)}
               </span>
               {transaction.notes && (
@@ -88,7 +88,7 @@ export function TransactionRow({
         </div>
 
         {/* Amount visible on mobile at top-right */}
-        <span className="text-sm font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] text-right shrink-0 sm:hidden">
+        <span className="text-sm font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] text-right shrink-0 sm:hidden whitespace-nowrap">
           {formatCurrency(transaction.amount, currency)}
         </span>
       </div>

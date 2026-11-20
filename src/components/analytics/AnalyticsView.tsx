@@ -104,20 +104,20 @@ export function AnalyticsView() {
 
         {/* Quick Monthly Summary Badges */}
         <div className="grid grid-cols-2 sm:flex items-center gap-2 self-start sm:self-auto w-full sm:w-auto">
-          <div className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-0">
-            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate">
+          <div className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-0 overflow-hidden">
+            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate whitespace-nowrap">
               Monthly Spend
             </span>
-            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block">
+            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block whitespace-nowrap">
               {formatCurrency(totalSpentThisMonth, currency)}
             </span>
           </div>
 
-          <div className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-0">
-            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate">
+          <div className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-0 overflow-hidden">
+            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate whitespace-nowrap">
               Budget
             </span>
-            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block">
+            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block whitespace-nowrap">
               {formatCurrency(currentBudget, currency)}
             </span>
           </div>
@@ -127,9 +127,9 @@ export function AnalyticsView() {
       {/* 2. 4-Stat KPI Highlight Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
         {/* Highest Outflow */}
-        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[125px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
+        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[120px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors overflow-hidden">
           <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold gap-1">
-            <span className="truncate">Largest Entry</span>
+            <span className="truncate whitespace-nowrap">Largest Entry</span>
             <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
               <IconArrowUpRight size={13} stroke={2} className="sm:w-3.5 sm:h-3.5" />
             </div>
@@ -137,17 +137,17 @@ export function AnalyticsView() {
           {highestTx ? (
             <>
               <div className="my-auto py-1 min-w-0">
-                <div className="text-lg xs:text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate">
+                <div className="text-base xs:text-lg sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate whitespace-nowrap block">
                   {formatCurrency(highestTx.amount, currency)}
                 </div>
                 <p
-                  className="text-[11px] sm:text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-full"
+                  className="text-[11px] sm:text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-full whitespace-nowrap"
                   title={highestTx.title}
                 >
                   {highestTx.title}
                 </p>
               </div>
-              <div className="h-6 sm:h-7 flex items-center">
+              <div className="h-6 sm:h-7 flex items-center overflow-hidden">
                 <CategoryBadge
                   category={highestTx.category}
                   showLabel={true}
@@ -157,15 +157,15 @@ export function AnalyticsView() {
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">
-              <p className="text-[11px] sm:text-xs text-[#625E59] font-mono italic">No entries yet</p>
+              <p className="text-[11px] sm:text-xs text-[#625E59] font-mono italic whitespace-nowrap">No entries yet</p>
             </div>
           )}
         </div>
 
         {/* Lowest Outflow */}
-        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[125px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
+        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[120px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors overflow-hidden">
           <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold gap-1">
-            <span className="truncate">Smallest Entry</span>
+            <span className="truncate whitespace-nowrap">Smallest Entry</span>
             <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
               <IconArrowDownRight size={13} stroke={2} className="sm:w-3.5 sm:h-3.5" />
             </div>
@@ -173,17 +173,17 @@ export function AnalyticsView() {
           {lowestTx && lowestTx.id !== highestTx?.id ? (
             <>
               <div className="my-auto py-1 min-w-0">
-                <div className="text-lg xs:text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate">
+                <div className="text-base xs:text-lg sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate whitespace-nowrap block">
                   {formatCurrency(lowestTx.amount, currency)}
                 </div>
                 <p
-                  className="text-[11px] sm:text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-full"
+                  className="text-[11px] sm:text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-full whitespace-nowrap"
                   title={lowestTx.title}
                 >
                   {lowestTx.title}
                 </p>
               </div>
-              <div className="h-6 sm:h-7 flex items-center">
+              <div className="h-6 sm:h-7 flex items-center overflow-hidden">
                 <CategoryBadge
                   category={lowestTx.category}
                   showLabel={true}
@@ -194,31 +194,31 @@ export function AnalyticsView() {
           ) : highestTx && lowestTx?.id === highestTx?.id ? (
             <>
               <div className="my-auto py-1 min-w-0">
-                <div className="text-lg xs:text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate">
+                <div className="text-base xs:text-lg sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate whitespace-nowrap block">
                   {formatCurrency(lowestTx!.amount, currency)}
                 </div>
                 <p
-                  className="text-[11px] sm:text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-full"
+                  className="text-[11px] sm:text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-full whitespace-nowrap"
                   title={lowestTx!.title}
                 >
                   {lowestTx!.title}
                 </p>
               </div>
-              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-[11px] text-[#625E59] font-mono">
+              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-[11px] text-[#625E59] font-mono whitespace-nowrap">
                 Only entry
               </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">
-              <p className="text-[11px] sm:text-xs text-[#625E59] font-mono italic">No entries yet</p>
+              <p className="text-[11px] sm:text-xs text-[#625E59] font-mono italic whitespace-nowrap">No entries yet</p>
             </div>
           )}
         </div>
 
         {/* Most Frequent Category */}
-        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[125px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
+        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[120px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors overflow-hidden">
           <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold gap-1">
-            <span className="truncate">Most Frequent</span>
+            <span className="truncate whitespace-nowrap">Most Frequent</span>
             <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
               <IconAward size={13} stroke={2} className="sm:w-3.5 sm:h-3.5" />
             </div>
@@ -226,31 +226,31 @@ export function AnalyticsView() {
           {mostFrequentCat && mostFrequentCat.count > 0 ? (
             <>
               <div className="my-auto py-1 min-w-0">
-                <div className="text-lg xs:text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate">
+                <div className="text-base xs:text-lg sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate whitespace-nowrap block">
                   {mostFrequentCat.count}
                   <span className="text-[10px] sm:text-xs font-mono font-normal text-[#625E59] ml-1">
                     {mostFrequentCat.count === 1 ? 'entry' : 'entries'}
                   </span>
                 </div>
-                <p className="text-[11px] sm:text-xs text-[#1B1A18] mt-0.5 font-bold truncate">
+                <p className="text-[11px] sm:text-xs text-[#1B1A18] mt-0.5 font-bold truncate whitespace-nowrap">
                   {CATEGORIES[mostFrequentCat.category]?.label || 'General'}
                 </p>
               </div>
-              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-xs text-[#625E59] font-mono tabular-nums truncate">
+              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-xs text-[#625E59] font-mono tabular-nums truncate whitespace-nowrap">
                 {formatCurrency(mostFrequentCat.total, currency)} spent
               </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">
-              <p className="text-[11px] sm:text-xs text-[#625E59] font-mono italic">No entries yet</p>
+              <p className="text-[11px] sm:text-xs text-[#625E59] font-mono italic whitespace-nowrap">No entries yet</p>
             </div>
           )}
         </div>
 
         {/* Budget Burn Velocity */}
-        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[125px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
+        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[120px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors overflow-hidden">
           <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold gap-1">
-            <span className="truncate">Budget Used</span>
+            <span className="truncate whitespace-nowrap">Budget Used</span>
             <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
               <IconTrendingUp size={13} stroke={2} className="sm:w-3.5 sm:h-3.5" />
             </div>
@@ -259,11 +259,11 @@ export function AnalyticsView() {
             <>
               <div className="my-auto py-1 min-w-0">
                 <div className="flex items-baseline gap-1.5 min-w-0">
-                  <span className="text-lg xs:text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate">
+                  <span className="text-base xs:text-lg sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate whitespace-nowrap block">
                     {budgetPercentage}%
                   </span>
                   {isOverBudget && (
-                    <span className="text-[9px] sm:text-[10px] font-mono font-bold px-1 py-0.2 rounded-[1px] bg-red-50 text-red-700 border border-red-200 uppercase shrink-0">
+                    <span className="text-[9px] sm:text-[10px] font-mono font-bold px-1 py-0.2 rounded-[1px] bg-red-50 text-red-700 border border-red-200 uppercase shrink-0 whitespace-nowrap">
                       Exceeded
                     </span>
                   )}
@@ -278,17 +278,17 @@ export function AnalyticsView() {
                   />
                 </div>
               </div>
-              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-xs text-[#625E59] font-mono tabular-nums truncate">
+              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-xs text-[#625E59] font-mono tabular-nums truncate whitespace-nowrap">
                 {formatCurrency(totalSpentThisMonth, currency)} of {formatCurrency(currentBudget, currency)}
               </div>
             </>
           ) : (
             <>
               <div className="my-auto py-1 min-w-0">
-                <div className="text-xl sm:text-2xl font-mono font-bold tracking-tight text-[#625E59]">—</div>
-                <p className="text-[10px] sm:text-[11px] text-[#625E59] mt-0.5 italic">No budget set</p>
+                <div className="text-lg sm:text-2xl font-mono font-bold tracking-tight text-[#625E59] whitespace-nowrap">—</div>
+                <p className="text-[10px] sm:text-[11px] text-[#625E59] mt-0.5 italic whitespace-nowrap">No budget set</p>
               </div>
-              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-xs text-[#625E59] font-mono tabular-nums truncate">
+              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-xs text-[#625E59] font-mono tabular-nums truncate whitespace-nowrap">
                 Spent: {formatCurrency(totalSpentThisMonth, currency)}
               </div>
             </>
@@ -419,21 +419,21 @@ export function AnalyticsView() {
 
           {/* 3 Metric Metrics Row */}
           <div className="grid grid-cols-3 gap-1.5 sm:gap-3 pt-1 text-[10px] sm:text-xs font-mono">
-            <div className="p-2 sm:p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] min-w-0">
-              <span className="text-[9px] sm:text-[10px] uppercase text-[#625E59] font-semibold block truncate">
+            <div className="p-1.5 xs:p-2 sm:p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] min-w-0 overflow-hidden text-center xs:text-left">
+              <span className="text-[8.5px] xs:text-[9px] sm:text-[10px] uppercase text-[#625E59] font-semibold block truncate whitespace-nowrap">
                 Spent
               </span>
-              <span className="font-bold text-[#1B1A18] text-xs sm:text-sm tabular-nums truncate block">
+              <span className="font-bold text-[#1B1A18] text-[10.5px] xs:text-xs sm:text-sm tabular-nums truncate block whitespace-nowrap">
                 {formatCurrency(totalSpentThisMonth, currency)}
               </span>
             </div>
 
-            <div className="p-2 sm:p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] min-w-0">
-              <span className="text-[9px] sm:text-[10px] uppercase text-[#625E59] font-semibold block truncate">
+            <div className="p-1.5 xs:p-2 sm:p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] min-w-0 overflow-hidden text-center xs:text-left">
+              <span className="text-[8.5px] xs:text-[9px] sm:text-[10px] uppercase text-[#625E59] font-semibold block truncate whitespace-nowrap">
                 {isOverBudget ? 'Deficit' : 'Remaining'}
               </span>
               <span
-                className={`font-bold text-xs sm:text-sm tabular-nums truncate block ${
+                className={`font-bold text-[10.5px] xs:text-xs sm:text-sm tabular-nums truncate block whitespace-nowrap ${
                   isOverBudget ? 'text-red-700' : 'text-[#2E6F54]'
                 }`}
               >
@@ -443,11 +443,11 @@ export function AnalyticsView() {
               </span>
             </div>
 
-            <div className="p-2 sm:p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] min-w-0">
-              <span className="text-[9px] sm:text-[10px] uppercase text-[#625E59] font-semibold block truncate">
+            <div className="p-1.5 xs:p-2 sm:p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] min-w-0 overflow-hidden text-center xs:text-left">
+              <span className="text-[8.5px] xs:text-[9px] sm:text-[10px] uppercase text-[#625E59] font-semibold block truncate whitespace-nowrap">
                 Budget
               </span>
-              <span className="font-bold text-[#1B1A18] text-xs sm:text-sm tabular-nums truncate block">
+              <span className="font-bold text-[#1B1A18] text-[10.5px] xs:text-xs sm:text-sm tabular-nums truncate block whitespace-nowrap">
                 {formatCurrency(currentBudget, currency)}
               </span>
             </div>

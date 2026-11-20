@@ -106,14 +106,14 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 sf-modal-backdrop animate-fadeIn font-sans"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sf-modal-backdrop animate-fadeIn font-sans"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="import-export-title"
     >
       <div
-        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden animate-scaleUp relative font-sans max-h-[94vh] flex flex-col"
+        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden animate-scaleUp relative font-sans max-h-[92vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}

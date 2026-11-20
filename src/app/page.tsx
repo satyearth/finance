@@ -135,7 +135,7 @@ function MainDashboard() {
         />
 
         {/* Dynamic Screen View Container */}
-        <main className="flex-1 px-3 sm:px-6 md:px-8 py-3 max-w-[1360px] w-full mx-auto">
+        <main className="flex-1 px-4 sm:px-6 md:px-8 py-3.5 max-w-[1360px] w-full mx-auto">
           {/* Dashboard Tab View */}
           {activeTab === 'dashboard' && (
             <div className="space-y-4 animate-fadeIn">

@@ -284,7 +284,7 @@ export function TransactionList({
           <button
             type="button"
             onClick={() => setSelectedCategory('all')}
-            className={`px-3 py-1 rounded-[2px] font-mono text-xs transition-all flex items-center gap-1.5 active:translate-y-[1px] ${
+            className={`px-2.5 sm:px-3 py-1 rounded-[2px] font-mono text-xs transition-all flex items-center gap-1.5 active:translate-y-[1px] whitespace-nowrap shrink-0 ${
               selectedCategory === 'all'
                 ? 'bg-[#1B1A18] text-white border border-[#1B1A18] font-bold shadow-xs'
                 : 'bg-[#F7F5F2] text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18] hover:text-[#1B1A18]'
@@ -302,7 +302,7 @@ export function TransactionList({
                 type="button"
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3 py-1 rounded-[2px] font-mono text-xs transition-all flex items-center gap-1.5 active:translate-y-[1px] ${
+                className={`px-2.5 sm:px-3 py-1 rounded-[2px] font-mono text-xs transition-all flex items-center gap-1.5 active:translate-y-[1px] whitespace-nowrap shrink-0 ${
                   isActive
                     ? 'bg-[#1B1A18] text-white border border-[#1B1A18] font-bold shadow-xs'
                     : 'bg-[#F7F5F2] text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18] hover:text-[#1B1A18]'
