@@ -129,7 +129,7 @@ export function MobileNav({
         </div>
 
         {/* Actions */}
-        <div className="pt-4 border-t border-[#DED9D2] space-y-2">
+        <div className="pt-4 border-t border-[#DED9D2] space-y-2 pb-safe">
           <button
             type="button"
             onClick={() => {
@@ -179,12 +179,12 @@ export function MobileBottomBar({
   const navItems: { id: ViewTab; label: string; icon: React.ElementType }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: IconLayoutDashboard },
     { id: 'calendar', label: 'Calendar', icon: IconCalendarMonth },
-    { id: 'transactions', label: 'Transactions', icon: IconReceiptRupee },
+    { id: 'transactions', label: 'Expenses', icon: IconReceiptRupee },
     { id: 'analytics', label: 'Analytics', icon: IconChartLine },
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-[#DED9D2] px-3 py-1.5 flex items-center justify-around select-none font-sans shadow-sm">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#DED9D2] px-1.5 sm:px-3 py-1 pb-safe flex items-center justify-around select-none font-sans shadow-md">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = activeTab === item.id;
@@ -192,10 +192,10 @@ export function MobileBottomBar({
           <button
             key={item.id}
             onClick={() => setActiveTab(item.id)}
-            className={`flex flex-col items-center justify-center min-h-[44px] gap-1 px-3 py-1 rounded-[2px] text-[11px] transition-colors ${
+            className={`flex flex-col items-center justify-center min-h-[44px] min-w-[52px] xs:min-w-[60px] gap-0.5 px-1 py-1 rounded-[2px] transition-colors ${
               isActive
                 ? 'text-[#E65B3F] font-bold'
-                : 'text-[#625E59] font-medium hover:text-[#1B1A18]'
+                : 'text-[#625E59] font-medium hover:text-[#1B1A18] active:bg-[#F7F5F2]'
             }`}
           >
             <Icon
@@ -203,14 +203,16 @@ export function MobileBottomBar({
               stroke={isActive ? 2.2 : 1.8}
               className={isActive ? 'text-[#E65B3F]' : 'text-[#756D66]'}
             />
-            <span className="font-display leading-none">{item.label}</span>
+            <span className="font-display text-[10px] sm:text-[11px] leading-tight truncate max-w-[56px] text-center">
+              {item.label}
+            </span>
           </button>
         );
       })}
       <button
         type="button"
         onClick={onOpenAddModal}
-        className="w-10 h-10 rounded-[2px] bg-[#E65B3F] hover:bg-[#DC5238] active:translate-y-[1px] text-white flex items-center justify-center shrink-0 transition-all shadow-sm"
+        className="w-10 h-10 rounded-[2px] bg-[#E65B3F] hover:bg-[#DC5238] active:translate-y-[1px] text-white flex items-center justify-center shrink-0 transition-all shadow-sm my-0.5 ml-1"
         title="Add Expense"
         aria-label="Add Expense"
       >

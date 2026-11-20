@@ -79,13 +79,13 @@ export function QuickExpenseBar() {
     <form onSubmit={handleTrackSubmit} className="w-full font-sans">
       <div
         onClick={() => inputRef.current?.focus()}
-        className={`flex items-center justify-between sf-card-white px-3.5 sm:px-4 py-2 min-h-[48px] gap-3 transition-all cursor-text rounded-[2px] ${
+        className={`flex items-center justify-between sf-card-white px-2.5 sm:px-4 py-1.5 sm:py-2 min-h-[44px] sm:min-h-[48px] gap-2 sm:gap-3 transition-all cursor-text rounded-[2px] ${
           isFocused ? '!border-[#E65B3F]' : ''
         }`}
       >
-        <div className="flex items-center gap-3 flex-1 min-w-0">
+        <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
           <div className="flex items-center justify-center shrink-0 text-[#625E59]">
-            <IconSearch size={17} stroke={2.2} />
+            <IconSearch size={16} stroke={2.2} className="sm:w-[17px] sm:h-[17px]" />
           </div>
           <input
             ref={inputRef}
@@ -94,24 +94,24 @@ export function QuickExpenseBar() {
             onChange={(e) => setInputVal(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder="e.g. Coffee ₹250 Food"
-            className="w-full text-xs sm:text-sm font-medium text-[#1B1A18] placeholder:text-[#625E59] bg-transparent outline-none border-none focus:outline-none focus:ring-0 focus-visible:outline-none font-sans"
+            placeholder="Quick add: e.g. Coffee ₹250 Food"
+            className="w-full text-xs sm:text-sm font-medium text-[#1B1A18] placeholder:text-[#625E59] bg-transparent outline-none border-none focus:outline-none focus:ring-0 focus-visible:outline-none font-sans min-w-0"
             style={{ outline: 'none', border: 'none', boxShadow: 'none' }}
           />
 
           {justAddedMsg && (
-            <span className="inline-flex items-center h-6 text-xs font-mono font-bold text-[#2A7E3B] bg-[#EBF7EE] border border-[#2A7E3B]/30 px-2.5 rounded-[2px] animate-fadeIn shrink-0">
+            <span className="inline-flex items-center h-6 text-[10px] sm:text-xs font-mono font-bold text-[#2A7E3B] bg-[#EBF7EE] border border-[#2A7E3B]/30 px-2 rounded-[2px] animate-fadeIn shrink-0 truncate max-w-[140px] sm:max-w-none">
               Added: {justAddedMsg}
             </span>
           )}
 
           {preview && preview.amount > 0 && !justAddedMsg && (
-            <div className="flex items-center gap-1.5 shrink-0 animate-fadeIn">
-              <span className="inline-flex items-center h-6 text-[10px] font-mono uppercase font-bold text-[#625E59] bg-[#F7F5F2] border border-[#DED9D2] px-2 rounded-[2px]">
+            <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 animate-fadeIn">
+              <span className="hidden xs:inline-flex items-center h-6 text-[9px] sm:text-[10px] font-mono uppercase font-bold text-[#625E59] bg-[#F7F5F2] border border-[#DED9D2] px-1.5 sm:px-2 rounded-[2px]">
                 {CATEGORIES[preview.category]?.label || 'Expense'}
               </span>
-              <span className="inline-flex items-center h-6 text-xs font-mono font-bold text-[#A83F29] bg-[#F9EEE9] border border-[#E65B3F]/30 px-2.5 rounded-[2px] tabular-nums">
-                {currencySymbol} {preview.amount.toLocaleString()}
+              <span className="inline-flex items-center h-6 text-[11px] sm:text-xs font-mono font-bold text-[#A83F29] bg-[#F9EEE9] border border-[#E65B3F]/30 px-1.5 sm:px-2.5 rounded-[2px] tabular-nums">
+                {currencySymbol}{preview.amount.toLocaleString()}
               </span>
             </div>
           )}
@@ -120,7 +120,7 @@ export function QuickExpenseBar() {
         <button
           type="submit"
           disabled={!canSubmit}
-          className={`h-8 sf-button-primary text-xs uppercase tracking-wider px-3.5 shrink-0 transition-opacity flex items-center justify-center rounded-[2px] ${
+          className={`h-7 sm:h-8 sf-button-primary text-[11px] sm:text-xs uppercase tracking-wider px-2.5 sm:px-3.5 shrink-0 transition-opacity flex items-center justify-center rounded-[2px] ${
             !canSubmit ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >

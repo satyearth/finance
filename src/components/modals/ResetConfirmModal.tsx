@@ -47,20 +47,20 @@ export function ResetConfirmModal({ actionType, onClose }: ResetConfirmModalProp
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sf-modal-backdrop animate-fadeIn font-sans"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 sf-modal-backdrop animate-fadeIn font-sans"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="reset-confirm-title"
     >
       <div
-        className="w-full max-w-md rounded-[2px] sf-modal p-5 sm:p-6 space-y-4 animate-scaleUp relative overflow-hidden font-sans bg-white"
+        className="w-full max-w-md rounded-[2px] sf-modal p-4 sm:p-6 space-y-3.5 sm:space-y-4 animate-scaleUp relative overflow-hidden font-sans bg-white"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between pb-3 border-b border-[#DED9D2]">
-          <div className="flex items-center gap-3 text-[#1B1A18]">
-            <div className="w-8 h-8 rounded-[2px] bg-[#F9EEE9] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
-              <IconAlertTriangle size={17} stroke={2} />
+          <div className="flex items-center gap-2.5 sm:gap-3 text-[#1B1A18]">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] bg-[#F9EEE9] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
+              <IconAlertTriangle size={15} stroke={2} className="sm:w-4 sm:h-4" />
             </div>
             <h3 id="reset-confirm-title" className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
               {isClear ? 'Clear All Records' : 'Load Sample Data'}
@@ -69,10 +69,10 @@ export function ResetConfirmModal({ actionType, onClose }: ResetConfirmModalProp
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-[2px] border border-[#DED9D2] bg-white text-[#625E59] hover:text-[#1B1A18] hover:border-[#1B1A18] flex items-center justify-center transition-colors"
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] border border-[#DED9D2] bg-white text-[#625E59] hover:text-[#1B1A18] hover:border-[#1B1A18] flex items-center justify-center transition-colors shrink-0"
             aria-label="Close dialog"
           >
-            <IconX size={16} stroke={2} />
+            <IconX size={15} stroke={2} />
           </button>
         </div>
 

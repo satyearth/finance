@@ -11,8 +11,6 @@ import {
 } from '@/types/finance';
 import { CATEGORY_LIST, DEFAULT_MONTHLY_BUDGET } from '@/constants/categories';
 import {
-  INITIAL_SAMPLE_TRANSACTIONS,
-  INITIAL_SAMPLE_AMORTIZED_ITEMS,
   generateSampleTransactions,
   generateSampleAmortizedItems,
 } from '@/utils/sampleData';
@@ -108,6 +106,20 @@ const STORAGE_KEY_BUDGET = 'satyfinance_budgets_v2';
 const STORAGE_KEY_CURRENCY = 'satyfinance_currency_v2';
 const STORAGE_KEY_AMORTIZED = 'satyfinance_amortized_v2';
 
+/** Canonical IDs from the old sample data seeding — used for one-time migration */
+const SAMPLE_TX_IDS = new Set([
+  'tx-01','tx-02','tx-03','tx-04','tx-05','tx-06','tx-07','tx-08','tx-09',
+  'tx-10','tx-11','tx-12','tx-13','tx-14','tx-15','tx-16','tx-17','tx-18','tx-19',
+]);
+const SAMPLE_AMORT_IDS = new Set(['amort-01','amort-02','amort-03']);
+/** Storage key to track whether the one-time sample-data migration has run */
+const STORAGE_KEY_MIGRATED = 'satyfinance_demo_cleared_v1';
+
+/** Returns true when every transaction in the array is a known sample record */
+function isAllSampleData(txs: Transaction[]): boolean {
+  return txs.length > 0 && txs.every((t) => SAMPLE_TX_IDS.has(t.id));
+}
+
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
 
 /**
@@ -137,44 +149,60 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     };
   }, [currentDate]);
 
-  // Initialize from LocalStorage
+  // Initialize from LocalStorage — new users always start with an empty state.
+  // One-time migration: existing users who received sample data from the old build
+  // will have those records silently purged so they also start clean.
   useEffect(() => {
     try {
       const storedTx = localStorage.getItem(STORAGE_KEY_TX);
       const storedBudgets = localStorage.getItem(STORAGE_KEY_BUDGET);
       const storedCurrency = localStorage.getItem(STORAGE_KEY_CURRENCY);
       const storedAmort = localStorage.getItem(STORAGE_KEY_AMORTIZED);
+      const alreadyMigrated = localStorage.getItem(STORAGE_KEY_MIGRATED);
 
-      // 1. Transactions
+      // 1. Transactions — purge legacy sample data on first run after this build
       if (storedTx !== null) {
         try {
-          const parsed = JSON.parse(storedTx);
-          setTransactions(Array.isArray(parsed) ? parsed : INITIAL_SAMPLE_TRANSACTIONS);
+          const parsed = JSON.parse(storedTx) as Transaction[];
+          if (!alreadyMigrated && Array.isArray(parsed) && isAllSampleData(parsed)) {
+            // All records are old sample entries — clear them for a clean start
+            setTransactions([]);
+            localStorage.setItem(STORAGE_KEY_TX, JSON.stringify([]));
+          } else {
+            setTransactions(Array.isArray(parsed) ? parsed : []);
+          }
         } catch {
-          setTransactions(INITIAL_SAMPLE_TRANSACTIONS);
+          setTransactions([]);
         }
       } else {
-        setTransactions(INITIAL_SAMPLE_TRANSACTIONS);
-        localStorage.setItem(STORAGE_KEY_TX, JSON.stringify(INITIAL_SAMPLE_TRANSACTIONS));
+        // Brand-new user: start with an empty transaction list
+        setTransactions([]);
+        localStorage.setItem(STORAGE_KEY_TX, JSON.stringify([]));
       }
 
-      // 2. Budgets
-      const currentMonthKey = getCurrentMonthKey();
+      // 2. Budgets — restore saved budgets; new users have no pre-set budget.
+      // Also clear the old auto-seeded default budget during migration.
       if (storedBudgets) {
         try {
-          setMonthlyBudgets(JSON.parse(storedBudgets));
+          const parsedBudgets = JSON.parse(storedBudgets) as Record<string, number>;
+          if (!alreadyMigrated) {
+            // Drop the old auto-seeded 45000 budget; keep any user-set values
+            const cleaned: Record<string, number> = {};
+            for (const [k, v] of Object.entries(parsedBudgets)) {
+              if (v !== 45000) cleaned[k] = v;
+            }
+            setMonthlyBudgets(cleaned);
+            localStorage.setItem(STORAGE_KEY_BUDGET, JSON.stringify(cleaned));
+          } else {
+            setMonthlyBudgets(parsedBudgets);
+          }
         } catch {
-          const defaultBudgets: Record<string, number> = {
-            [currentMonthKey]: DEFAULT_MONTHLY_BUDGET.INR,
-          };
-          setMonthlyBudgets(defaultBudgets);
+          setMonthlyBudgets({});
         }
       } else {
-        const defaultBudgets: Record<string, number> = {
-          [currentMonthKey]: DEFAULT_MONTHLY_BUDGET.INR,
-        };
-        setMonthlyBudgets(defaultBudgets);
-        localStorage.setItem(STORAGE_KEY_BUDGET, JSON.stringify(defaultBudgets));
+        // Brand-new user: no default budget pre-seeded
+        setMonthlyBudgets({});
+        localStorage.setItem(STORAGE_KEY_BUDGET, JSON.stringify({}));
       }
 
       // 3. Currency
@@ -182,17 +210,33 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         setCurrencyState(storedCurrency as CurrencyCode);
       }
 
-      // 4. Amortized Items
+      // 4. Amortized Items — purge legacy sample data on first run after this build
       if (storedAmort !== null) {
         try {
-          const parsedAmort = JSON.parse(storedAmort);
-          setAmortizedItems(Array.isArray(parsedAmort) ? parsedAmort : INITIAL_SAMPLE_AMORTIZED_ITEMS);
+          const parsedAmort = JSON.parse(storedAmort) as AmortizedItem[];
+          if (
+            !alreadyMigrated &&
+            Array.isArray(parsedAmort) &&
+            parsedAmort.length > 0 &&
+            parsedAmort.every((a) => SAMPLE_AMORT_IDS.has(a.id))
+          ) {
+            setAmortizedItems([]);
+            localStorage.setItem(STORAGE_KEY_AMORTIZED, JSON.stringify([]));
+          } else {
+            setAmortizedItems(Array.isArray(parsedAmort) ? parsedAmort : []);
+          }
         } catch {
-          setAmortizedItems(INITIAL_SAMPLE_AMORTIZED_ITEMS);
+          setAmortizedItems([]);
         }
       } else {
-        setAmortizedItems(INITIAL_SAMPLE_AMORTIZED_ITEMS);
-        localStorage.setItem(STORAGE_KEY_AMORTIZED, JSON.stringify(INITIAL_SAMPLE_AMORTIZED_ITEMS));
+        // Brand-new user: start with an empty product lifespan list
+        setAmortizedItems([]);
+        localStorage.setItem(STORAGE_KEY_AMORTIZED, JSON.stringify([]));
+      }
+
+      // Mark migration as complete so it only runs once
+      if (!alreadyMigrated) {
+        localStorage.setItem(STORAGE_KEY_MIGRATED, '1');
       }
     } catch {
       setTransactions([]);
@@ -259,7 +303,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     if (monthlyBudgets[selectedMonth.key] !== undefined) {
       return monthlyBudgets[selectedMonth.key];
     }
-    return DEFAULT_MONTHLY_BUDGET.INR || 45000;
+    // No budget set for this month — return 0 so the UI shows an unset state
+    return 0;
   }, [monthlyBudgets, selectedMonth.key]);
 
   // Total spent in this month (sum of all transactions)

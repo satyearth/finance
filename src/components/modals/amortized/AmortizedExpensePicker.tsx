@@ -118,22 +118,22 @@ export function AmortizedExpensePicker({
               <div
                 key={tx.id}
                 onClick={() => onSelectTransaction(tx)}
-                className="group flex items-center justify-between p-3 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#1B1A18] transition-colors cursor-pointer gap-3"
+                className="group flex flex-col xs:flex-row xs:items-center justify-between p-2.5 sm:p-3 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#1B1A18] transition-colors cursor-pointer gap-2 sm:gap-3"
               >
-                <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                  <div className="w-8 h-8 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#1B1A18] flex items-center justify-center shrink-0">
-                    <CategoryIcon category={tx.category} size={15} />
+                <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#1B1A18] flex items-center justify-center shrink-0">
+                    <CategoryIcon category={tx.category} size={14} className="sm:w-[15px] sm:h-[15px]" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h5 className="text-xs font-semibold text-[#1B1A18] truncate">
+                    <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                      <h5 className="text-xs font-semibold text-[#1B1A18] truncate max-w-[150px] xs:max-w-none">
                         {tx.title}
                       </h5>
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#625E59] shrink-0 font-medium">
+                      <span className="text-[9px] sm:text-[10px] font-mono px-1.5 py-0.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#625E59] shrink-0 font-medium">
                         {catMeta.label}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 mt-0.5 text-[11px] font-mono text-[#625E59]">
+                    <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 text-[10px] sm:text-[11px] font-mono text-[#625E59]">
                       <span>{formatDate(tx.date)}</span>
                       {alreadyTracked && (
                         <span className="inline-flex items-center gap-1 font-bold text-[#E65B3F]">
@@ -144,13 +144,13 @@ export function AmortizedExpensePicker({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className="min-w-[70px] text-right text-xs font-mono font-bold text-[#1B1A18] tabular-nums">
+                <div className="flex items-center justify-between xs:justify-end gap-2.5 sm:gap-3 shrink-0 pt-1.5 xs:pt-0 border-t border-[#F0ECE1] xs:border-t-0">
+                  <span className="text-right text-xs font-mono font-bold text-[#1B1A18] tabular-nums">
                     {formatCurrency(tx.amount, currency)}
                   </span>
                   <button
                     type="button"
-                    className="sf-button-primary h-7 px-2.5 text-[11px] uppercase tracking-wider font-mono rounded-[2px]"
+                    className="sf-button-primary h-6.5 sm:h-7 px-2.5 text-[10px] sm:text-[11px] uppercase tracking-wider font-mono rounded-[2px]"
                   >
                     Select
                   </button>

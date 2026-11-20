@@ -79,25 +79,25 @@ export function DayDetailsModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sf-modal-backdrop animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 sf-modal-backdrop animate-fadeIn"
       onClick={onClose}
       aria-modal="true"
       role="dialog"
       aria-label={`Transactions for ${formattedDayTitle}`}
     >
       <div
-        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden flex flex-col max-h-[90vh] relative font-sans shadow-xl"
+        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden flex flex-col max-h-[94vh] relative font-sans shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-[#DED9D2] bg-[#F7F5F2] flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
-              <IconCalendar size={17} stroke={2} />
+        <div className="p-3.5 sm:p-5 border-b border-[#DED9D2] bg-[#F7F5F2] flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
+              <IconCalendar size={15} stroke={2} className="sm:w-4 sm:h-4" />
             </div>
             <div>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">{formattedDayTitle}</h3>
-              <p className="text-xs text-[#625E59] mt-0.5 font-mono">
+              <p className="text-[11px] sm:text-xs text-[#625E59] mt-0.5 font-mono">
                 Total: <span className="text-[#1B1A18] font-bold tabular-nums">{formatCurrency(dayTotal, currency)}</span>
               </p>
             </div>
@@ -106,20 +106,20 @@ export function DayDetailsModal({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="w-8 h-8 rounded-[2px] border border-[#DED9D2] bg-white text-[#625E59] hover:text-[#1B1A18] hover:border-[#1B1A18] flex items-center justify-center transition-colors shrink-0"
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] border border-[#DED9D2] bg-white text-[#625E59] hover:text-[#1B1A18] hover:border-[#1B1A18] flex items-center justify-center transition-colors shrink-0"
           >
-            <IconX size={16} stroke={2} />
+            <IconX size={15} stroke={2} />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4 bg-[#F7F5F2]">
-          <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#625E59]">
+        <div className="p-3.5 sm:p-5 overflow-y-auto flex-1 space-y-3 sm:space-y-4 bg-[#F7F5F2]">
+          <div className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-[#625E59]">
             Transactions ({dayTransactions.length})
           </div>
 
           {dayTransactions.length === 0 ? (
-            <div className="text-center py-8 px-4 rounded-[2px] bg-white border border-dashed border-[#DED9D2]">
+            <div className="text-center py-6 sm:py-8 px-4 rounded-[2px] bg-white border border-dashed border-[#DED9D2]">
               <p className="text-xs font-mono font-semibold text-[#1B1A18]">No transactions for this day.</p>
             </div>
           ) : (
@@ -127,18 +127,18 @@ export function DayDetailsModal({
               {dayTransactions.map((tx) => (
                 <div
                   key={tx.id}
-                  className="flex items-center justify-between p-3 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#1B1A18] transition-colors group gap-3"
+                  className="flex flex-col xs:flex-row xs:items-center justify-between p-2.5 sm:p-3 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#1B1A18] transition-colors group gap-2 sm:gap-3"
                 >
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="flex items-center gap-2.5 sm:gap-3 flex-1 min-w-0">
                     <CategoryBadge category={tx.category} showLabel={false} />
                     <div className="min-w-0 flex-1">
                       <div className="text-xs font-semibold text-[#1B1A18] truncate">{tx.title}</div>
-                      {tx.notes && <div className="text-[11px] text-[#625E59] truncate font-normal mt-0.5">{tx.notes}</div>}
+                      {tx.notes && <div className="text-[10px] sm:text-[11px] text-[#625E59] truncate font-normal mt-0.5">{tx.notes}</div>}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 shrink-0">
-                    <div className="font-mono text-xs font-bold text-[#1B1A18] tracking-tight tabular-nums text-right min-w-[75px]">
+                  <div className="flex items-center justify-between xs:justify-end gap-2.5 sm:gap-3 shrink-0 pt-1.5 xs:pt-0 border-t border-[#F0ECE1] xs:border-t-0">
+                    <div className="font-mono text-xs font-bold text-[#1B1A18] tracking-tight tabular-nums text-right min-w-[65px] sm:min-w-[75px]">
                       {formatCurrency(tx.amount, currency)}
                     </div>
 
@@ -174,12 +174,12 @@ export function DayDetailsModal({
           )}
 
           {/* Quick Add Form for this day */}
-          <div className="pt-4 border-t border-[#DED9D2]">
-            <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#625E59] mb-2.5">
+          <div className="pt-3 sm:pt-4 border-t border-[#DED9D2]">
+            <div className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-[#625E59] mb-2 sm:mb-2.5">
               Add transaction
             </div>
 
-            <form onSubmit={handleQuickAddForDay} className="space-y-2.5">
+            <form onSubmit={handleQuickAddForDay} className="space-y-2 sm:space-y-2.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input
                   type="text"
@@ -214,10 +214,10 @@ export function DayDetailsModal({
 
                 <button
                   type="submit"
-                  className="sf-button-primary h-8.5 text-xs uppercase tracking-wider px-4 shrink-0 flex items-center justify-center gap-1.5 font-mono rounded-[2px]"
+                  className="sf-button-primary h-8.5 text-xs uppercase tracking-wider px-3.5 sm:px-4 shrink-0 flex items-center justify-center gap-1.5 font-mono rounded-[2px]"
                 >
                   <IconPlus size={13} stroke={2.5} />
-                  <span>Add transaction</span>
+                  <span>Add</span>
                 </button>
               </div>
             </form>

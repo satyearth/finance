@@ -123,21 +123,21 @@ export function AddEditExpenseModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sf-modal-backdrop animate-fadeIn font-sans"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 sf-modal-backdrop animate-fadeIn font-sans"
       onClick={onClose}
       aria-modal="true"
       role="dialog"
       aria-label={editingTransaction ? 'Edit Expense' : 'Record New Expense'}
     >
       <div
-        className="w-full max-w-md rounded-[2px] sf-modal overflow-hidden relative font-sans shadow-xl flex flex-col max-h-[92vh]"
+        className="w-full max-w-md rounded-[2px] sf-modal overflow-hidden relative font-sans shadow-xl flex flex-col max-h-[94vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-[#DED9D2] bg-[#F7F5F2] flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
-              {editingTransaction ? <IconPencil size={17} stroke={2} /> : <IconPlus size={17} stroke={2.5} />}
+        <div className="p-3.5 sm:p-5 border-b border-[#DED9D2] bg-[#F7F5F2] flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
+              {editingTransaction ? <IconPencil size={15} stroke={2} /> : <IconPlus size={15} stroke={2.5} />}
             </div>
             <div>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
@@ -150,14 +150,14 @@ export function AddEditExpenseModal({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="w-8 h-8 rounded-[2px] border border-[#DED9D2] bg-white text-[#625E59] hover:text-[#1B1A18] hover:border-[#1B1A18] flex items-center justify-center transition-colors shrink-0"
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] border border-[#DED9D2] bg-white text-[#625E59] hover:text-[#1B1A18] hover:border-[#1B1A18] flex items-center justify-center transition-colors shrink-0"
           >
-            <IconX size={16} stroke={2} />
+            <IconX size={15} stroke={2} />
           </button>
         </div>
 
         {/* Modal Form */}
-        <form onSubmit={handleSubmit} className="p-5 space-y-4 font-sans bg-[#F7F5F2] overflow-y-auto flex-1">
+        <form onSubmit={handleSubmit} className="p-3.5 sm:p-5 space-y-3 sm:space-y-4 font-sans bg-[#F7F5F2] overflow-y-auto flex-1">
           {error && (
             <div className="p-3 rounded-[2px] bg-red-50 border border-red-200 text-red-700 text-xs font-mono font-bold">
               {error}

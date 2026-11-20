@@ -36,63 +36,70 @@ export function TransactionRow({
   const catMeta = CATEGORIES[transaction.category] || CATEGORIES.other;
 
   return (
-    <div className="group flex items-center justify-between p-3 sm:p-3.5 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#1B1A18] hover:bg-[#FDFCFB] transition-all gap-3 font-sans">
+    <div className="group flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-3.5 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#1B1A18] hover:bg-[#FDFCFB] transition-all gap-2.5 sm:gap-3 font-sans">
       {/* Left Icon + Title + Category + Date */}
-      <div className="flex items-center gap-3 flex-1 min-w-0">
-        <div className="shrink-0 w-8 h-8 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#1B1A18] group-hover:border-[#1B1A18] flex items-center justify-center transition-colors">
-          <CategoryIcon category={transaction.category} size={15} />
-        </div>
+      <div className="flex items-start sm:items-center justify-between gap-2.5 w-full sm:w-auto flex-1 min-w-0">
+        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 flex-1 min-w-0">
+          <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#1B1A18] group-hover:border-[#1B1A18] flex items-center justify-center transition-colors mt-0.5 sm:mt-0">
+            <CategoryIcon category={transaction.category} size={14} className="sm:w-[15px] sm:h-[15px]" />
+          </div>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 min-w-0 flex-wrap">
-            <h4
-              className="text-sm font-semibold text-[#1B1A18] truncate max-w-[150px] xs:max-w-[220px] sm:max-w-md font-sans"
-              title={transaction.title}
-            >
-              {transaction.title}
-            </h4>
-            <span className="text-[11px] px-2 py-0.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#625E59] shrink-0 font-medium font-mono">
-              {catMeta.label}
-            </span>
-
-            {/* If already amortized, show lifespan pill */}
-            {amortizedItem && (
-              <button
-                type="button"
-                onClick={() => onTrackAmortization?.(transaction, amortizedItem)}
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[2px] text-[10px] font-mono font-bold bg-[#F9EEE9] text-[#A83F29] border border-[#E65B3F]/30 transition-all hover:bg-[#F3E2DB] active:scale-95"
-                title="Lifespan tracking is active. Click to view or edit."
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap min-w-0">
+              <h4
+                className="text-xs sm:text-sm font-semibold text-[#1B1A18] truncate max-w-[170px] xs:max-w-[220px] sm:max-w-md font-sans"
+                title={transaction.title}
               >
-                <IconHourglassEmpty size={10} stroke={2.5} />
-                <span>
-                  {amortizedItem.durationMonths
-                    ? `${amortizedItem.durationMonths}m (${formatCurrency(amortizedItem.monthlyCost || 0, currency)}/mo)`
-                    : 'Amortized'}
-                </span>
-              </button>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-xs text-[#625E59] font-mono tabular-nums shrink-0 font-medium">
-              {formatDate(transaction.date)}
-            </span>
-            {transaction.notes && (
-              <span className="text-xs text-[#625E59] truncate max-w-[130px] sm:max-w-sm font-sans" title={transaction.notes}>
-                &bull; {transaction.notes}
+                {transaction.title}
+              </h4>
+              <span className="text-[10px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#625E59] shrink-0 font-medium font-mono">
+                {catMeta.label}
               </span>
-            )}
+
+              {/* If already amortized, show lifespan pill */}
+              {amortizedItem && (
+                <button
+                  type="button"
+                  onClick={() => onTrackAmortization?.(transaction, amortizedItem)}
+                  className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-[2px] text-[9px] sm:text-[10px] font-mono font-bold bg-[#F9EEE9] text-[#A83F29] border border-[#E65B3F]/30 transition-all hover:bg-[#F3E2DB] active:scale-95"
+                  title="Lifespan tracking is active. Click to view or edit."
+                >
+                  <IconHourglassEmpty size={10} stroke={2.5} />
+                  <span>
+                    {amortizedItem.durationMonths
+                      ? `${amortizedItem.durationMonths}m (${formatCurrency(amortizedItem.monthlyCost || 0, currency)}/mo)`
+                      : 'Amortized'}
+                  </span>
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-[11px] sm:text-xs text-[#625E59] font-mono tabular-nums shrink-0 font-medium">
+                {formatDate(transaction.date)}
+              </span>
+              {transaction.notes && (
+                <span className="text-[11px] sm:text-xs text-[#625E59] truncate max-w-[130px] sm:max-w-sm font-sans" title={transaction.notes}>
+                  &bull; {transaction.notes}
+                </span>
+              )}
+            </div>
           </div>
         </div>
+
+        {/* Amount visible on mobile at top-right */}
+        <span className="text-sm font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] text-right shrink-0 sm:hidden">
+          {formatCurrency(transaction.amount, currency)}
+        </span>
       </div>
 
-      {/* Right Amount + Actions */}
-      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-        <span className="text-sm font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] text-right min-w-[75px] sm:min-w-[90px]">
+      {/* Desktop in-line amount + actions row / Mobile bottom actions row */}
+      <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 shrink-0 pt-2 sm:pt-0 border-t border-[#F0ECE1] sm:border-t-0">
+        <span className="text-sm font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] text-right min-w-[75px] sm:min-w-[90px] hidden sm:inline-block">
           {formatCurrency(transaction.amount, currency)}
         </span>
 
-        <div className="flex items-center justify-end gap-0.5 sm:gap-1 opacity-90 sm:opacity-70 group-hover:opacity-100 transition-opacity min-w-[68px] sm:min-w-[76px]">
+        <div className="flex items-center justify-end gap-1 ml-auto sm:ml-0 opacity-100 sm:opacity-70 group-hover:opacity-100 transition-opacity">
           {/* Track lifespan button (if not already tracked) */}
           {!amortizedItem && onTrackAmortization && (
             <button

@@ -79,14 +79,14 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
   };
 
   return (
-    <header className="w-full select-none py-3 px-6 sm:px-8 font-sans border-b border-[#DED9D2] bg-white sticky top-0 z-20">
-      <div className="max-w-[1360px] mx-auto flex items-center justify-between w-full min-h-[38px]">
+    <header className="w-full select-none py-2.5 sm:py-3 px-3 sm:px-6 md:px-8 font-sans border-b border-[#DED9D2] bg-white sticky top-0 z-20">
+      <div className="max-w-[1360px] mx-auto flex items-center justify-between w-full min-h-[38px] gap-2">
         {/* Left: Unified Month Switcher & Popover Trigger */}
-        <div className="flex items-center gap-2 relative">
+        <div className="flex items-center gap-1.5 sm:gap-2 relative min-w-0">
           {onToggleMobileMenu && (
             <button
               onClick={onToggleMobileMenu}
-              className="md:hidden h-8.5 w-8.5 rounded-[2px] border border-[#DED9D2] hover:bg-[#F7F5F2] text-[#1B1A18] flex items-center justify-center transition-colors mr-1"
+              className="md:hidden h-8.5 w-8.5 rounded-[2px] border border-[#DED9D2] hover:bg-[#F7F5F2] active:bg-[#EFECE6] text-[#1B1A18] flex items-center justify-center transition-colors shrink-0"
               aria-label="Open menu"
             >
               <IconMenu2 size={18} stroke={1.8} />
@@ -94,21 +94,22 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
           )}
 
           {/* Unified Month Switcher Capsule */}
-          <div className="relative" ref={popoverRef}>
-            <div className="flex items-center h-8.5 bg-[#F7F5F2] border border-[#DED9D2] rounded-[2px] p-0.5">
+          <div className="relative min-w-0" ref={popoverRef}>
+            <div className="flex items-center h-8.5 bg-[#F7F5F2] border border-[#DED9D2] rounded-[2px] p-0.5 max-w-full">
               {/* Quick Jump: This Month */}
               <button
                 type="button"
                 onClick={goToCurrentMonth}
                 disabled={isCurrentMonth}
-                className={`h-7 px-2.5 text-xs font-mono rounded-[2px] transition-all flex items-center justify-center ${
+                className={`h-7 px-1.5 sm:px-2.5 text-xs font-mono rounded-[2px] transition-all flex items-center justify-center shrink-0 ${
                   isCurrentMonth
                     ? 'text-[#756D66]/50 cursor-default select-none'
                     : 'text-[#E65B3F] font-bold hover:bg-white hover:text-[#DC5238] shadow-xs cursor-pointer'
                 }`}
                 title={isCurrentMonth ? 'Currently viewing active month' : 'Return to current month'}
               >
-                <span>This Month</span>
+                <span className="hidden sm:inline">This Month</span>
+                <span className="sm:hidden text-[11px]">Now</span>
               </button>
 
               <div className="w-[1px] h-4 bg-[#DED9D2] mx-0.5 shrink-0" />
@@ -117,22 +118,22 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
               <button
                 type="button"
                 onClick={goToPreviousMonth}
-                className="w-7 h-7 flex items-center justify-center rounded-[2px] hover:bg-white text-[#1B1A18] transition-colors"
+                className="w-6 sm:w-7 h-7 flex items-center justify-center rounded-[2px] hover:bg-white text-[#1B1A18] transition-colors shrink-0"
                 title="Previous month"
                 aria-label="Previous month"
               >
-                <IconChevronLeft size={15} stroke={2} />
+                <IconChevronLeft size={14} stroke={2} />
               </button>
 
               {/* Next Month */}
               <button
                 type="button"
                 onClick={goToNextMonth}
-                className="w-7 h-7 flex items-center justify-center rounded-[2px] hover:bg-white text-[#1B1A18] transition-colors"
+                className="w-6 sm:w-7 h-7 flex items-center justify-center rounded-[2px] hover:bg-white text-[#1B1A18] transition-colors shrink-0"
                 title="Next month"
                 aria-label="Next month"
               >
-                <IconChevronRight size={15} stroke={2} />
+                <IconChevronRight size={14} stroke={2} />
               </button>
 
               <div className="w-[1px] h-4 bg-[#DED9D2] mx-0.5 shrink-0" />
@@ -141,20 +142,20 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
               <button
                 type="button"
                 onClick={() => setIsMonthPickerOpen((prev) => !prev)}
-                className="flex items-center gap-1.5 px-2.5 h-7 rounded-[2px] hover:bg-white text-[#1B1A18] transition-colors"
+                className="flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 h-7 rounded-[2px] hover:bg-white text-[#1B1A18] transition-colors min-w-0"
                 title="Click to select specific month and year"
                 aria-expanded={isMonthPickerOpen}
                 aria-haspopup="dialog"
                 aria-label="Select month"
               >
-                <IconCalendar size={14} stroke={2} className="text-[#E65B3F] shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-[#1B1A18] font-display tracking-tight">
+                <IconCalendar size={13} stroke={2} className="text-[#E65B3F] shrink-0 sm:w-3.5 sm:h-3.5" />
+                <span className="text-xs sm:text-sm font-semibold text-[#1B1A18] font-display tracking-tight truncate max-w-[90px] xs:max-w-[130px] sm:max-w-none">
                   {selectedMonth.label}
                 </span>
                 <IconChevronDown
-                  size={13}
+                  size={12}
                   stroke={2}
-                  className={`text-[#625E59] transition-transform duration-200 ${
+                  className={`text-[#625E59] transition-transform duration-200 shrink-0 ${
                     isMonthPickerOpen ? 'rotate-180' : ''
                   }`}
                 />
@@ -164,7 +165,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
             {/* Calendar / Month Selector Popover */}
             {isMonthPickerOpen && (
               <div
-                className="absolute top-full left-0 mt-2 z-50 w-72 bg-white/95 backdrop-blur-md border border-[#DED9D2] shadow-xl rounded-[2px] p-3 font-sans animate-scaleUp"
+                className="absolute top-full left-0 sm:left-auto mt-2 z-50 w-72 max-w-[calc(100vw-24px)] bg-white/95 backdrop-blur-md border border-[#DED9D2] shadow-xl rounded-[2px] p-3 font-sans animate-scaleUp"
                 role="dialog"
                 aria-label="Month picker"
               >
@@ -249,18 +250,19 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
         </div>
 
         {/* Right: Quick Action */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 shrink-0">
           {onOpenAddModal && (
             <button
               onClick={onOpenAddModal}
-              className="inline-flex items-center h-8.5 sm:h-9 sf-button-primary text-xs uppercase tracking-wider px-3.5 gap-1.5 shrink-0 rounded-[2px]"
+              className="inline-flex items-center h-8.5 sm:h-9 sf-button-primary text-xs uppercase tracking-wider px-2.5 sm:px-3.5 gap-1.5 shrink-0 rounded-[2px]"
               title="Record new expense (N)"
             >
               <IconPlus size={14} stroke={2.5} />
-              <span>Add expense</span>
-              <span className="hidden md:inline-block ml-1 text-[10px] bg-black/20 px-1 py-0.5 rounded-[1px] font-mono opacity-80 leading-none">
+              <span className="hidden sm:inline">Add expense</span>
+              <span className="sm:inline hidden md:inline-block ml-1 text-[10px] bg-black/20 px-1 py-0.5 rounded-[1px] font-mono opacity-80 leading-none">
                 N
               </span>
+              <span className="sm:hidden text-[11px]">Add</span>
             </button>
           )}
         </div>

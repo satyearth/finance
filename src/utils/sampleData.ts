@@ -257,6 +257,3 @@ export function generateSampleAmortizedItems(): AmortizedItem[] {
     },
   ];
 }
-
-export const INITIAL_SAMPLE_TRANSACTIONS: Transaction[] = generateSampleTransactions();
-export const INITIAL_SAMPLE_AMORTIZED_ITEMS: AmortizedItem[] = generateSampleAmortizedItems();

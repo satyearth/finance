@@ -46,37 +46,37 @@ export function HeroBudgetCard() {
   };
 
   return (
-    <div className="sf-card p-6 sm:p-7 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-0 items-stretch font-sans">
+    <div className="sf-card p-4 sm:p-6 md:p-7 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-0 items-stretch font-sans">
       {/* Left Half: Outflow, Giant Stat, Breakdown & Headroom Badges */}
-      <div className="flex flex-col justify-between gap-4 lg:pr-8">
+      <div className="flex flex-col justify-between gap-3.5 sm:gap-4 lg:pr-8">
         <div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 bg-[#E65B3F] rotate-45 shrink-0" />
-            <span className="text-[11px] font-mono uppercase tracking-wider text-[#625E59] font-bold">
+            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-[#625E59] font-bold">
               {selectedMonth.label} Monthly Spend
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-mono font-bold text-[#1B1A18] tracking-tight leading-none tabular-nums mt-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#1B1A18] tracking-tight leading-none tabular-nums mt-1.5 sm:mt-2 truncate">
             {formatCurrency(totalSpentThisMonth, currency)}
           </h1>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 pt-1">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[2px] bg-white border border-[#DED9D2] text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-1">
+          <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] bg-white border border-[#DED9D2] text-[11px] sm:text-xs font-mono">
             <span className="w-1.5 h-1.5 bg-[#1B1A18] shrink-0" />
             <span className="text-[#625E59]">Settled:</span>
             <strong className="font-bold text-[#1B1A18] tabular-nums">{formatCurrency(settledSpentThisMonth, currency)}</strong>
           </span>
 
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[2px] bg-white border border-[#DED9D2] text-xs font-mono">
+          <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] bg-white border border-[#DED9D2] text-[11px] sm:text-xs font-mono">
             <span className="w-1.5 h-1.5 bg-[#625E59] shrink-0" />
             <span className="text-[#625E59]">Scheduled:</span>
             <strong className="font-bold text-[#1B1A18] tabular-nums">{formatCurrency(scheduledSpentThisMonth, currency)}</strong>
           </span>
 
           {currentBudget > 0 ? (
-            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[2px] text-xs font-mono border ${
+            <span className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] text-[11px] sm:text-xs font-mono border ${
               isOverBudget ? 'bg-red-50 text-red-700 border-red-200' : 'bg-[#F9EEE9] text-[#A83F29] border-[#E65B3F]/30'
             }`}>
               <span className={`w-1.5 h-1.5 shrink-0 ${isOverBudget ? 'bg-red-600' : 'bg-[#E65B3F]'}`} />
@@ -87,7 +87,7 @@ export function HeroBudgetCard() {
             <button
               type="button"
               onClick={() => setIsEditingBudget(true)}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[2px] text-xs font-mono bg-[#F7F5F2] text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18] hover:text-[#1B1A18] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] text-[11px] sm:text-xs font-mono bg-[#F7F5F2] text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18] hover:text-[#1B1A18] transition-colors cursor-pointer"
             >
               <span className="w-1.5 h-1.5 bg-[#625E59] shrink-0" />
               <span>Target: <strong className="font-bold text-[#E65B3F]">+ Set target</strong></span>
@@ -97,7 +97,7 @@ export function HeroBudgetCard() {
       </div>
 
       {/* Right Half: Monthly Target Utilization with desktop left separator */}
-      <div className="flex flex-col justify-between gap-4 lg:border-l lg:border-[#DED9D2] lg:pl-8 pt-4 lg:pt-0 border-t border-[#DED9D2] lg:border-t-0">
+      <div className="flex flex-col justify-between gap-3 sm:gap-4 lg:border-l lg:border-[#DED9D2] lg:pl-8 pt-3 sm:pt-4 lg:pt-0 border-t border-[#DED9D2] lg:border-t-0">
         <div className="flex items-center justify-between text-xs font-semibold text-[#1B1A18]">
           <span className="text-xs uppercase tracking-wider text-[#625E59] font-mono font-bold">
             Budget Usage

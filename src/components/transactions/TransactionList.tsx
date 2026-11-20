@@ -130,13 +130,13 @@ export function TransactionList({
   return (
     <div className="w-full space-y-4 animate-fadeIn font-sans">
       {/* 1. Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 bg-white border border-[#DED9D2] rounded-[2px] sf-card">
-        <div className="flex items-center gap-3.5">
-          <div className="w-9 h-9 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
-            <IconReceipt size={20} stroke={2} />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-4 sm:p-6 bg-white border border-[#DED9D2] rounded-[2px] sf-card">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
+            <IconReceipt size={18} stroke={2} className="sm:w-5 sm:h-5" />
           </div>
           <div>
-            <h1 className="text-base sm:text-lg font-mono font-bold text-[#1B1A18] uppercase tracking-wider">
+            <h1 className="text-sm sm:text-lg font-mono font-bold text-[#1B1A18] uppercase tracking-wider">
               Transactions
             </h1>
           </div>
@@ -145,70 +145,70 @@ export function TransactionList({
         {/* Header Action Button */}
         <button
           onClick={onOpenAddModal}
-          className="sf-button-primary h-9 px-4 text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto"
+          className="sf-button-primary h-8.5 sm:h-9 px-3.5 sm:px-4 text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto"
         >
-          <IconPlus size={15} stroke={2.5} />
+          <IconPlus size={14} stroke={2.5} />
           <span>Add transaction</span>
         </button>
       </div>
 
       {/* 2. Summary Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3.5">
         {/* Total Monthly Outflow */}
-        <div className="bg-white border border-[#DED9D2] rounded-[2px] p-4 flex flex-col justify-between hover:border-[#1B1A18] transition-colors sf-card">
-          <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block">
+        <div className="bg-white border border-[#DED9D2] rounded-[2px] p-3 sm:p-4 flex flex-col justify-between hover:border-[#1B1A18] transition-colors sf-card">
+          <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block">
             Monthly Spend
           </span>
-          <div className="mt-2 mb-1">
-            <span className="text-xl sm:text-2xl font-mono font-bold text-[#1B1A18] tabular-nums tracking-tight">
+          <div className="mt-1.5 sm:mt-2 mb-0.5 sm:mb-1">
+            <span className="text-lg sm:text-2xl font-mono font-bold text-[#1B1A18] tabular-nums tracking-tight">
               {formatCurrency(totalSpentThisMonth, currency)}
             </span>
           </div>
-          <span className="text-xs text-[#625E59] font-mono">
+          <span className="text-[10px] sm:text-xs text-[#625E59] font-mono">
             {filteredTransactions.length} {filteredTransactions.length === 1 ? 'transaction' : 'transactions'}
           </span>
         </div>
 
         {/* Filtered Volume */}
-        <div className="bg-white border border-[#DED9D2] rounded-[2px] p-4 flex flex-col justify-between hover:border-[#1B1A18] transition-colors sf-card">
+        <div className="bg-white border border-[#DED9D2] rounded-[2px] p-3 sm:p-4 flex flex-col justify-between hover:border-[#1B1A18] transition-colors sf-card">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block">
+            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block">
               Filtered Total
             </span>
             {isFilterActive && (
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-[1px] bg-[#F9EEE9] text-[#E65B3F] border border-[#E65B3F]/30 uppercase">
+              <span className="text-[9px] sm:text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-[1px] bg-[#F9EEE9] text-[#E65B3F] border border-[#E65B3F]/30 uppercase">
                 Active
               </span>
             )}
           </div>
-          <div className="mt-2 mb-1">
-            <span className="text-xl sm:text-2xl font-mono font-bold text-[#E65B3F] tabular-nums tracking-tight">
+          <div className="mt-1.5 sm:mt-2 mb-0.5 sm:mb-1">
+            <span className="text-lg sm:text-2xl font-mono font-bold text-[#E65B3F] tabular-nums tracking-tight">
               {formatCurrency(totalFilteredAmount, currency)}
             </span>
           </div>
-          <span className="text-xs text-[#625E59] font-mono">
+          <span className="text-[10px] sm:text-xs text-[#625E59] font-mono">
             {processedTransactions.length} of {filteredTransactions.length}
           </span>
         </div>
 
         {/* Average Transaction Size */}
-        <div className="bg-white border border-[#DED9D2] rounded-[2px] p-4 flex flex-col justify-between hover:border-[#1B1A18] transition-colors sf-card">
-          <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block">
+        <div className="bg-white border border-[#DED9D2] rounded-[2px] p-3 sm:p-4 flex flex-col justify-between hover:border-[#1B1A18] transition-colors sf-card">
+          <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block">
             Avg. Transaction
           </span>
-          <div className="mt-2 mb-1">
-            <span className="text-xl sm:text-2xl font-mono font-bold text-[#1B1A18] tabular-nums tracking-tight">
+          <div className="mt-1.5 sm:mt-2 mb-0.5 sm:mb-1">
+            <span className="text-lg sm:text-2xl font-mono font-bold text-[#1B1A18] tabular-nums tracking-tight">
               {formatCurrency(averageExpense, currency)}
             </span>
           </div>
-          <span className="text-xs text-[#625E59] font-mono">
+          <span className="text-[10px] sm:text-xs text-[#625E59] font-mono">
             Per transaction
           </span>
         </div>
       </div>
 
       {/* 3. Search & Filter Controls */}
-      <div className="bg-white border border-[#DED9D2] rounded-[2px] p-4 space-y-3 sf-card">
+      <div className="bg-white border border-[#DED9D2] rounded-[2px] p-3 sm:p-4 space-y-2.5 sm:space-y-3 sf-card">
         {/* Search Input & Sort Selector */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full">
           {/* Keyword Search */}

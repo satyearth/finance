@@ -12,6 +12,7 @@ import { MONTH_NAMES_SHORT } from '@/constants/categories';
 interface ChartPoint {
   id: string;
   label: string;
+  shortLabel: string;
   settled: number;
   scheduled: number;
   isToday?: boolean;
@@ -83,9 +84,15 @@ export function SpendingChart() {
           ? `${monthShort} ${b.startDay}`
           : `${monthShort} ${b.startDay}-${b.endDay}`;
 
+      const shortLabel =
+        b.startDay === b.endDay
+          ? `${b.startDay}`
+          : `${b.startDay}-${b.endDay}`;
+
       return {
         id: `bucket-${idx}-${b.startDay}`,
         label,
+        shortLabel,
         settled,
         scheduled,
         isToday: isCurrentRange,
@@ -100,12 +107,12 @@ export function SpendingChart() {
   }, [chartPoints]);
 
   return (
-    <div className="sf-card p-5 sm:p-6 transition-all relative font-sans">
+    <div className="sf-card p-4 sm:p-6 transition-all relative font-sans">
       {/* Header with Title and Legends */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 mb-3 sm:mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
-            <IconChartBar size={16} stroke={2} />
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
+            <IconChartBar size={14} stroke={2} className="sm:w-4 sm:h-4" />
           </div>
           <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
             Spending Activity
@@ -113,38 +120,38 @@ export function SpendingChart() {
         </div>
 
         {/* Legends */}
-        <div className="flex items-center gap-4 text-xs font-mono text-[#625E59]">
+        <div className="flex items-center gap-3 sm:gap-4 text-[11px] sm:text-xs font-mono text-[#625E59]">
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-[1px] bg-[#1B1A18] shrink-0" />
+            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-[1px] bg-[#1B1A18] shrink-0" />
             <span>Settled</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-[1px] bg-[#DED9D2] shrink-0" />
+            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-[1px] bg-[#DED9D2] shrink-0" />
             <span>Scheduled</span>
           </span>
         </div>
       </div>
 
       {/* Chart Graphic Container: Grounded on subtle X-axis line */}
-      <div className="pt-4">
-        <div className="relative h-40 sm:h-44 px-2 sm:px-6">
+      <div className="pt-2 sm:pt-4">
+        <div className="relative h-36 sm:h-44 px-1 sm:px-6">
           {/* Empty state overlay note when no transactions */}
           {filteredTransactions.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-              <span className="px-3 py-1.5 text-xs font-mono text-[#625E59] bg-[#F7F5F2]/90 border border-[#DED9D2] rounded-[2px] shadow-xs">
+              <span className="px-2.5 py-1 text-[11px] sm:text-xs font-mono text-[#625E59] bg-[#F7F5F2]/90 border border-[#DED9D2] rounded-[2px] shadow-xs">
                 No activity yet.
               </span>
             </div>
           )}
 
           {/* Subtle horizontal reference lines */}
-          <div className="absolute inset-x-2 sm:inset-x-6 top-0 border-b border-dashed border-[#E5E0D8] pointer-events-none flex justify-end z-0">
-            <span className="text-[10px] font-mono font-medium text-[#756D66] -mt-3.5 bg-[#F7F5F2] px-1.5 tabular-nums">
+          <div className="absolute inset-x-1 sm:inset-x-6 top-0 border-b border-dashed border-[#E5E0D8] pointer-events-none flex justify-end z-0">
+            <span className="text-[9px] sm:text-[10px] font-mono font-medium text-[#756D66] -mt-3 sm:-mt-3.5 bg-[#F7F5F2] px-1 sm:px-1.5 tabular-nums">
               {formatCurrency(maxVal, currency)}
             </span>
           </div>
-          <div className="absolute inset-x-2 sm:inset-x-6 top-1/2 border-b border-dashed border-[#E5E0D8] pointer-events-none flex justify-end z-0">
-            <span className="text-[10px] font-mono font-medium text-[#756D66] -mt-3.5 bg-[#F7F5F2] px-1.5 tabular-nums">
+          <div className="absolute inset-x-1 sm:inset-x-6 top-1/2 border-b border-dashed border-[#E5E0D8] pointer-events-none flex justify-end z-0">
+            <span className="text-[9px] sm:text-[10px] font-mono font-medium text-[#756D66] -mt-3 sm:-mt-3.5 bg-[#F7F5F2] px-1 sm:px-1.5 tabular-nums">
               {formatCurrency(Math.round(maxVal / 2), currency)}
             </span>
           </div>
@@ -162,11 +169,11 @@ export function SpendingChart() {
               return (
                 <div
                   key={bar.id}
-                  className="flex flex-col items-center h-full justify-end group relative flex-1 max-w-[70px] cursor-pointer"
+                  className="flex flex-col items-center h-full justify-end group relative flex-1 max-w-[50px] sm:max-w-[70px] cursor-pointer"
                 >
                   {/* Floating Tooltip with Pointer - Clamped to avoid container clipping */}
                   <div
-                    className={`absolute -top-14 opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none bg-[#242220] text-white border border-[#3A3835] text-[11px] font-mono py-1.5 px-2.5 rounded-[2px] whitespace-nowrap z-30 flex flex-col shadow-md ${
+                    className={`absolute -top-14 opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none bg-[#242220] text-white border border-[#3A3835] text-[10px] sm:text-[11px] font-mono py-1 px-2 sm:py-1.5 sm:px-2.5 rounded-[2px] whitespace-nowrap z-30 flex flex-col shadow-md ${
                       isFirst
                         ? 'left-0 items-start'
                         : isLast
@@ -176,7 +183,7 @@ export function SpendingChart() {
                   >
                     <div className="tabular-nums font-bold text-white">{formatCurrency(total, currency)}</div>
                     {total > 0 && (
-                      <div className="text-[10px] text-[#A6A29C]">
+                      <div className="text-[9px] sm:text-[10px] text-[#A6A29C]">
                         {bar.settled > 0 ? `Settled: ${formatCurrency(bar.settled, currency)}` : ''}
                         {bar.settled > 0 && bar.scheduled > 0 ? ' • ' : ''}
                         {bar.scheduled > 0 ? `Scheduled: ${formatCurrency(bar.scheduled, currency)}` : ''}
@@ -191,8 +198,8 @@ export function SpendingChart() {
 
                   {/* Stacked Bar with Flat Bottom grounded on X-axis line */}
                   <div
-                    className={`w-7 sm:w-9 flex flex-col justify-end overflow-hidden rounded-none transition-all duration-300 ${
-                      bar.isToday ? 'ring-2 ring-[#E65B3F] ring-offset-2 ring-offset-[#F7F5F2]' : 'hover:opacity-90'
+                    className={`w-4 xs:w-5 sm:w-8 md:w-9 flex flex-col justify-end overflow-hidden rounded-none transition-all duration-300 ${
+                      bar.isToday ? 'ring-1.5 sm:ring-2 ring-[#E65B3F] ring-offset-1 sm:ring-offset-2 ring-offset-[#F7F5F2]' : 'hover:opacity-90'
                     }`}
                     style={{ height: `${heightPercent}%` }}
                   >
@@ -221,16 +228,17 @@ export function SpendingChart() {
         </div>
 
         {/* X-Axis Labels */}
-        <div className="flex justify-between px-2 sm:px-6 mt-3">
+        <div className="flex justify-between px-1 sm:px-6 mt-2.5 sm:mt-3">
           {chartPoints.map((bar) => (
             <span
               key={bar.id}
-              className={`flex-1 max-w-[70px] text-center text-[10px] sm:text-xs truncate font-mono ${
+              className={`flex-1 max-w-[50px] sm:max-w-[70px] text-center text-[9px] xs:text-[10px] sm:text-xs truncate font-mono ${
                 bar.isToday ? 'text-[#E65B3F] font-bold underline decoration-2 underline-offset-4' : 'text-[#625E59] font-normal'
               }`}
               title={bar.label}
             >
-              {bar.label}
+              <span className="hidden sm:inline">{bar.label}</span>
+              <span className="sm:hidden">{bar.shortLabel}</span>
             </span>
           ))}
         </div>

@@ -179,13 +179,13 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
   return (
     <div className="sf-card p-0 overflow-hidden animate-fadeIn font-sans">
       {/* 1. Header: Quick Stats & Filter Bar */}
-      <div className="p-5 sm:p-6 border-b border-[#DED9D2] flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white">
+      <div className="p-3.5 sm:p-6 border-b border-[#DED9D2] flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 bg-white">
         {/* Left: View Title & Legend */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center justify-between sm:justify-start gap-4 sm:gap-6 w-full md:w-auto">
           <div>
-            <h2 className="text-base font-mono font-bold text-[#1B1A18] uppercase tracking-wider flex items-center gap-2">
-              <div className="w-7 h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F]">
-                <IconCalendar className="w-4 h-4" stroke={2} />
+            <h2 className="text-sm sm:text-base font-mono font-bold text-[#1B1A18] uppercase tracking-wider flex items-center gap-2">
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F]">
+                <IconCalendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" stroke={2} />
               </div>
               Calendar
             </h2>
@@ -202,28 +202,28 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
         </div>
 
         {/* Right: Aggregated Summary Chips */}
-        <div className="flex items-center gap-2 self-end md:self-auto">
-          <div className="px-3.5 py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-[90px]">
-            <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight">
+        <div className="grid grid-cols-3 sm:flex items-center gap-1.5 sm:gap-2 w-full md:w-auto">
+          <div className="px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate">
               Settled
             </span>
-            <span className="text-xs font-mono font-bold text-[#1B1A18] tabular-nums">
+            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block">
               {formatCurrency(settledSpentThisMonth, currency)}
             </span>
           </div>
-          <div className="px-3.5 py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-[90px]">
-            <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight">
+          <div className="px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate">
               Scheduled
             </span>
-            <span className="text-xs font-mono font-bold text-[#1B1A18] tabular-nums">
+            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block">
               {formatCurrency(scheduledSpentThisMonth, currency)}
             </span>
           </div>
-          <div className="px-3.5 py-1.5 rounded-[2px] bg-[#F9EEE9] border border-[#E65B3F]/30 text-right min-w-[90px]">
-            <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-[#A83F29] block leading-tight">
+          <div className="px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F9EEE9] border border-[#E65B3F]/30 text-right min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#A83F29] block leading-tight truncate">
               Total
             </span>
-            <span className="text-xs font-mono font-bold text-[#E65B3F] tabular-nums">
+            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#E65B3F] tabular-nums truncate block">
               {formatCurrency(totalSpentThisMonth, currency)}
             </span>
           </div>
@@ -235,7 +235,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
         {WEEKDAYS_SHORT.map((d, i) => (
           <div
             key={d}
-            className={`bg-[#F7F5F2] py-2 text-center text-[11px] font-mono font-semibold tracking-wider ${
+            className={`bg-[#F7F5F2] py-1.5 sm:py-2 text-center text-[9px] xs:text-[10px] sm:text-[11px] font-mono font-semibold tracking-wider ${
               i === 0 || i === 6 ? 'text-[#8A857F]' : 'text-[#625E59]'
             }`}
           >
@@ -254,7 +254,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
             <div
               key={item.dateString}
               onClick={() => handleCellClick(item)}
-              className={`min-h-[90px] sm:min-h-[115px] p-2 flex flex-col justify-between transition-colors relative group ${
+              className={`min-h-[64px] sm:min-h-[90px] md:min-h-[115px] p-1 sm:p-2 flex flex-col justify-between transition-colors relative group ${
                 !item.isCurrentMonth
                   ? 'bg-[#FAF8F5] opacity-40 select-none cursor-default'
                   : isSelected
@@ -267,7 +267,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
               {/* Day Header: Date & Action/Count group */}
               <div className="flex items-center justify-between">
                 <span
-                  className={`w-6 h-6 rounded-[2px] flex items-center justify-center text-xs font-mono font-bold transition-colors ${
+                  className={`w-5 h-5 sm:w-6 sm:h-6 rounded-[2px] flex items-center justify-center text-[10px] sm:text-xs font-mono font-bold transition-colors ${
                     item.isToday
                       ? 'bg-[#E65B3F] text-white'
                       : !item.isCurrentMonth
@@ -280,7 +280,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
 
                 <div className="flex items-center gap-1">
                   {item.itemsCount > 0 && (
-                    <span className="text-[10px] font-mono text-[#625E59] bg-[#F7F5F2] border border-[#DED9D2] px-1.5 py-0.5 rounded-[2px] truncate">
+                    <span className="text-[9px] sm:text-[10px] font-mono text-[#625E59] bg-[#F7F5F2] border border-[#DED9D2] px-1 sm:px-1.5 py-0.2 sm:py-0.5 rounded-[2px] truncate">
                       {item.itemsCount} <span className="hidden sm:inline">{item.itemsCount === 1 ? 'txn' : 'txns'}</span>
                     </span>
                   )}
@@ -288,7 +288,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
                     <button
                       type="button"
                       onClick={(e) => handleDirectAdd(e, item.dateString)}
-                      className="opacity-0 group-hover:opacity-100 w-5 h-5 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#E65B3F] hover:bg-[#F9EEE9] hover:text-[#E65B3F] text-[#625E59] flex items-center justify-center transition-all active:translate-y-[1px]"
+                      className="hidden sm:flex opacity-0 group-hover:opacity-100 w-5 h-5 rounded-[2px] bg-white border border-[#DED9D2] hover:border-[#E65B3F] hover:bg-[#F9EEE9] hover:text-[#E65B3F] text-[#625E59] items-center justify-center transition-all active:translate-y-[1px]"
                       title="Add transaction"
                       aria-label="Add transaction"
                     >
@@ -299,12 +299,12 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
               </div>
 
               {/* Day Content: Amounts / Scheduled Bills */}
-              <div className="mt-1.5 sm:mt-2 flex flex-col gap-1 sm:gap-1.5">
+              <div className="mt-1 sm:mt-2 flex flex-col gap-0.5 sm:gap-1.5">
                 {/* Settled Spending */}
                 {item.settled > 0 && (
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#625E59]">Spent</span>
-                    <span className="text-xs sm:text-sm font-mono font-bold text-[#1B1A18] tracking-tight leading-none truncate">
+                    <span className="hidden sm:inline text-[10px] font-mono uppercase tracking-wider text-[#625E59]">Spent</span>
+                    <span className="text-[10px] sm:text-xs md:text-sm font-mono font-bold text-[#1B1A18] tracking-tight leading-none truncate">
                       {formatCurrency(item.settled, currency)}
                     </span>
                   </div>
@@ -312,12 +312,12 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
 
                 {/* Scheduled Bill */}
                 {item.bill && (
-                  <div className="flex items-center justify-between px-1.5 py-1 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#1B1A18] text-xs font-mono">
-                    <div className="flex items-center gap-1 truncate">
-                      <IconClock className="w-3 h-3 text-[#E65B3F] shrink-0" stroke={2} />
-                      <span className="font-semibold truncate">{item.bill.name}</span>
+                  <div className="flex items-center justify-between px-1 py-0.5 sm:px-1.5 sm:py-1 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#1B1A18] text-[9px] sm:text-xs font-mono">
+                    <div className="flex items-center gap-0.5 sm:gap-1 truncate">
+                      <IconClock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#E65B3F] shrink-0" stroke={2} />
+                      <span className="font-semibold truncate hidden xs:inline">{item.bill.name}</span>
                     </div>
-                    <span className="font-bold shrink-0 ml-1">
+                    <span className="font-bold shrink-0 ml-0.5 sm:ml-1">
                       {formatCurrency(item.bill.amount, currency)}
                     </span>
                   </div>

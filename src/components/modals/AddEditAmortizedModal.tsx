@@ -298,21 +298,21 @@ export function AddEditAmortizedModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sf-modal-backdrop animate-fadeIn font-sans"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 sf-modal-backdrop animate-fadeIn font-sans"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="amort-modal-title"
     >
       <div
-        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden relative font-sans shadow-xl flex flex-col max-h-[92vh]"
+        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden relative font-sans shadow-xl flex flex-col max-h-[94vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-[#DED9D2] bg-[#F7F5F2] flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
-              <IconHourglassEmpty size={17} stroke={2} />
+        <div className="p-3.5 sm:p-5 border-b border-[#DED9D2] bg-[#F7F5F2] flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
+              <IconHourglassEmpty size={15} stroke={2} className="sm:w-4 sm:h-4" />
             </div>
             <div>
               <h3 id="amort-modal-title" className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
@@ -329,45 +329,45 @@ export function AddEditAmortizedModal({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="w-8 h-8 rounded-[2px] border border-[#DED9D2] bg-white text-[#625E59] hover:text-[#1B1A18] hover:border-[#1B1A18] flex items-center justify-center transition-colors"
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] border border-[#DED9D2] bg-white text-[#625E59] hover:text-[#1B1A18] hover:border-[#1B1A18] flex items-center justify-center transition-colors"
           >
-            <IconX size={16} stroke={2} />
+            <IconX size={15} stroke={2} />
           </button>
         </div>
 
         {/* Mode Switcher Tabs (Only when adding new, not editing) */}
         {!editingItem && !selectedTx && (
-          <div className="p-3 bg-[#F7F5F2] border-b border-[#DED9D2] flex items-center gap-2 shrink-0">
+          <div className="p-2 sm:p-3 bg-[#F7F5F2] border-b border-[#DED9D2] flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
               type="button"
               onClick={() => setActiveTabMode('from_list')}
-              className={`flex-1 h-8.5 px-3 text-xs font-mono font-semibold flex items-center justify-center gap-1.5 rounded-[2px] transition-colors ${
+              className={`flex-1 h-8 sm:h-8.5 px-2 sm:px-3 text-[11px] sm:text-xs font-mono font-semibold flex items-center justify-center gap-1.5 rounded-[2px] transition-colors ${
                 activeTabMode === 'from_list'
                   ? 'sf-button-primary'
                   : 'sf-button-ghost'
               }`}
             >
-              <IconReceipt size={14} stroke={2} />
-              <span>From expenses ({(transactions || []).length})</span>
+              <IconReceipt size={13} stroke={2} className="sm:w-3.5 sm:h-3.5" />
+              <span className="truncate">From expenses ({(transactions || []).length})</span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTabMode('custom')}
-              className={`flex-1 h-8.5 px-3 text-xs font-mono font-semibold flex items-center justify-center gap-1.5 rounded-[2px] transition-colors ${
+              className={`flex-1 h-8 sm:h-8.5 px-2 sm:px-3 text-[11px] sm:text-xs font-mono font-semibold flex items-center justify-center gap-1.5 rounded-[2px] transition-colors ${
                 activeTabMode === 'custom'
                   ? 'sf-button-primary'
                   : 'sf-button-ghost'
               }`}
             >
-              <IconPencil size={14} stroke={2} />
-              <span>Custom product</span>
+              <IconPencil size={13} stroke={2} className="sm:w-3.5 sm:h-3.5" />
+              <span className="truncate">Custom product</span>
             </button>
           </div>
         )}
 
         {/* Scrollable Content Body */}
-        <div className="overflow-y-auto p-5 space-y-4 flex-1 bg-[#F7F5F2]">
+        <div className="overflow-y-auto p-3.5 sm:p-5 space-y-3.5 sm:space-y-4 flex-1 bg-[#F7F5F2]">
           {error && (
             <div className="p-3 rounded-none bg-red-50 border border-red-200 text-red-700 text-xs font-mono font-bold">
               {error}

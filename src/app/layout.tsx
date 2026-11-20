@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
@@ -18,6 +18,14 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#FFFFFF",
+};
+
 export const metadata: Metadata = {
   title: "Satyfinance — Personal Wealth Workspace",
   description: "Personal finance workspace with intelligent expense tracking, calendar forecasting, and spending analytics.",
@@ -33,11 +41,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-white text-[#1B1A18] antialiased selection:bg-[#E65B3F] selection:text-white min-h-screen font-sans`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-white text-[#1B1A18] antialiased selection:bg-[#E65B3F] selection:text-white min-h-screen font-sans overflow-x-hidden`}
       >
         {children}
       </body>

@@ -106,21 +106,21 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sf-modal-backdrop animate-fadeIn font-sans"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 sf-modal-backdrop animate-fadeIn font-sans"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="import-export-title"
     >
       <div
-        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden animate-scaleUp relative font-sans"
+        className="w-full max-w-lg rounded-[2px] sf-modal overflow-hidden animate-scaleUp relative font-sans max-h-[94vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-[#DED9D2] bg-[#F7F5F2] flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
-              <IconArrowsSort size={17} stroke={2} />
+        <div className="p-3.5 sm:p-5 border-b border-[#DED9D2] bg-[#F7F5F2] flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
+              <IconArrowsSort size={15} stroke={2} className="sm:w-4 sm:h-4" />
             </div>
             <div>
               <h3 id="import-export-title" className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
@@ -132,20 +132,20 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-[2px] border border-[#DED9D2] bg-white text-[#625E59] hover:text-[#1B1A18] hover:border-[#1B1A18] flex items-center justify-center transition-colors"
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-[2px] border border-[#DED9D2] bg-white text-[#625E59] hover:text-[#1B1A18] hover:border-[#1B1A18] flex items-center justify-center transition-colors shrink-0"
             title="Close dialog"
             aria-label="Close dialog"
           >
-            <IconX size={16} stroke={2} />
+            <IconX size={15} stroke={2} />
           </button>
         </div>
 
         {/* Tab Switcher: Export vs Import */}
-        <div className="flex border-b border-[#DED9D2] bg-[#F7F5F2] p-2 gap-2">
+        <div className="flex border-b border-[#DED9D2] bg-[#F7F5F2] p-1.5 sm:p-2 gap-1.5 sm:gap-2 shrink-0">
           <button
             type="button"
             onClick={() => setActiveTab('export')}
-            className={`flex-1 h-8.5 px-3 text-xs font-mono font-bold uppercase tracking-wider rounded-[2px] border transition-colors flex items-center justify-center gap-2 ${
+            className={`flex-1 h-8 sm:h-8.5 px-3 text-xs font-mono font-bold uppercase tracking-wider rounded-[2px] border transition-colors flex items-center justify-center gap-1.5 sm:gap-2 ${
               activeTab === 'export'
                 ? 'bg-[#1B1A18] text-white border-[#1B1A18]'
                 : 'bg-white text-[#625E59] border-[#DED9D2] hover:text-[#1B1A18]'
@@ -158,7 +158,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
           <button
             type="button"
             onClick={() => setActiveTab('import')}
-            className={`flex-1 h-8.5 px-3 text-xs font-mono font-bold uppercase tracking-wider rounded-[2px] border transition-colors flex items-center justify-center gap-2 ${
+            className={`flex-1 h-8 sm:h-8.5 px-3 text-xs font-mono font-bold uppercase tracking-wider rounded-[2px] border transition-colors flex items-center justify-center gap-1.5 sm:gap-2 ${
               activeTab === 'import'
                 ? 'bg-[#1B1A18] text-white border-[#1B1A18]'
                 : 'bg-white text-[#625E59] border-[#DED9D2] hover:text-[#1B1A18]'
@@ -170,7 +170,7 @@ export function ImportExportModal({ isOpen, onClose }: ImportExportModalProps) {
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 sm:p-6 bg-white space-y-4">
+        <div className="p-4 sm:p-6 bg-white space-y-3.5 sm:space-y-4 overflow-y-auto flex-1">
           {activeTab === 'export' ? (
             /* --- EXPORT VIEW --- */
             <div className="space-y-4">

@@ -60,7 +60,8 @@ const ResetConfirmModal = dynamic(
  * and global modals for adding/editing expenses and amortization items.
  */
 function MainDashboard() {
-  const { activeTab } = useFinance();
+  const { activeTab, transactions } = useFinance();
+  const hasAnyTransactions = transactions.length > 0;
 
   // Global modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -126,7 +127,7 @@ function MainDashboard() {
       </div>
 
       {/* 2. Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-6 relative z-10">
+      <div className="flex-1 flex flex-col min-w-0 pb-24 md:pb-8 relative z-10">
         {/* Top Bar */}
         <Header
           onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
@@ -134,11 +135,40 @@ function MainDashboard() {
         />
 
         {/* Dynamic Screen View Container */}
-        <main className="flex-1 px-6 sm:px-8 py-3 max-w-[1360px] w-full mx-auto">
+        <main className="flex-1 px-3 sm:px-6 md:px-8 py-3 max-w-[1360px] w-full mx-auto">
           {/* Dashboard Tab View */}
           {activeTab === 'dashboard' && (
             <div className="space-y-4 animate-fadeIn">
               <QuickExpenseBar />
+
+              {/* Welcome banner — only shown when there are zero transactions */}
+              {!hasAnyTransactions && (
+                <div className="sf-card p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5 border-dashed">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-[2px] bg-[#F9EEE9] border border-[#E65B3F]/30 flex items-center justify-center text-[#E65B3F] shrink-0">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[22px] sm:h-[22px]">
+                      <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-xs sm:text-sm font-mono font-bold text-[#1B1A18] uppercase tracking-wider">
+                      Welcome to SatyFinance
+                    </h2>
+                    <p className="text-xs text-[#625E59] mt-1 font-sans max-w-lg leading-relaxed">
+                      Your personal wealth workspace is ready. Start by logging your first expense below, or use the quick entry bar above. All your analytics, charts, and insights will appear here as you add data.
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      <button
+                        onClick={() => handleOpenAddModal()}
+                        className="sf-button-primary h-8.5 px-3.5 text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 rounded-[2px]"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <span>Add First Transaction</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <HeroBudgetCard />
               <BentoMetrics />
               <SpendingChart />

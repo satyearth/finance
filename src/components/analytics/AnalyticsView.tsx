@@ -90,34 +90,34 @@ export function AnalyticsView() {
   return (
     <div className="w-full space-y-4 sm:space-y-5 animate-fadeIn font-sans">
       {/* 1. Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 bg-white border border-[#DED9D2] rounded-[2px] sf-card">
-        <div className="flex items-center gap-3.5">
-          <div className="w-9 h-9 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
-            <IconChartBar size={20} stroke={2} />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-4 sm:p-6 bg-white border border-[#DED9D2] rounded-[2px] sf-card">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
+            <IconChartBar size={18} stroke={2} className="sm:w-5 sm:h-5" />
           </div>
           <div>
-            <h1 className="text-base sm:text-lg font-mono font-bold text-[#1B1A18] uppercase tracking-wider">
+            <h1 className="text-sm sm:text-lg font-mono font-bold text-[#1B1A18] uppercase tracking-wider">
               Analytics
             </h1>
           </div>
         </div>
 
         {/* Quick Monthly Summary Badges */}
-        <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
-          <div className="px-3.5 py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-[95px]">
-            <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight">
+        <div className="grid grid-cols-2 sm:flex items-center gap-2 self-start sm:self-auto w-full sm:w-auto">
+          <div className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate">
               Monthly Spend
             </span>
-            <span className="text-xs font-mono font-bold text-[#1B1A18] tabular-nums">
+            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block">
               {formatCurrency(totalSpentThisMonth, currency)}
             </span>
           </div>
 
-          <div className="px-3.5 py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-[95px]">
-            <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight">
+          <div className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-right min-w-0">
+            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold text-[#625E59] block leading-tight truncate">
               Budget
             </span>
-            <span className="text-xs font-mono font-bold text-[#1B1A18] tabular-nums">
+            <span className="text-[11px] sm:text-xs font-mono font-bold text-[#1B1A18] tabular-nums truncate block">
               {formatCurrency(currentBudget, currency)}
             </span>
           </div>
@@ -125,145 +125,145 @@ export function AnalyticsView() {
       </div>
 
       {/* 2. 4-Stat KPI Highlight Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
         {/* Highest Outflow */}
-        <div className="sf-card p-4 sm:p-5 flex flex-col justify-between min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
-          <div className="flex items-center justify-between text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold">
-            <span>Largest Entry</span>
-            <div className="w-7 h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
-              <IconArrowUpRight size={14} stroke={2} />
+        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[125px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
+          <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold gap-1">
+            <span className="truncate">Largest Entry</span>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
+              <IconArrowUpRight size={13} stroke={2} className="sm:w-3.5 sm:h-3.5" />
             </div>
           </div>
           {highestTx ? (
             <>
-              <div className="my-auto py-1">
-                <div className="text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18]">
+              <div className="my-auto py-1 min-w-0">
+                <div className="text-lg xs:text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate">
                   {formatCurrency(highestTx.amount, currency)}
                 </div>
                 <p
-                  className="text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-[200px]"
+                  className="text-[11px] sm:text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-full"
                   title={highestTx.title}
                 >
                   {highestTx.title}
                 </p>
               </div>
-              <div className="h-7 flex items-center">
+              <div className="h-6 sm:h-7 flex items-center">
                 <CategoryBadge
                   category={highestTx.category}
                   showLabel={true}
-                  className="text-[10px] py-0.5 px-2"
+                  className="text-[9px] sm:text-[10px] py-0.5 px-1.5 sm:px-2"
                 />
               </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">
-              <p className="text-xs text-[#625E59] font-mono italic">No entries yet</p>
+              <p className="text-[11px] sm:text-xs text-[#625E59] font-mono italic">No entries yet</p>
             </div>
           )}
         </div>
 
         {/* Lowest Outflow */}
-        <div className="sf-card p-4 sm:p-5 flex flex-col justify-between min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
-          <div className="flex items-center justify-between text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold">
-            <span>Smallest Entry</span>
-            <div className="w-7 h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
-              <IconArrowDownRight size={14} stroke={2} />
+        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[125px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
+          <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold gap-1">
+            <span className="truncate">Smallest Entry</span>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
+              <IconArrowDownRight size={13} stroke={2} className="sm:w-3.5 sm:h-3.5" />
             </div>
           </div>
           {lowestTx && lowestTx.id !== highestTx?.id ? (
             <>
-              <div className="my-auto py-1">
-                <div className="text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18]">
+              <div className="my-auto py-1 min-w-0">
+                <div className="text-lg xs:text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate">
                   {formatCurrency(lowestTx.amount, currency)}
                 </div>
                 <p
-                  className="text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-[200px]"
+                  className="text-[11px] sm:text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-full"
                   title={lowestTx.title}
                 >
                   {lowestTx.title}
                 </p>
               </div>
-              <div className="h-7 flex items-center">
+              <div className="h-6 sm:h-7 flex items-center">
                 <CategoryBadge
                   category={lowestTx.category}
                   showLabel={true}
-                  className="text-[10px] py-0.5 px-2"
+                  className="text-[9px] sm:text-[10px] py-0.5 px-1.5 sm:px-2"
                 />
               </div>
             </>
           ) : highestTx && lowestTx?.id === highestTx?.id ? (
             <>
-              <div className="my-auto py-1">
-                <div className="text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18]">
+              <div className="my-auto py-1 min-w-0">
+                <div className="text-lg xs:text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate">
                   {formatCurrency(lowestTx!.amount, currency)}
                 </div>
                 <p
-                  className="text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-[200px]"
+                  className="text-[11px] sm:text-xs text-[#1B1A18] truncate mt-0.5 font-medium max-w-full"
                   title={lowestTx!.title}
                 >
                   {lowestTx!.title}
                 </p>
               </div>
-              <div className="h-7 flex items-center text-[11px] text-[#625E59] font-mono">
+              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-[11px] text-[#625E59] font-mono">
                 Only entry
               </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">
-              <p className="text-xs text-[#625E59] font-mono italic">No entries yet</p>
+              <p className="text-[11px] sm:text-xs text-[#625E59] font-mono italic">No entries yet</p>
             </div>
           )}
         </div>
 
         {/* Most Frequent Category */}
-        <div className="sf-card p-4 sm:p-5 flex flex-col justify-between min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
-          <div className="flex items-center justify-between text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold">
-            <span>Most Frequent</span>
-            <div className="w-7 h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
-              <IconAward size={14} stroke={2} />
+        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[125px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
+          <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold gap-1">
+            <span className="truncate">Most Frequent</span>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
+              <IconAward size={13} stroke={2} className="sm:w-3.5 sm:h-3.5" />
             </div>
           </div>
           {mostFrequentCat && mostFrequentCat.count > 0 ? (
             <>
-              <div className="my-auto py-1">
-                <div className="text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18]">
+              <div className="my-auto py-1 min-w-0">
+                <div className="text-lg xs:text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate">
                   {mostFrequentCat.count}
-                  <span className="text-xs font-mono font-normal text-[#625E59] ml-1.5">
+                  <span className="text-[10px] sm:text-xs font-mono font-normal text-[#625E59] ml-1">
                     {mostFrequentCat.count === 1 ? 'entry' : 'entries'}
                   </span>
                 </div>
-                <p className="text-xs text-[#1B1A18] mt-0.5 font-bold truncate">
+                <p className="text-[11px] sm:text-xs text-[#1B1A18] mt-0.5 font-bold truncate">
                   {CATEGORIES[mostFrequentCat.category]?.label || 'General'}
                 </p>
               </div>
-              <div className="h-7 flex items-center text-xs text-[#625E59] font-mono tabular-nums">
+              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-xs text-[#625E59] font-mono tabular-nums truncate">
                 {formatCurrency(mostFrequentCat.total, currency)} spent
               </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">
-              <p className="text-xs text-[#625E59] font-mono italic">No entries yet</p>
+              <p className="text-[11px] sm:text-xs text-[#625E59] font-mono italic">No entries yet</p>
             </div>
           )}
         </div>
 
         {/* Budget Burn Velocity */}
-        <div className="sf-card p-4 sm:p-5 flex flex-col justify-between min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
-          <div className="flex items-center justify-between text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold">
-            <span>Budget Used</span>
-            <div className="w-7 h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
-              <IconTrendingUp size={14} stroke={2} />
+        <div className="sf-card p-3 sm:p-5 flex flex-col justify-between min-h-[125px] sm:min-h-[160px] bg-white border border-[#DED9D2] rounded-[2px] hover:border-[#1B1A18] transition-colors">
+          <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-[#625E59] uppercase tracking-wider font-semibold gap-1">
+            <span className="truncate">Budget Used</span>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
+              <IconTrendingUp size={13} stroke={2} className="sm:w-3.5 sm:h-3.5" />
             </div>
           </div>
           {currentBudget > 0 ? (
             <>
-              <div className="my-auto py-1">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18]">
+              <div className="my-auto py-1 min-w-0">
+                <div className="flex items-baseline gap-1.5 min-w-0">
+                  <span className="text-lg xs:text-xl sm:text-2xl font-mono font-bold tracking-tight tabular-nums text-[#1B1A18] truncate">
                     {budgetPercentage}%
                   </span>
                   {isOverBudget && (
-                    <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-[1px] bg-red-50 text-red-700 border border-red-200 uppercase">
+                    <span className="text-[9px] sm:text-[10px] font-mono font-bold px-1 py-0.2 rounded-[1px] bg-red-50 text-red-700 border border-red-200 uppercase shrink-0">
                       Exceeded
                     </span>
                   )}
@@ -278,17 +278,17 @@ export function AnalyticsView() {
                   />
                 </div>
               </div>
-              <div className="h-7 flex items-center text-xs text-[#625E59] font-mono tabular-nums truncate">
+              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-xs text-[#625E59] font-mono tabular-nums truncate">
                 {formatCurrency(totalSpentThisMonth, currency)} of {formatCurrency(currentBudget, currency)}
               </div>
             </>
           ) : (
             <>
-              <div className="my-auto py-1">
-                <div className="text-2xl font-mono font-bold tracking-tight text-[#625E59]">—</div>
-                <p className="text-[11px] text-[#625E59] mt-0.5 italic">No budget set</p>
+              <div className="my-auto py-1 min-w-0">
+                <div className="text-xl sm:text-2xl font-mono font-bold tracking-tight text-[#625E59]">—</div>
+                <p className="text-[10px] sm:text-[11px] text-[#625E59] mt-0.5 italic">No budget set</p>
               </div>
-              <div className="h-7 flex items-center text-xs text-[#625E59] font-mono tabular-nums">
+              <div className="h-6 sm:h-7 flex items-center text-[10px] sm:text-xs text-[#625E59] font-mono tabular-nums truncate">
                 Spent: {formatCurrency(totalSpentThisMonth, currency)}
               </div>
             </>
@@ -297,11 +297,11 @@ export function AnalyticsView() {
       </div>
 
       {/* 3. Proportional Category Allocation Distribution Chart */}
-      <div className="sf-card p-5 sm:p-6 bg-white border border-[#DED9D2] rounded-[2px] space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1 border-b border-[#DED9D2]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
-              <IconChartPie size={16} stroke={2} />
+      <div className="sf-card p-4 sm:p-6 bg-white border border-[#DED9D2] rounded-[2px] space-y-3.5 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2 pb-1 border-b border-[#DED9D2]">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#E65B3F] shrink-0">
+              <IconChartPie size={14} stroke={2} className="sm:w-4 sm:h-4" />
             </div>
             <div>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
@@ -309,7 +309,7 @@ export function AnalyticsView() {
               </h3>
             </div>
           </div>
-          <span className="text-xs font-mono text-[#625E59] self-start sm:self-auto">
+          <span className="text-[10px] sm:text-xs font-mono text-[#625E59] self-start sm:self-auto">
             {activeAllocationCategories.length} active {activeAllocationCategories.length === 1 ? 'category' : 'categories'}
           </span>
         </div>
@@ -321,10 +321,10 @@ export function AnalyticsView() {
             <span>No spending data yet.</span>
           </div>
         ) : (
-          <div className="space-y-3.5">
+          <div className="space-y-3 sm:space-y-3.5">
             {/* Multi-segment Allocation Bar */}
             <div
-              className="w-full h-4 sm:h-5 rounded-[2px] overflow-hidden flex bg-[#EFECE6] border border-[#E5E0D8]"
+              className="w-full h-3.5 sm:h-5 rounded-[2px] overflow-hidden flex bg-[#EFECE6] border border-[#E5E0D8]"
               role="img"
               aria-label="Category allocation distribution bar"
             >
@@ -347,7 +347,7 @@ export function AnalyticsView() {
             </div>
 
             {/* Interactive Category Legend Grid */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-mono">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2.5 text-[10px] sm:text-xs font-mono">
               {activeAllocationCategories.map((cat) => {
                 const color = CATEGORY_CHART_COLORS[cat.category] || '#7A756F';
                 const meta = CATEGORIES[cat.category] || CATEGORIES.other;
@@ -355,13 +355,13 @@ export function AnalyticsView() {
                 return (
                   <div
                     key={cat.category}
-                    className="flex items-center gap-2 px-2.5 py-1 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2]"
+                    className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2]"
                   >
                     <span
-                      className="w-2.5 h-2.5 rounded-[1px] shrink-0"
+                      className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-[1px] shrink-0"
                       style={{ backgroundColor: color }}
                     />
-                    <span className="font-semibold text-[#1B1A18]">{meta.label}</span>
+                    <span className="font-semibold text-[#1B1A18] truncate max-w-[85px] xs:max-w-none">{meta.label}</span>
                     <span className="text-[#625E59] font-medium tabular-nums">
                       {cat.percentage}%
                     </span>
@@ -377,11 +377,11 @@ export function AnalyticsView() {
       </div>
 
       {/* 4. Budget Utilization & Spend Velocity Card */}
-      <div className="sf-card p-5 sm:p-6 bg-white border border-[#DED9D2] rounded-[2px] space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1 border-b border-[#DED9D2]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
-              <IconGauge size={16} stroke={2} />
+      <div className="sf-card p-4 sm:p-6 bg-white border border-[#DED9D2] rounded-[2px] space-y-3.5 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2 pb-1 border-b border-[#DED9D2]">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] flex items-center justify-center text-[#1B1A18] shrink-0">
+              <IconGauge size={14} stroke={2} className="sm:w-4 sm:h-4" />
             </div>
             <div>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
@@ -389,7 +389,7 @@ export function AnalyticsView() {
               </h3>
             </div>
           </div>
-          <span className="text-xs font-mono text-[#625E59] tabular-nums self-start sm:self-auto">
+          <span className="text-[10px] sm:text-xs font-mono text-[#625E59] tabular-nums self-start sm:self-auto">
             Daily Average:{' '}
             <strong className="text-[#1B1A18] font-bold">
               {formatCurrency(dailySpendAverage, currency)}/day
@@ -399,7 +399,7 @@ export function AnalyticsView() {
 
         {/* Burn progress indicator */}
         <div className="space-y-2">
-          <div className="w-full bg-[#EFECE6] h-3 rounded-[2px] overflow-hidden border border-[#E5E0D8]">
+          <div className="w-full bg-[#EFECE6] h-2.5 sm:h-3 rounded-[2px] overflow-hidden border border-[#E5E0D8]">
             <div
               className={`h-full rounded-[2px] transition-all duration-500 ${
                 isOverBudget
@@ -418,36 +418,36 @@ export function AnalyticsView() {
           </div>
 
           {/* 3 Metric Metrics Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-xs font-mono">
-            <div className="p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2]">
-              <span className="text-[10px] uppercase text-[#625E59] font-semibold block">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-3 pt-1 text-[10px] sm:text-xs font-mono">
+            <div className="p-2 sm:p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] min-w-0">
+              <span className="text-[9px] sm:text-[10px] uppercase text-[#625E59] font-semibold block truncate">
                 Spent
               </span>
-              <span className="font-bold text-[#1B1A18] text-sm tabular-nums">
+              <span className="font-bold text-[#1B1A18] text-xs sm:text-sm tabular-nums truncate block">
                 {formatCurrency(totalSpentThisMonth, currency)}
               </span>
             </div>
 
-            <div className="p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2]">
-              <span className="text-[10px] uppercase text-[#625E59] font-semibold block">
+            <div className="p-2 sm:p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] min-w-0">
+              <span className="text-[9px] sm:text-[10px] uppercase text-[#625E59] font-semibold block truncate">
                 {isOverBudget ? 'Deficit' : 'Remaining'}
               </span>
               <span
-                className={`font-bold text-sm tabular-nums ${
+                className={`font-bold text-xs sm:text-sm tabular-nums truncate block ${
                   isOverBudget ? 'text-red-700' : 'text-[#2E6F54]'
                 }`}
               >
                 {isOverBudget
-                  ? `+${formatCurrency(totalSpentThisMonth - currentBudget, currency)} over`
+                  ? `+${formatCurrency(totalSpentThisMonth - currentBudget, currency)}`
                   : formatCurrency(remainingBudget, currency)}
               </span>
             </div>
 
-            <div className="p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2]">
-              <span className="text-[10px] uppercase text-[#625E59] font-semibold block">
+            <div className="p-2 sm:p-2.5 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] min-w-0">
+              <span className="text-[9px] sm:text-[10px] uppercase text-[#625E59] font-semibold block truncate">
                 Budget
               </span>
-              <span className="font-bold text-[#1B1A18] text-sm tabular-nums">
+              <span className="font-bold text-[#1B1A18] text-xs sm:text-sm tabular-nums truncate block">
                 {formatCurrency(currentBudget, currency)}
               </span>
             </div>
