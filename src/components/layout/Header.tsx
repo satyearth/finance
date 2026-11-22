@@ -86,7 +86,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
           {onToggleMobileMenu && (
             <button
               onClick={onToggleMobileMenu}
-              className="md:hidden h-8.5 w-8.5 rounded-[2px] border border-[#DED9D2] hover:bg-[#F7F5F2] active:bg-[#EFECE6] text-[#1B1A18] flex items-center justify-center transition-colors shrink-0"
+              className="md:hidden h-8.5 w-8.5 text-[#1B1A18] flex items-center justify-center shrink-0"
               aria-label="Open menu"
             >
               <IconMenu2 size={18} stroke={1.8} />

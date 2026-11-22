@@ -78,8 +78,8 @@ export function ResetConfirmModal({ actionType, onClose }: ResetConfirmModalProp
 
         <p className="text-xs text-[#625E59] leading-relaxed font-mono">
           {isClear
-            ? 'This will permanently delete all records. This action cannot be undone.'
-            : 'This will replace current records with sample data.'}
+            ? 'This permanently deletes all records.'
+            : 'This replaces your records with sample data.'}
         </p>
 
         <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#DED9D2]">

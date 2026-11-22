@@ -497,7 +497,7 @@ export function AnalyticsView() {
               No spending yet.
             </h4>
             <p className="text-xs text-[#625E59] mt-1.5 max-w-sm mx-auto font-mono">
-              Add transactions to see category insights.
+              Add transactions to see insights.
             </p>
           </div>
         ) : (

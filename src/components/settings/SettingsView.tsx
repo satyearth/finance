@@ -102,7 +102,7 @@ export function SettingsView({
                 </span>
               </div>
               <p className="text-[11px] sm:text-xs text-[#625E59] mt-0.5 font-sans">
-                Set your spending limit to track headroom, daily velocity, and safe cashflow.
+                Set a monthly spending limit.
               </p>
             </div>
           </div>
@@ -121,9 +121,6 @@ export function SettingsView({
             <span className="text-xs font-mono uppercase tracking-wider font-bold text-[#1B1A18] block">
               Target Amount (₹)
             </span>
-            <p className="text-[10px] sm:text-[11px] text-[#625E59] font-mono">
-              Press Enter or click Update to apply
-            </p>
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -275,7 +272,7 @@ export function SettingsView({
         </div>
 
         <p className="text-[11px] text-[#625E59] font-mono">
-          ⚠ &quot;Clear All Records&quot; permanently removes all transactions. Export a backup first.
+          ⚠ Clearing records is permanent. Export a backup first.
         </p>
       </div>
     </div>
