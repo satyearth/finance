@@ -263,7 +263,7 @@ export function AnalyticsView() {
                     {budgetPercentage}%
                   </span>
                   {isOverBudget && (
-                    <span className="text-[9px] sm:text-[10px] font-mono font-bold px-1 py-0.2 rounded-[1px] bg-red-50 text-red-700 border border-red-200 uppercase shrink-0 whitespace-nowrap">
+                    <span className="text-[9px] sm:text-[10px] font-mono font-bold px-1 py-[1px] rounded-[1px] bg-red-50 text-red-700 border border-red-200 uppercase shrink-0 whitespace-nowrap">
                       Exceeded
                     </span>
                   )}
@@ -512,7 +512,7 @@ export function AnalyticsView() {
               return (
                 <div
                   key={item.category}
-                  className={`sf-card-white p-4 sm:p-4.5 flex flex-col justify-between gap-3.5 hover:border-[#1B1A18] transition-colors rounded-[2px] bg-white border border-[#DED9D2] group ${
+                  className={`sf-card-white p-4 sm:p-[18px] flex flex-col justify-between gap-3.5 hover:border-[#1B1A18] transition-colors rounded-[2px] bg-white border border-[#DED9D2] group ${
                     isLastOdd ? 'md:col-span-2' : ''
                   }`}
                 >

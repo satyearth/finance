@@ -12,7 +12,7 @@ import {
 import { useFinance } from '@/context/FinanceContext';
 import { Transaction, CategoryId, SortOption, AmortizedItem } from '@/types/finance';
 import { CATEGORY_LIST } from '@/constants/categories';
-import { formatCurrency } from '@/utils/formatters';
+import { compareISODates, formatCurrency, sumCurrency } from '@/utils/formatters';
 import { TransactionRow } from './TransactionRow';
 
 /**
@@ -48,16 +48,28 @@ export function TransactionList({
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | 'all'>('all');
   const [sortOption, setSortOption] = useState<SortOption>('date-desc');
 
-  // Pre-indexed map for O(1) amortized lookup per transaction
-  const amortizedLookup = useMemo(() => {
-    const map = new Map<string, AmortizedItem>();
+  // Pre-indexed map for O(1) amortized lookup per transaction.
+  // Primary match is strictly by transactionId; legacy unlinked items fallback by title+cost+date.
+  const { byTxId, unlinkedByComposite, unlinkedByTitleCost } = useMemo(() => {
+    const txMap = new Map<string, AmortizedItem>();
+    const compositeMap = new Map<string, AmortizedItem>();
+    const titleCostMap = new Map<string, AmortizedItem>();
     for (const item of amortizedItems) {
       if (item.transactionId) {
-        map.set(item.transactionId, item);
+        txMap.set(item.transactionId, item);
+      } else {
+        const titleKey = `${item.name.toLowerCase()}:::${item.totalCost}`;
+        compositeMap.set(`${titleKey}:::${item.startDate}`, item);
+        if (!titleCostMap.has(titleKey)) {
+          titleCostMap.set(titleKey, item);
+        }
       }
-      map.set(`${item.name.toLowerCase()}:::${item.totalCost}`, item);
     }
-    return map;
+    return {
+      byTxId: txMap,
+      unlinkedByComposite: compositeMap,
+      unlinkedByTitleCost: titleCostMap,
+    };
   }, [amortizedItems]);
 
   // Filter & sort pipeline
@@ -83,11 +95,11 @@ export function TransactionList({
     result.sort((a, b) => {
       switch (sortOption) {
         case 'date-desc': {
-          const diff = new Date(b.date).getTime() - new Date(a.date).getTime();
+          const diff = compareISODates(b.date, a.date);
           return diff !== 0 ? diff : (b.createdAt || 0) - (a.createdAt || 0);
         }
         case 'date-asc': {
-          const diff = new Date(a.date).getTime() - new Date(b.date).getTime();
+          const diff = compareISODates(a.date, b.date);
           return diff !== 0 ? diff : (a.createdAt || 0) - (b.createdAt || 0);
         }
         case 'amount-desc':
@@ -105,7 +117,7 @@ export function TransactionList({
   }, [filteredTransactions, selectedCategory, searchQuery, sortOption]);
 
   const totalFilteredAmount = useMemo(() => {
-    return processedTransactions.reduce((sum, tx) => sum + tx.amount, 0);
+    return sumCurrency(processedTransactions.map((tx) => tx.amount));
   }, [processedTransactions]);
 
   const averageExpense = useMemo(() => {
@@ -145,7 +157,7 @@ export function TransactionList({
         {/* Header Action Button */}
         <button
           onClick={onOpenAddModal}
-          className="sf-button-primary h-8.5 sm:h-9 px-3.5 sm:px-4 text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto"
+          className="sf-button-primary h-[34px] sm:h-9 px-3.5 sm:px-4 text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto"
         >
           <IconPlus size={14} stroke={2.5} />
           <span>Add transaction</span>
@@ -176,7 +188,7 @@ export function TransactionList({
               Filtered Total
             </span>
             {isFilterActive && (
-              <span className="text-[9px] sm:text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-[1px] bg-[#F9EEE9] text-[#E65B3F] border border-[#E65B3F]/30 uppercase">
+              <span className="text-[9px] sm:text-[10px] font-mono font-bold px-1.5 py-[1px] rounded-[1px] bg-[#F9EEE9] text-[#E65B3F] border border-[#E65B3F]/30 uppercase">
                 Active
               </span>
             )}
@@ -380,9 +392,11 @@ export function TransactionList({
           </div>
         ) : (
           processedTransactions.map((tx) => {
+            const titleKey = `${tx.title.toLowerCase()}:::${tx.amount}`;
             const amortizedItem =
-              amortizedLookup.get(tx.id) ||
-              amortizedLookup.get(`${tx.title.toLowerCase()}:::${tx.amount}`);
+              byTxId.get(tx.id) ||
+              unlinkedByComposite.get(`${titleKey}:::${tx.date}`) ||
+              unlinkedByTitleCost.get(titleKey);
 
             return (
               <TransactionRow
