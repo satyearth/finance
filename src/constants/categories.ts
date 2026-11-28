@@ -1,4 +1,4 @@
-import { CategoryId, CategoryMeta, CurrencyConfig } from '@/types/finance';
+import { CategoryId, CategoryMeta, CurrencyCode, CurrencyConfig } from '@/types/finance';
 
 /**
  * Standard category definitions with associated keywords for natural language parsing.
@@ -55,7 +55,7 @@ export const CATEGORIES: Record<CategoryId, CategoryMeta> = {
     keywords: [
       'furniture', 'chair', 'desk', 'decor', 'curtains', 'cleaning',
       'detergent', 'laundry', 'kitchenware', 'appliances', 'tools',
-      'repair', 'plumbing', 'sheets', 'bedding', 'garden',
+      'repair', 'plumbing', 'sheets', 'bedding', 'garden', 'home', 'house',
     ],
   },
   other: {
@@ -70,6 +70,16 @@ export const CATEGORIES: Record<CategoryId, CategoryMeta> = {
 
 /** Pre-computed array of all categories for dropdowns and filters */
 export const CATEGORY_LIST = Object.values(CATEGORIES);
+
+/** Valid category identifiers for runtime validation */
+export const VALID_CATEGORY_IDS: ReadonlySet<CategoryId> = new Set(
+  Object.keys(CATEGORIES) as CategoryId[]
+);
+
+/** Type guard checking if an unknown value is a supported CategoryId */
+export function isValidCategoryId(value: unknown): value is CategoryId {
+  return typeof value === 'string' && VALID_CATEGORY_IDS.has(value as CategoryId);
+}
 
 /**
  * Aesthetic palette mapped to categories for visual distribution charting.
@@ -96,7 +106,7 @@ export const WEEKDAYS_SHORT = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'] 
 /**
  * Currency configuration with approximate conversion rates against base currency (INR).
  */
-export const CURRENCIES: Record<string, CurrencyConfig> = {
+export const CURRENCIES: Record<CurrencyCode, CurrencyConfig> = {
   INR: {
     code: 'INR',
     symbol: '₹',
@@ -123,12 +133,32 @@ export const CURRENCIES: Record<string, CurrencyConfig> = {
   },
 };
 
+/** Valid currency identifiers for runtime validation */
+export const VALID_CURRENCY_CODES: ReadonlySet<CurrencyCode> = new Set(
+  Object.keys(CURRENCIES) as CurrencyCode[]
+);
+
+/** Type guard checking if an unknown value is a supported CurrencyCode */
+export function isValidCurrencyCode(value: unknown): value is CurrencyCode {
+  return typeof value === 'string' && VALID_CURRENCY_CODES.has(value as CurrencyCode);
+}
+
 /**
  * Default monthly budget targets per supported currency.
  */
-export const DEFAULT_MONTHLY_BUDGET: Record<string, number> = {
+export const DEFAULT_MONTHLY_BUDGET: Record<CurrencyCode, number> = {
   INR: 45000,
   USD: 1200,
   EUR: 1100,
   GBP: 950,
+};
+
+/**
+ * Quick budget target presets displayed in Settings, expressed in each display currency.
+ */
+export const BUDGET_PRESETS_BY_CURRENCY: Record<CurrencyCode, number[]> = {
+  INR: [25000, 35000, 45000, 50000, 60000, 75000, 100000],
+  USD: [500, 800, 1000, 1200, 1500, 2000, 3000],
+  EUR: [500, 750, 1000, 1100, 1500, 2000, 3000],
+  GBP: [400, 600, 800, 950, 1200, 1500, 2500],
 };

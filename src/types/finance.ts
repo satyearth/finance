@@ -104,3 +104,28 @@ export interface AmortizedItem {
   createdAt: number;
 }
 
+/**
+ * Full versioned workspace backup schema stored in exported JSON files.
+ */
+export interface SatyfinanceBackup {
+  version: 2;
+  app: 'satyfinance';
+  exportedAt: string;
+  transactions: Transaction[];
+  amortizedItems: AmortizedItem[];
+  monthlyBudgets: Record<string, number>;
+  currency: CurrencyCode;
+}
+
+/**
+ * Normalized data payload returned by JSON/CSV backup importers.
+ */
+export interface ImportedBackupData {
+  transactions: Transaction[];
+  amortizedItems?: AmortizedItem[];
+  monthlyBudgets?: Record<string, number>;
+  currency?: CurrencyCode;
+  format: 'v2-full' | 'v1-array' | 'v1-object' | 'csv';
+  skippedCount: number;
+}
+
