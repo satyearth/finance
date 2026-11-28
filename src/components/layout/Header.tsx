@@ -11,7 +11,7 @@ import {
 } from '@tabler/icons-react';
 import { useFinance } from '@/context/FinanceContext';
 import { MONTH_NAMES_SHORT } from '@/constants/categories';
-import { getCurrentMonthKey } from '@/utils/formatters';
+import { parseLocalDate } from '@/utils/formatters';
 
 /**
  * Props for Header component.
@@ -30,6 +30,7 @@ interface HeaderProps {
 export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
   const {
     selectedMonth,
+    todayDateStr,
     goToPreviousMonth,
     goToNextMonth,
     goToCurrentMonth,
@@ -40,14 +41,9 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
   const [pickerYear, setPickerYear] = useState(selectedMonth.year);
   const popoverRef = useRef<HTMLDivElement>(null);
 
-  const currentMonthKey = getCurrentMonthKey();
+  const currentMonthKey = todayDateStr.slice(0, 7);
   const isCurrentMonth = selectedMonth.key === currentMonthKey;
-  const today = new Date();
-
-  // Sync picker year when selectedMonth changes
-  useEffect(() => {
-    setPickerYear(selectedMonth.year);
-  }, [selectedMonth.year]);
+  const today = parseLocalDate(todayDateStr) ?? new Date();
 
   // Close popup on outside click or Escape key
   useEffect(() => {
@@ -86,7 +82,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
           {onToggleMobileMenu && (
             <button
               onClick={onToggleMobileMenu}
-              className="md:hidden h-8.5 w-8.5 text-[#1B1A18] flex items-center justify-center shrink-0"
+              className="md:hidden h-[34px] w-[34px] text-[#1B1A18] flex items-center justify-center shrink-0"
               aria-label="Open menu"
             >
               <IconMenu2 size={18} stroke={1.8} />
@@ -95,7 +91,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
 
           {/* Unified Month Switcher Capsule */}
           <div className="relative min-w-0" ref={popoverRef}>
-            <div className="flex items-center h-8.5 bg-[#F7F5F2] border border-[#DED9D2] rounded-[2px] p-0.5 max-w-full">
+            <div className="flex items-center h-[34px] bg-[#F7F5F2] border border-[#DED9D2] rounded-[2px] p-0.5 max-w-full">
               {/* Quick Jump: This Month */}
               <button
                 type="button"
@@ -141,7 +137,12 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
               {/* Month Picker Trigger */}
               <button
                 type="button"
-                onClick={() => setIsMonthPickerOpen((prev) => !prev)}
+                onClick={() => {
+                  if (!isMonthPickerOpen) {
+                    setPickerYear(selectedMonth.year);
+                  }
+                  setIsMonthPickerOpen((prev) => !prev);
+                }}
                 className="flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 h-7 rounded-[2px] hover:bg-white text-[#1B1A18] transition-colors min-w-0"
                 title="Click to select specific month and year"
                 aria-expanded={isMonthPickerOpen}
@@ -254,7 +255,7 @@ export function Header({ onToggleMobileMenu, onOpenAddModal }: HeaderProps) {
           {onOpenAddModal && (
             <button
               onClick={onOpenAddModal}
-              className="inline-flex items-center h-8.5 sm:h-9 sf-button-primary text-xs uppercase tracking-wider px-2.5 sm:px-3.5 gap-1.5 shrink-0 rounded-[2px]"
+              className="inline-flex items-center h-[34px] sm:h-9 sf-button-primary text-xs uppercase tracking-wider px-2.5 sm:px-3.5 gap-1.5 shrink-0 rounded-[2px]"
               title="Record new expense (N)"
             >
               <IconPlus size={14} stroke={2.5} />

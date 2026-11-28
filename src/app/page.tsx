@@ -60,7 +60,12 @@ const ResetConfirmModal = dynamic(
  * and global modals for adding/editing expenses and amortization items.
  */
 function MainDashboard() {
-  const { activeTab, transactions } = useFinance();
+  const {
+    activeTab,
+    transactions,
+    storageRecoveryNotice,
+    dismissStorageRecoveryNotice,
+  } = useFinance();
   const hasAnyTransactions = transactions.length > 0;
 
   // Global modal states
@@ -136,6 +141,20 @@ function MainDashboard() {
 
         {/* Dynamic Screen View Container */}
         <main className="flex-1 px-4 sm:px-6 md:px-8 py-3.5 max-w-[1360px] w-full mx-auto">
+          {storageRecoveryNotice && (
+            <div className="mb-4 p-3 rounded-[2px] border border-[#E65B3F]/40 bg-[#F9EEE9] text-[#A83F29] flex items-center justify-between gap-3 text-xs font-mono">
+              <span>
+                Some corrupted localStorage entries were safely cleaned up during startup to protect your workspace.
+              </span>
+              <button
+                type="button"
+                onClick={dismissStorageRecoveryNotice}
+                className="px-2 py-1 rounded-[2px] bg-white border border-[#DED9D2] text-[#1B1A18] hover:border-[#1B1A18] shrink-0 text-[11px] font-bold uppercase"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
           {/* Dashboard Tab View */}
           {activeTab === 'dashboard' && (
             <div className="space-y-4 animate-fadeIn">
@@ -159,7 +178,7 @@ function MainDashboard() {
                     <div className="flex flex-wrap gap-2 mt-3">
                       <button
                         onClick={() => handleOpenAddModal()}
-                        className="sf-button-primary h-8.5 px-3.5 text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 rounded-[2px]"
+                        className="sf-button-primary h-[34px] px-3.5 text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 rounded-[2px]"
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         <span>Add First Transaction</span>
