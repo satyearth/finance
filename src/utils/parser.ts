@@ -26,26 +26,20 @@ const CATEGORY_ALIASES: Array<{ phrase: string; category: CategoryId }> = [
   { phrase: 'personal care', category: 'personal_care' },
   { phrase: 'food dining', category: 'food_dining' },
   { phrase: 'food and dining', category: 'food_dining' },
-  // Single-word shortcuts
+  { phrase: 'bills and utilities', category: 'bills' },
+  // Single-word category tags
   { phrase: 'grocery', category: 'groceries' },
   { phrase: 'groceries', category: 'groceries' },
   { phrase: 'food', category: 'food_dining' },
   { phrase: 'dining', category: 'food_dining' },
-  { phrase: 'dinner', category: 'food_dining' },
-  { phrase: 'lunch', category: 'food_dining' },
   { phrase: 'bill', category: 'bills' },
   { phrase: 'bills', category: 'bills' },
   { phrase: 'utility', category: 'bills' },
   { phrase: 'utilities', category: 'bills' },
   { phrase: 'electronics', category: 'electronics' },
   { phrase: 'electronic', category: 'electronics' },
-  { phrase: 'gadget', category: 'electronics' },
   { phrase: 'personalcare', category: 'personal_care' },
-  { phrase: 'personal', category: 'personal_care' },
-  { phrase: 'care', category: 'personal_care' },
   { phrase: 'household', category: 'household' },
-  { phrase: 'home', category: 'household' },
-  { phrase: 'house', category: 'household' },
   { phrase: 'other', category: 'other' },
   { phrase: 'misc', category: 'other' },
 ];
@@ -67,8 +61,9 @@ const PRECOMPILED_KEYWORDS = CATEGORY_LIST.map((cat) => ({
   })),
 }));
 
-const EXPLICIT_CURRENCY_REGEX = /(?:(?:₹|\$|€|£|rs\.?|inr|usd)\s*([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)|([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)\s*(?:rs\.?|inr|usd|bucks))/i;
-const ALL_NUMBERS_REGEX = /\b([0-9]+(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)\b/g;
+const EXPLICIT_CURRENCY_REGEX =
+  /(?:(?:₹|\$|€|£|rs\.?|inr|usd|eur|gbp)\s*((?:[0-9]{1,3}(?:,[0-9]{2,3})+|[0-9]+)(?:\.[0-9]{1,2})?)|((?:[0-9]{1,3}(?:,[0-9]{2,3})+|[0-9]+)(?:\.[0-9]{1,2})?)\s*(?:rs\.?|inr|usd|eur|gbp|bucks))/i;
+const ALL_NUMBERS_REGEX = /\b((?:[0-9]{1,3}(?:,[0-9]{2,3})+|[0-9]+)(?:\.[0-9]{1,2})?)\b/g;
 
 /**
  * Intelligent natural language parser for quick expense inputs.
