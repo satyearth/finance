@@ -150,9 +150,9 @@ export function AmortizedExpensePicker({
                   </span>
                   <button
                     type="button"
-                    className="sf-button-primary h-6.5 sm:h-7 px-2.5 text-[10px] sm:text-[11px] uppercase tracking-wider font-mono rounded-[2px]"
+                    className="sf-button-primary h-[26px] sm:h-7 px-2.5 text-[10px] sm:text-[11px] uppercase tracking-wider font-mono rounded-[2px]"
                   >
-                    Select
+                    {alreadyTracked ? 'Edit' : 'Select'}
                   </button>
                 </div>
               </div>

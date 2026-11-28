@@ -9,19 +9,22 @@ import {
   IconPencil,
   IconArrowLeft,
   IconHourglassEmpty,
+  IconLinkOff,
 } from '@tabler/icons-react';
-import { AmortizedItem, CategoryId, Transaction } from '@/types/finance';
+import { AmortizedItem, CategoryId, CurrencyCode, Transaction } from '@/types/finance';
 import { CATEGORY_LIST } from '@/constants/categories';
 import { CategoryIcon } from '@/components/common/CategoryIcon';
 import { useFinance } from '@/context/FinanceContext';
 import {
-  getTodayDateString,
   formatCurrency,
   formatDate,
   convertToBaseCurrency,
   convertFromBaseCurrency,
   addMonthsToDate,
   calculateDaysDifference,
+  compareISODates,
+  isValidISODate,
+  roundCurrency,
 } from '@/utils/formatters';
 import { AmortizedExpensePicker } from './amortized/AmortizedExpensePicker';
 import { AmortizedDurationPresets } from './amortized/AmortizedDurationPresets';
@@ -41,11 +44,91 @@ interface AddEditAmortizedModalProps {
   initialTransaction?: Transaction | null;
 }
 
+function buildInitialAmortizedFormState(params: {
+  editingItem?: AmortizedItem | null;
+  initialTransaction?: Transaction | null;
+  amortizedItems: AmortizedItem[];
+  currency: CurrencyCode;
+  todayDateStr: string;
+}) {
+  const { editingItem, initialTransaction, amortizedItems, currency, todayDateStr } = params;
+
+  const formatItemFields = (item: AmortizedItem) => {
+    const convertedCost = convertFromBaseCurrency(item.totalCost ?? 0, currency);
+    return {
+      name: item.name || '',
+      cost: convertedCost !== undefined && convertedCost !== null ? convertedCost.toString() : '0',
+      category: item.category || ('personal_care' as CategoryId),
+      startDate: item.startDate || todayDateStr,
+      endDate: item.endDate || '',
+      selectedPresetMonths: item.durationMonths !== undefined ? item.durationMonths : -1,
+      notes: item.notes || '',
+    };
+  };
+
+  if (editingItem) {
+    return {
+      activeTabMode: 'custom' as const,
+      selectedTx: null as Transaction | null,
+      linkedExistingItem: null as AmortizedItem | null,
+      ...formatItemFields(editingItem),
+    };
+  }
+
+  if (
+    initialTransaction &&
+    typeof initialTransaction === 'object' &&
+    'title' in initialTransaction &&
+    'amount' in initialTransaction
+  ) {
+    const existing = Array.isArray(amortizedItems)
+      ? amortizedItems.find((item) => item && item.transactionId === initialTransaction.id) ?? null
+      : null;
+
+    if (existing) {
+      return {
+        activeTabMode: 'custom' as const,
+        selectedTx: null as Transaction | null,
+        linkedExistingItem: existing,
+        ...formatItemFields(existing),
+      };
+    }
+
+    const convertedCost = convertFromBaseCurrency(initialTransaction.amount ?? 0, currency);
+    const txDate = initialTransaction.date || todayDateStr;
+    return {
+      activeTabMode: 'from_list' as const,
+      selectedTx: initialTransaction,
+      linkedExistingItem: null as AmortizedItem | null,
+      name: initialTransaction.title || '',
+      cost: convertedCost !== undefined && convertedCost !== null ? convertedCost.toString() : '0',
+      category: initialTransaction.category || ('personal_care' as CategoryId),
+      startDate: txDate,
+      endDate: addMonthsToDate(txDate, 2),
+      selectedPresetMonths: 2,
+      notes: initialTransaction.notes || '',
+    };
+  }
+
+  return {
+    activeTabMode: 'from_list' as const,
+    selectedTx: null as Transaction | null,
+    linkedExistingItem: null as AmortizedItem | null,
+    name: '',
+    cost: '',
+    category: 'personal_care' as CategoryId,
+    startDate: todayDateStr,
+    endDate: addMonthsToDate(todayDateStr, 2),
+    selectedPresetMonths: 2,
+    notes: '',
+  };
+}
+
 /**
  * Modal dialog for product lifespan amortization tracking:
- * - Tab 1: Pick an already added expense to track its lifespan
+ * - Tab 1: Pick an already added expense to track (or edit) its lifespan
  * - Tab 2: Manually enter custom product specifications
- * Calculates monthly and daily burn rate with interactive presets and dates.
+ * Calculates monthly and daily burn rate with interactive presets and local calendar dates.
  */
 export function AddEditAmortizedModal({
   isOpen,
@@ -53,119 +136,73 @@ export function AddEditAmortizedModal({
   editingItem,
   initialTransaction,
 }: AddEditAmortizedModalProps) {
+  const { currency, todayDateStr } = useFinance();
+
+  if (!isOpen) return null;
+
+  const modalKey = `${editingItem?.id ?? 'new'}:${initialTransaction?.id ?? 'none'}:${currency}:${todayDateStr}`;
+
+  return (
+    <AddEditAmortizedModalContent
+      key={modalKey}
+      onClose={onClose}
+      editingItem={editingItem}
+      initialTransaction={initialTransaction}
+    />
+  );
+}
+
+function AddEditAmortizedModalContent({
+  onClose,
+  editingItem,
+  initialTransaction,
+}: Omit<AddEditAmortizedModalProps, 'isOpen'>) {
   const {
     transactions,
     amortizedItems,
     addAmortizedItem,
     updateAmortizedItem,
     currency,
+    todayDateStr,
   } = useFinance();
 
+  const [initialValues] = useState(() =>
+    buildInitialAmortizedFormState({
+      editingItem,
+      initialTransaction,
+      amortizedItems,
+      currency,
+      todayDateStr,
+    })
+  );
+
   // Tab mode: 'from_list' (pick from already added transactions) vs 'custom' (manual entry)
-  const [activeTabMode, setActiveTabMode] = useState<'from_list' | 'custom'>('from_list');
+  const [activeTabMode, setActiveTabMode] = useState<'from_list' | 'custom'>(
+    initialValues.activeTabMode
+  );
 
   // Search & filter for selecting from existing transactions
   const [searchTxQuery, setSearchTxQuery] = useState('');
   const [selectedTxCategory, setSelectedTxCategory] = useState<CategoryId | 'all'>('all');
-  const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
+  const [selectedTx, setSelectedTx] = useState<Transaction | null>(initialValues.selectedTx);
+  const [linkedExistingItem, setLinkedExistingItem] = useState<AmortizedItem | null>(
+    initialValues.linkedExistingItem
+  );
+  const [unlinkTx, setUnlinkTx] = useState(false);
 
   // Form states
-  const [name, setName] = useState('');
-  const [cost, setCost] = useState('');
-  const [category, setCategory] = useState<CategoryId>('personal_care');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [selectedPresetMonths, setSelectedPresetMonths] = useState<number>(2);
-  const [notes, setNotes] = useState('');
+  const [name, setName] = useState(initialValues.name);
+  const [cost, setCost] = useState(initialValues.cost);
+  const [category, setCategory] = useState<CategoryId>(initialValues.category);
+  const [startDate, setStartDate] = useState(initialValues.startDate);
+  const [endDate, setEndDate] = useState(initialValues.endDate);
+  const [selectedPresetMonths, setSelectedPresetMonths] = useState<number>(
+    initialValues.selectedPresetMonths
+  );
+  const [notes, setNotes] = useState(initialValues.notes);
   const [error, setError] = useState<string | null>(null);
 
-  // Close on Escape key press
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    },
-    [onClose]
-  );
-
-  useEffect(() => {
-    if (!isOpen) return;
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, handleKeyDown]);
-
-  // Initialize modal state on open or prop change
-  useEffect(() => {
-    if (!isOpen) return;
-
-    if (editingItem) {
-      setActiveTabMode('custom');
-      setSelectedTx(null);
-      setName(editingItem.name || '');
-      const convertedCost = convertFromBaseCurrency(editingItem.totalCost ?? 0, currency);
-      setCost(convertedCost !== undefined && convertedCost !== null ? convertedCost.toString() : '0');
-      setCategory(editingItem.category || 'personal_care');
-      setStartDate(editingItem.startDate || getTodayDateString());
-      setEndDate(editingItem.endDate || '');
-      setSelectedPresetMonths(
-        editingItem.durationMonths !== undefined ? editingItem.durationMonths : -1
-      );
-      setNotes(editingItem.notes || '');
-    } else if (
-      initialTransaction &&
-      typeof initialTransaction === 'object' &&
-      'title' in initialTransaction &&
-      'amount' in initialTransaction
-    ) {
-      // Opened directly with a selected transaction
-      setActiveTabMode('from_list');
-      setSelectedTx(initialTransaction);
-      setName(initialTransaction.title || '');
-      const convertedCost = convertFromBaseCurrency(initialTransaction.amount ?? 0, currency);
-      setCost(convertedCost !== undefined && convertedCost !== null ? convertedCost.toString() : '0');
-      setCategory(initialTransaction.category || 'personal_care');
-      const txDate = initialTransaction.date || getTodayDateString();
-      setStartDate(txDate);
-      const defaultEnd = addMonthsToDate(txDate, 2);
-      setEndDate(defaultEnd);
-      setSelectedPresetMonths(2);
-      setNotes(initialTransaction.notes || '');
-    } else {
-      // Default Add: choose from existing transactions
-      setActiveTabMode('from_list');
-      setSelectedTx(null);
-      setSearchTxQuery('');
-      setSelectedTxCategory('all');
-      setName('');
-      setCost('');
-      setCategory('personal_care');
-      const today = getTodayDateString();
-      setStartDate(today);
-      const defaultEnd = addMonthsToDate(today, 2);
-      setEndDate(defaultEnd);
-      setSelectedPresetMonths(2);
-      setNotes('');
-    }
-    setError(null);
-  }, [isOpen, editingItem, initialTransaction, currency]);
-
-  // When a transaction is selected from the list
-  const handleSelectTransaction = (tx: Transaction) => {
-    if (!tx) return;
-    setSelectedTx(tx);
-    setName(tx.title || '');
-    const convertedCost = convertFromBaseCurrency(tx.amount ?? 0, currency);
-    setCost(convertedCost !== undefined && convertedCost !== null ? convertedCost.toString() : '0');
-    setCategory(tx.category || 'personal_care');
-    const txDate = tx.date || getTodayDateString();
-    setStartDate(txDate);
-    const defaultEnd = addMonthsToDate(txDate, 2);
-    setEndDate(defaultEnd);
-    setSelectedPresetMonths(2);
-    setNotes(tx.notes || '');
-    setError(null);
-  };
+  const activeEditItem = editingItem ?? linkedExistingItem;
 
   // Map of transactions that are already being amortized
   const trackedTxIds = useMemo(() => {
@@ -178,6 +215,61 @@ export function AddEditAmortizedModal({
     }
     return map;
   }, [amortizedItems]);
+
+  const populateFromExistingItem = useCallback(
+    (item: AmortizedItem) => {
+      setName(item.name || '');
+      const convertedCost = convertFromBaseCurrency(item.totalCost ?? 0, currency);
+      setCost(convertedCost !== undefined && convertedCost !== null ? convertedCost.toString() : '0');
+      setCategory(item.category || 'personal_care');
+      setStartDate(item.startDate || todayDateStr);
+      setEndDate(item.endDate || '');
+      setSelectedPresetMonths(
+        item.durationMonths !== undefined ? item.durationMonths : -1
+      );
+      setNotes(item.notes || '');
+    },
+    [currency, todayDateStr]
+  );
+
+  // Close on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  // When a transaction is selected from the list
+  const handleSelectTransaction = (tx: Transaction) => {
+    if (!tx) return;
+    const existing = trackedTxIds.get(tx.id) ?? null;
+    if (existing) {
+      // Open existing linked lifespan record for editing instead of creating a duplicate
+      setLinkedExistingItem(existing);
+      setSelectedTx(null);
+      setUnlinkTx(false);
+      populateFromExistingItem(existing);
+      setError(null);
+      return;
+    }
+
+    setLinkedExistingItem(null);
+    setSelectedTx(tx);
+    setName(tx.title || '');
+    const convertedCost = convertFromBaseCurrency(tx.amount ?? 0, currency);
+    setCost(convertedCost !== undefined && convertedCost !== null ? convertedCost.toString() : '0');
+    setCategory(tx.category || 'personal_care');
+    const txDate = tx.date || todayDateStr;
+    setStartDate(txDate);
+    setEndDate(addMonthsToDate(txDate, 2));
+    setSelectedPresetMonths(2);
+    setNotes(tx.notes || '');
+    setError(null);
+  };
 
   // Filtered list of transactions for selection
   const selectableTransactions = useMemo(() => {
@@ -196,8 +288,6 @@ export function AddEditAmortizedModal({
       return true;
     });
   }, [transactions, selectedTxCategory, searchTxQuery]);
-
-  if (!isOpen) return null;
 
   // Handle preset click
   const handlePresetSelect = (months: number) => {
@@ -229,8 +319,8 @@ export function AddEditAmortizedModal({
         ? selectedPresetMonths
         : Math.max(0.1, Number((totalDays / 30.44).toFixed(1)))
       : 0;
-  const monthlyCost = hasLifespan && calculatedMonths > 0 ? parsedCost / calculatedMonths : 0;
-  const dailyCost = hasLifespan && totalDays > 0 ? parsedCost / totalDays : 0;
+  const monthlyCost = hasLifespan && calculatedMonths > 0 ? roundCurrency(parsedCost / calculatedMonths) : 0;
+  const dailyCost = hasLifespan && totalDays > 0 ? roundCurrency(parsedCost / totalDays) : 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -240,41 +330,54 @@ export function AddEditAmortizedModal({
       return;
     }
 
-    if (parsedCost <= 0) {
-      setError('Enter a valid purchase price.');
+    if (!Number.isFinite(parsedCost) || parsedCost <= 0) {
+      setError('Enter a valid purchase price greater than 0.');
       return;
     }
 
-    if (!startDate) {
-      setError('Specify a purchase date.');
+    if (!isValidISODate(startDate)) {
+      setError('Specify a valid purchase date.');
       return;
     }
 
-    if (hasLifespan && new Date(endDate) <= new Date(startDate)) {
-      setError('End date must be after start date.');
-      return;
+    if (hasLifespan) {
+      if (!isValidISODate(endDate)) {
+        setError('Specify a valid end date.');
+        return;
+      }
+      if (compareISODates(endDate, startDate) <= 0) {
+        setError('End date must be after start date.');
+        return;
+      }
     }
 
     const baseTotalCost = convertToBaseCurrency(parsedCost, currency);
-    const baseMonthlyCost = hasLifespan ? convertToBaseCurrency(monthlyCost, currency) : undefined;
-    const baseDailyCost = hasLifespan ? convertToBaseCurrency(dailyCost, currency) : undefined;
+    const finalDurationMonths = hasLifespan
+      ? Math.max(0.1, Number(calculatedMonths.toFixed(1)))
+      : undefined;
+    const baseMonthlyCost =
+      hasLifespan && finalDurationMonths
+        ? roundCurrency(baseTotalCost / finalDurationMonths)
+        : undefined;
+    const baseDailyCost =
+      hasLifespan && totalDays > 0 ? roundCurrency(baseTotalCost / totalDays) : undefined;
 
-    const isStillActive = hasLifespan ? new Date(endDate) >= new Date() : true;
+    const isStillActive = hasLifespan ? endDate >= todayDateStr : true;
 
-    if (editingItem) {
-      updateAmortizedItem(editingItem.id, {
+    if (activeEditItem) {
+      updateAmortizedItem(activeEditItem.id, {
         name: name.trim(),
         totalCost: baseTotalCost,
         startDate,
         endDate: hasLifespan ? endDate : undefined,
-        durationMonths: hasLifespan ? Math.max(0.1, Number(calculatedMonths.toFixed(1))) : undefined,
+        durationMonths: finalDurationMonths,
         durationDays: hasLifespan ? totalDays : undefined,
         monthlyCost: baseMonthlyCost,
         dailyCost: baseDailyCost,
         category,
         notes: notes.trim() || undefined,
         status: isStillActive ? 'active' : 'completed',
-        transactionId: selectedTx?.id || editingItem.transactionId,
+        transactionId: unlinkTx ? undefined : (selectedTx?.id || activeEditItem.transactionId),
       });
     } else {
       addAmortizedItem({
@@ -282,7 +385,7 @@ export function AddEditAmortizedModal({
         totalCost: baseTotalCost,
         startDate,
         endDate: hasLifespan ? endDate : undefined,
-        durationMonths: hasLifespan ? Math.max(0.1, Number(calculatedMonths.toFixed(1))) : undefined,
+        durationMonths: finalDurationMonths,
         durationDays: hasLifespan ? totalDays : undefined,
         monthlyCost: baseMonthlyCost,
         dailyCost: baseDailyCost,
@@ -316,7 +419,7 @@ export function AddEditAmortizedModal({
             </div>
             <div>
               <h3 id="amort-modal-title" className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-[#1B1A18]">
-                {editingItem
+                {activeEditItem
                   ? 'Edit Product'
                   : selectedTx
                     ? 'Set Lifespan'
@@ -336,12 +439,12 @@ export function AddEditAmortizedModal({
         </div>
 
         {/* Mode Switcher Tabs (Only when adding new, not editing) */}
-        {!editingItem && !selectedTx && (
+        {!activeEditItem && !selectedTx && (
           <div className="p-2 sm:p-3 bg-[#F7F5F2] border-b border-[#DED9D2] flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
               type="button"
               onClick={() => setActiveTabMode('from_list')}
-              className={`flex-1 h-8 sm:h-8.5 px-2 sm:px-3 text-[11px] sm:text-xs font-mono font-semibold flex items-center justify-center gap-1.5 rounded-[2px] transition-colors ${
+              className={`flex-1 h-8 sm:h-[34px] px-2 sm:px-3 text-[11px] sm:text-xs font-mono font-semibold flex items-center justify-center gap-1.5 rounded-[2px] transition-colors ${
                 activeTabMode === 'from_list'
                   ? 'sf-button-primary'
                   : 'sf-button-ghost'
@@ -354,7 +457,7 @@ export function AddEditAmortizedModal({
             <button
               type="button"
               onClick={() => setActiveTabMode('custom')}
-              className={`flex-1 h-8 sm:h-8.5 px-2 sm:px-3 text-[11px] sm:text-xs font-mono font-semibold flex items-center justify-center gap-1.5 rounded-[2px] transition-colors ${
+              className={`flex-1 h-8 sm:h-[34px] px-2 sm:px-3 text-[11px] sm:text-xs font-mono font-semibold flex items-center justify-center gap-1.5 rounded-[2px] transition-colors ${
                 activeTabMode === 'custom'
                   ? 'sf-button-primary'
                   : 'sf-button-ghost'
@@ -375,7 +478,7 @@ export function AddEditAmortizedModal({
           )}
 
           {/* VIEW 1: SELECTING FROM EXISTING EXPENSES LIST */}
-          {!editingItem && activeTabMode === 'from_list' && !selectedTx ? (
+          {!activeEditItem && activeTabMode === 'from_list' && !selectedTx ? (
             <AmortizedExpensePicker
               transactions={transactions}
               searchTxQuery={searchTxQuery}
@@ -389,10 +492,27 @@ export function AddEditAmortizedModal({
               onSwitchToCustom={() => setActiveTabMode('custom')}
             />
           ) : (
-            /* VIEW 2: CONFIGURE LIFESPAN (Selected Transaction or Custom Form) */
+            /* VIEW 2: CONFIGURE LIFESPAN (Selected Transaction or Custom/Edit Form) */
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Linked Transaction Banner when editing an existing linked item */}
+              {activeEditItem?.transactionId && !unlinkTx && (
+                <div className="p-2.5 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-between gap-2 text-xs font-mono">
+                  <span className="text-[#625E59] truncate">
+                    Linked to expense record
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setUnlinkTx(true)}
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-[2px] border border-[#DED9D2] text-[#625E59] hover:text-[#1B1A18] hover:border-[#1B1A18] transition-colors shrink-0 text-[11px]"
+                  >
+                    <IconLinkOff size={12} stroke={2} />
+                    <span>Unlink</span>
+                  </button>
+                </div>
+              )}
+
               {/* If Selected from existing Transaction: Display Banner */}
-              {selectedTx && !editingItem && (
+              {selectedTx && !activeEditItem && (
                 <div className="p-3.5 rounded-[2px] bg-white border border-[#DED9D2] flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div className="w-8 h-8 rounded-[2px] bg-[#F7F5F2] border border-[#DED9D2] text-[#1B1A18] flex items-center justify-center shrink-0">
@@ -431,7 +551,7 @@ export function AddEditAmortizedModal({
               )}
 
               {/* If Custom Entry or Editing: Show editable Name & Category */}
-              {(!selectedTx || editingItem) && (
+              {(!selectedTx || activeEditItem) && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-xs font-mono font-semibold text-[#1B1A18] block">Product name *</label>
@@ -464,7 +584,7 @@ export function AddEditAmortizedModal({
               )}
 
               {/* Total Cost */}
-              {(!selectedTx || editingItem) && (
+              {(!selectedTx || activeEditItem) && (
                 <div className="space-y-1.5">
                   <label className="text-xs font-mono font-semibold text-[#1B1A18] block">
                     Purchase price ({currency}) *
@@ -562,7 +682,9 @@ export function AddEditAmortizedModal({
                 <button
                   type="button"
                   onClick={() => {
-                    if (selectedTx && !editingItem) {
+                    if (linkedExistingItem) {
+                      setLinkedExistingItem(null);
+                    } else if (selectedTx && !editingItem) {
                       setSelectedTx(null);
                     } else {
                       onClose();
@@ -570,15 +692,15 @@ export function AddEditAmortizedModal({
                   }}
                   className="sf-button-ghost h-9 px-4 text-xs font-mono rounded-[2px]"
                 >
-                  {selectedTx && !editingItem ? 'Back' : 'Cancel'}
+                  {(selectedTx && !editingItem) || linkedExistingItem ? 'Back' : 'Cancel'}
                 </button>
 
                 <button
                   type="submit"
                   className="sf-button-primary h-9 px-5 text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 rounded-[2px]"
                 >
-                  {editingItem ? <IconCheck size={14} stroke={2.5} /> : <IconPlus size={14} stroke={2.5} />}
-                  <span>{editingItem ? 'Save' : 'Add product'}</span>
+                  {activeEditItem ? <IconCheck size={14} stroke={2.5} /> : <IconPlus size={14} stroke={2.5} />}
+                  <span>{activeEditItem ? 'Save' : 'Add product'}</span>
                 </button>
               </div>
             </form>

@@ -3,7 +3,7 @@
 import React from 'react';
 import { IconSparkles } from '@tabler/icons-react';
 import { CurrencyCode } from '@/types/finance';
-import { formatCurrency } from '@/utils/formatters';
+import { formatDisplayAmount } from '@/utils/formatters';
 
 interface AmortizedPreviewPillProps {
   hasLifespan: boolean;
@@ -34,7 +34,7 @@ export function AmortizedPreviewPill({
           </span>
           <span className="text-[11px] sm:text-xs text-[#A83F29]/80 font-normal truncate block">
             {hasLifespan
-              ? `${formatCurrency(parsedCost, currency)} · ${calculatedMonths}m`
+              ? `${formatDisplayAmount(parsedCost, currency)} · ${calculatedMonths}m`
               : 'Ongoing item'}
           </span>
         </div>
@@ -44,17 +44,17 @@ export function AmortizedPreviewPill({
         {hasLifespan ? (
           <>
             <span className="text-sm xs:text-base sm:text-lg font-mono font-bold text-[#E65B3F] tabular-nums block leading-tight whitespace-nowrap">
-              {formatCurrency(monthlyCost, currency)}
+              {formatDisplayAmount(monthlyCost, currency)}
               <span className="text-[10px] sm:text-xs font-normal text-[#A83F29]"> / mo</span>
             </span>
             <span className="text-[9.5px] xs:text-[10px] sm:text-[11px] font-mono text-[#A83F29] whitespace-nowrap block">
-              ~{formatCurrency(dailyCost, currency)} / day
+              ~{formatDisplayAmount(dailyCost, currency)} / day
             </span>
           </>
         ) : (
           <>
             <span className="text-xs sm:text-sm font-mono font-bold text-[#1B1A18] tabular-nums block whitespace-nowrap">
-              {parsedCost > 0 ? formatCurrency(parsedCost, currency) : '—'}
+              {parsedCost > 0 ? formatDisplayAmount(parsedCost, currency) : '—'}
             </span>
             <span className="text-[9px] sm:text-[10px] text-[#625E59] whitespace-nowrap block">
               One-time cost

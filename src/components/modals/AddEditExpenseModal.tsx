@@ -5,7 +5,11 @@ import { IconX, IconPlus, IconCheck, IconPencil } from '@tabler/icons-react';
 import { Transaction, CategoryId } from '@/types/finance';
 import { CATEGORY_LIST } from '@/constants/categories';
 import { useFinance } from '@/context/FinanceContext';
-import { getTodayDateString, convertToBaseCurrency, convertFromBaseCurrency } from '@/utils/formatters';
+import {
+  convertToBaseCurrency,
+  convertFromBaseCurrency,
+  isValidISODate,
+} from '@/utils/formatters';
 
 /**
  * Props for AddEditExpenseModal component.
@@ -30,40 +34,53 @@ export function AddEditExpenseModal({
   editingTransaction,
   initialDate,
 }: AddEditExpenseModalProps) {
+  const { currency, selectedMonth, todayDateStr } = useFinance();
 
-  const { addTransaction, updateTransaction, currency, selectedMonth } = useFinance();
+  if (!isOpen) return null;
 
-  const [title, setTitle] = useState('');
-  const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState<CategoryId>('food_dining');
-  const [date, setDate] = useState('');
-  const [notes, setNotes] = useState('');
+  const formKey = `${editingTransaction?.id ?? 'new'}::${initialDate ?? ''}::${selectedMonth.key}::${currency}`;
+  const defaultDate = initialDate
+    ? initialDate
+    : todayDateStr.startsWith(selectedMonth.key)
+    ? todayDateStr
+    : `${selectedMonth.key}-01`;
+
+  return (
+    <AddEditExpenseModalContent
+      key={formKey}
+      onClose={onClose}
+      editingTransaction={editingTransaction}
+      defaultDate={defaultDate}
+      currency={currency}
+    />
+  );
+}
+
+function AddEditExpenseModalContent({
+  onClose,
+  editingTransaction,
+  defaultDate,
+  currency,
+}: {
+  onClose: () => void;
+  editingTransaction?: Transaction | null;
+  defaultDate: string;
+  currency: ReturnType<typeof useFinance>['currency'];
+}) {
+  const { addTransaction, updateTransaction } = useFinance();
+
+  const [title, setTitle] = useState(() => editingTransaction?.title ?? '');
+  const [amount, setAmount] = useState(() =>
+    editingTransaction
+      ? convertFromBaseCurrency(editingTransaction.amount, currency).toString()
+      : ''
+  );
+  const [category, setCategory] = useState<CategoryId>(
+    () => editingTransaction?.category ?? 'food_dining'
+  );
+  const [date, setDate] = useState(() => editingTransaction?.date ?? defaultDate);
+  const [notes, setNotes] = useState(() => editingTransaction?.notes ?? '');
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (editingTransaction) {
-      setTitle(editingTransaction.title);
-      const converted = convertFromBaseCurrency(editingTransaction.amount, currency);
-      setAmount(converted.toString());
-      setCategory(editingTransaction.category);
-      setDate(editingTransaction.date);
-      setNotes(editingTransaction.notes || '');
-    } else {
-      setTitle('');
-      setAmount('');
-      setCategory('food_dining');
-      const today = getTodayDateString();
-      if (initialDate) {
-        setDate(initialDate);
-      } else if (today.startsWith(selectedMonth.key)) {
-        setDate(today);
-      } else {
-        setDate(`${selectedMonth.key}-01`);
-      }
-      setNotes('');
-    }
-    setError(null);
-  }, [editingTransaction, isOpen, initialDate, selectedMonth.key, currency]);
 
   // Close on Escape key
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -71,13 +88,9 @@ export function AddEditExpenseModal({
   }, [onClose]);
 
   useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
-    }
-  }, [isOpen, handleKeyDown]);
-
-  if (!isOpen) return null;
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,13 +101,13 @@ export function AddEditExpenseModal({
     }
 
     const parsedAmount = parseFloat(amount);
-    if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      setError('Enter a valid amount.');
+    if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+      setError('Enter a valid amount greater than 0.');
       return;
     }
 
-    if (!date) {
-      setError('Select a valid date.');
+    if (!isValidISODate(date)) {
+      setError('Select a valid calendar date.');
       return;
     }
 
