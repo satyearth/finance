@@ -11,8 +11,13 @@ import {
 import { useFinance } from '@/context/FinanceContext';
 import { Transaction, CategoryId } from '@/types/finance';
 import { CategoryBadge } from '@/components/common/CategoryBadge';
-import { CATEGORY_LIST } from '@/constants/categories';
-import { formatCurrency, convertToBaseCurrency, formatFullDate } from '@/utils/formatters';
+import { CATEGORY_LIST, CURRENCIES } from '@/constants/categories';
+import {
+  formatCurrency,
+  convertToBaseCurrency,
+  formatFullDate,
+  sumCurrency,
+} from '@/utils/formatters';
 
 /**
  * Props for DayDetailsModal component.
@@ -35,10 +40,34 @@ export function DayDetailsModal({
   onClose,
   onEditTransaction,
 }: DayDetailsModalProps) {
+  if (!dateString) return null;
+
+  return (
+    <DayDetailsModalContent
+      key={dateString}
+      dateString={dateString}
+      onClose={onClose}
+      onEditTransaction={onEditTransaction}
+    />
+  );
+}
+
+function DayDetailsModalContent({
+  dateString,
+  onClose,
+  onEditTransaction,
+}: {
+  dateString: string;
+  onClose: () => void;
+  onEditTransaction?: (tx: Transaction) => void;
+}) {
   const { transactions, addTransaction, deleteTransaction, currency } = useFinance();
   const [quickTitle, setQuickTitle] = useState('');
   const [quickAmount, setQuickAmount] = useState('');
   const [quickCategory, setQuickCategory] = useState<CategoryId>('food_dining');
+  const [quickError, setQuickError] = useState<string | null>(null);
+
+  const currencySymbol = CURRENCIES[currency]?.symbol || '₹';
 
   // Close on Escape key
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -46,23 +75,28 @@ export function DayDetailsModal({
   }, [onClose]);
 
   useEffect(() => {
-    if (dateString) {
-      document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
-    }
-  }, [dateString, handleKeyDown]);
-
-  if (!dateString) return null;
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
 
   const dayTransactions = transactions.filter((t) => t.date === dateString);
-  const dayTotal = dayTransactions.reduce((acc, t) => acc + t.amount, 0);
+  const dayTotal = sumCurrency(dayTransactions.map((t) => t.amount));
   const formattedDayTitle = formatFullDate(dateString);
 
   const handleQuickAddForDay = (e: React.FormEvent) => {
     e.preventDefault();
-    const amountVal = parseFloat(quickAmount);
-    if (!quickTitle.trim() || isNaN(amountVal) || amountVal <= 0) return;
+    if (!quickTitle.trim()) {
+      setQuickError('Enter a description.');
+      return;
+    }
 
+    const amountVal = parseFloat(quickAmount);
+    if (!Number.isFinite(amountVal) || amountVal <= 0) {
+      setQuickError('Enter a valid amount greater than 0.');
+      return;
+    }
+
+    setQuickError(null);
     const baseAmount = convertToBaseCurrency(amountVal, currency);
 
     addTransaction({
@@ -179,23 +213,37 @@ export function DayDetailsModal({
               Add transaction
             </div>
 
-            <form onSubmit={handleQuickAddForDay} className="space-y-2 sm:space-y-2.5">
+            {quickError && (
+              <div className="mb-2.5 p-2.5 rounded-[2px] bg-red-50 border border-red-200 text-red-700 text-xs font-mono font-bold">
+                {quickError}
+              </div>
+            )}
+
+            <form onSubmit={handleQuickAddForDay} noValidate className="space-y-2 sm:space-y-2.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input
                   type="text"
                   placeholder="Description"
                   value={quickTitle}
-                  onChange={(e) => setQuickTitle(e.target.value)}
-                  className="sf-input w-full h-8.5 px-3 text-xs rounded-[2px]"
+                  onChange={(e) => {
+                    setQuickTitle(e.target.value);
+                    if (quickError) setQuickError(null);
+                  }}
+                  aria-label="Transaction description"
+                  className="sf-input w-full h-[34px] px-3 text-xs rounded-[2px]"
                 />
                 <input
                   type="number"
                   min="0"
                   step="any"
-                  placeholder="Amount"
+                  placeholder={`Amount (${currencySymbol})`}
                   value={quickAmount}
-                  onChange={(e) => setQuickAmount(e.target.value)}
-                  className="sf-input w-full h-8.5 px-3 text-xs font-mono font-bold tabular-nums rounded-[2px]"
+                  onChange={(e) => {
+                    setQuickAmount(e.target.value);
+                    if (quickError) setQuickError(null);
+                  }}
+                  aria-label={`Transaction amount in ${currency}`}
+                  className="sf-input w-full h-[34px] px-3 text-xs font-mono font-bold tabular-nums rounded-[2px]"
                 />
               </div>
 
@@ -203,7 +251,8 @@ export function DayDetailsModal({
                 <select
                   value={quickCategory}
                   onChange={(e) => setQuickCategory(e.target.value as CategoryId)}
-                  className="sf-input flex-1 h-8.5 px-3 text-xs font-mono cursor-pointer bg-white rounded-[2px]"
+                  aria-label="Transaction category"
+                  className="sf-input flex-1 h-[34px] px-3 text-xs font-mono cursor-pointer bg-white rounded-[2px]"
                 >
                   {CATEGORY_LIST.map((cat) => (
                     <option key={cat.id} value={cat.id}>
@@ -214,7 +263,7 @@ export function DayDetailsModal({
 
                 <button
                   type="submit"
-                  className="sf-button-primary h-8.5 text-xs uppercase tracking-wider px-3.5 sm:px-4 shrink-0 flex items-center justify-center gap-1.5 font-mono rounded-[2px]"
+                  className="sf-button-primary h-[34px] text-xs uppercase tracking-wider px-3.5 sm:px-4 shrink-0 flex items-center justify-center gap-1.5 font-mono rounded-[2px]"
                 >
                   <IconPlus size={13} stroke={2.5} />
                   <span>Add</span>

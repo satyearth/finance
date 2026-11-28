@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   IconCalendar,
   IconClock,
   IconPlus,
 } from '@tabler/icons-react';
 import { useFinance } from '@/context/FinanceContext';
-import { formatCurrency } from '@/utils/formatters';
+import { formatCurrency, parseLocalDate, sumCurrency } from '@/utils/formatters';
 import { WEEKDAYS_SHORT } from '@/constants/categories';
 import { DayDetailsModal } from './DayDetailsModal';
 import { Transaction } from '@/types/finance';
@@ -62,6 +62,7 @@ interface CellData {
 export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarViewProps) {
   const {
     selectedMonth,
+    todayDateStr,
     filteredTransactions,
     totalSpentThisMonth,
     settledSpentThisMonth,
@@ -69,7 +70,8 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
     currency,
   } = useFinance();
 
-  const today = new Date();
+  const today = useMemo(() => parseLocalDate(todayDateStr) ?? new Date(), [todayDateStr]);
+  const todayDay = today.getDate();
   const isCurrentMonth =
     selectedMonth.year === today.getFullYear() &&
     selectedMonth.month === today.getMonth();
@@ -77,10 +79,21 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
     selectedMonth.year > today.getFullYear() ||
     (selectedMonth.year === today.getFullYear() && selectedMonth.month > today.getMonth());
 
-  const [selectedDay, setSelectedDay] = useState<number | null>(() => {
-    return isCurrentMonth ? today.getDate() : 1;
-  });
+  const [selectedDayState, setSelectedDayState] = useState<{
+    monthKey: string;
+    day: number | null;
+  }>(() => ({
+    monthKey: selectedMonth.key,
+    day: isCurrentMonth ? todayDay : 1,
+  }));
   const [selectedDayModal, setSelectedDayModal] = useState<string | null>(null);
+
+  const selectedDay =
+    selectedDayState.monthKey === selectedMonth.key
+      ? selectedDayState.day
+      : isCurrentMonth
+      ? todayDay
+      : 1;
 
   // First day of month
   const firstDayIndex = new Date(selectedMonth.year, selectedMonth.month, 1).getDay();
@@ -113,23 +126,24 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
     const isToday = isCurrentMonth && d === today.getDate();
     const isFuture = isFutureMonth || (isCurrentMonth && d > today.getDate());
 
-    let daySettled = 0;
-    let dayBill: { name: string; amount: number } | undefined = undefined;
+    const settledAmounts: number[] = [];
+    const scheduledAmounts: number[] = [];
+    let firstScheduledTitle: string | undefined;
 
     dayTxs.forEach((tx) => {
       if (isFuture) {
-        if (!dayBill) {
-          dayBill = {
-            name: getBillShortName(tx.title),
-            amount: tx.amount,
-          };
-        } else {
-          dayBill.amount += tx.amount;
-        }
+        if (!firstScheduledTitle) firstScheduledTitle = getBillShortName(tx.title);
+        scheduledAmounts.push(tx.amount);
       } else {
-        daySettled += tx.amount;
+        settledAmounts.push(tx.amount);
       }
     });
+
+    const daySettled = sumCurrency(settledAmounts);
+    const dayBill =
+      firstScheduledTitle !== undefined
+        ? { name: firstScheduledTitle, amount: sumCurrency(scheduledAmounts) }
+        : undefined;
 
     calendarCells.push({
       dayNumber: d,
@@ -163,7 +177,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
 
   const handleCellClick = (cell: CellData) => {
     if (!cell.isCurrentMonth) return;
-    setSelectedDay(cell.dayNumber);
+    setSelectedDayState({ monthKey: selectedMonth.key, day: cell.dayNumber });
     setSelectedDayModal(cell.dateString);
   };
 
@@ -280,7 +294,7 @@ export function CalendarView({ onOpenAddModal, onEditTransaction }: CalendarView
 
                 <div className="flex items-center gap-1">
                   {item.itemsCount > 0 && (
-                    <span className="text-[9px] sm:text-[10px] font-mono text-[#625E59] bg-[#F7F5F2] border border-[#DED9D2] px-1 sm:px-1.5 py-0.2 sm:py-0.5 rounded-[2px] truncate">
+                    <span className="text-[9px] sm:text-[10px] font-mono text-[#625E59] bg-[#F7F5F2] border border-[#DED9D2] px-1 sm:px-1.5 py-[1px] sm:py-0.5 rounded-[2px] truncate">
                       {item.itemsCount} <span className="hidden sm:inline">{item.itemsCount === 1 ? 'txn' : 'txns'}</span>
                     </span>
                   )}
