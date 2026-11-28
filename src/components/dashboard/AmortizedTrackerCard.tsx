@@ -11,7 +11,7 @@ import {
 } from '@tabler/icons-react';
 import { useFinance } from '@/context/FinanceContext';
 import { AmortizedItem } from '@/types/finance';
-import { formatCurrency, formatDate } from '@/utils/formatters';
+import { formatCurrency, formatDate, parseLocalDate } from '@/utils/formatters';
 import { CategoryBadge } from '@/components/common/CategoryBadge';
 
 /**
@@ -39,9 +39,15 @@ export function AmortizedTrackerCard({
     totalMonthlyAmortizedCost,
     activeAmortizedCount,
     currency,
+    todayDateStr,
   } = useFinance();
 
-  const today = new Date();
+  const todayLocal = parseLocalDate(todayDateStr) ?? new Date();
+  const todayUtcMs = Date.UTC(
+    todayLocal.getFullYear(),
+    todayLocal.getMonth(),
+    todayLocal.getDate()
+  );
 
   return (
     <div className="sf-card p-4 sm:p-6 transition-all font-sans space-y-4 sm:space-y-5">
@@ -95,16 +101,31 @@ export function AmortizedTrackerCard({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {amortizedItems.map((item) => {
-            const startDateObj = new Date(item.startDate);
+            const startDateObj = parseLocalDate(item.startDate);
             const hasLifespan = Boolean(item.endDate && item.durationMonths && item.durationMonths > 0);
-            const endDateObj = hasLifespan && item.endDate ? new Date(item.endDate) : null;
-            const totalLifespanMs = endDateObj ? Math.max(1, endDateObj.getTime() - startDateObj.getTime()) : 0;
-            const elapsedMs = Math.max(0, today.getTime() - startDateObj.getTime());
-            const progressPercent = totalLifespanMs > 0 ? Math.min(100, Math.round((elapsedMs / totalLifespanMs) * 100)) : 0;
-            const remainingDays = endDateObj
-              ? Math.max(0, Math.ceil((endDateObj.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)))
+            const endDateObj = hasLifespan && item.endDate ? parseLocalDate(item.endDate) : null;
+
+            const startUtcMs = startDateObj
+              ? Date.UTC(startDateObj.getFullYear(), startDateObj.getMonth(), startDateObj.getDate())
+              : todayUtcMs;
+            const endUtcMs = endDateObj
+              ? Date.UTC(endDateObj.getFullYear(), endDateObj.getMonth(), endDateObj.getDate())
               : null;
-            const isCompleted = hasLifespan && endDateObj ? (item.status === 'completed' || today > endDateObj) : false;
+
+            const totalLifespanMs = endUtcMs !== null ? Math.max(86400000, endUtcMs - startUtcMs) : 0;
+            const elapsedMs = Math.max(0, todayUtcMs - startUtcMs);
+            const progressPercent =
+              totalLifespanMs > 0
+                ? Math.min(100, Math.round((elapsedMs / totalLifespanMs) * 100))
+                : 0;
+            const remainingDays =
+              endUtcMs !== null
+                ? Math.max(0, Math.round((endUtcMs - todayUtcMs) / 86400000))
+                : null;
+            const isCompleted =
+              hasLifespan && item.endDate
+                ? item.status === 'completed' || todayDateStr > item.endDate
+                : false;
 
             return (
               <div
@@ -121,13 +142,19 @@ export function AmortizedTrackerCard({
                         onClick={() => onEditItem(item)}
                         className="p-1 rounded-[2px] text-[#625E59] hover:text-[#1B1A18] hover:bg-[#F7F5F2] transition-colors"
                         title="Edit Item"
+                        aria-label={`Edit ${item.name}`}
                       >
                         <IconPencil size={13} stroke={2} />
                       </button>
                       <button
-                        onClick={() => deleteAmortizedItem(item.id)}
+                        onClick={() => {
+                          if (window.confirm(`Delete "${item.name}"?`)) {
+                            deleteAmortizedItem(item.id);
+                          }
+                        }}
                         className="p-1 rounded-[2px] text-[#625E59] hover:text-red-600 hover:bg-red-50 transition-colors"
                         title="Delete Item"
+                        aria-label={`Delete ${item.name}`}
                       >
                         <IconTrash size={13} stroke={2} />
                       </button>

@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import { IconChartBar } from '@tabler/icons-react';
 import { useFinance } from '@/context/FinanceContext';
-import { formatCurrency, getTodayDateString } from '@/utils/formatters';
+import { formatCurrency, parseLocalDate, sumCurrency } from '@/utils/formatters';
 import { MONTH_NAMES_SHORT } from '@/constants/categories';
 
 /**
@@ -27,17 +27,17 @@ export function SpendingChart() {
     filteredTransactions,
     selectedMonth,
     currency,
+    todayDateStr,
   } = useFinance();
 
   const chartPoints = useMemo<ChartPoint[]>(() => {
     const daysInMonth = new Date(selectedMonth.year, selectedMonth.month + 1, 0).getDate();
     const monthShort = MONTH_NAMES_SHORT[selectedMonth.month] || 'Month';
 
-    const today = new Date();
+    const today = parseLocalDate(todayDateStr) ?? new Date();
     const isCurrentMonth =
       today.getFullYear() === selectedMonth.year && today.getMonth() === selectedMonth.month;
     const todayDay = today.getDate();
-    const todayStr = getTodayDateString();
     const isPastMonth =
       selectedMonth.year < today.getFullYear() ||
       (selectedMonth.year === today.getFullYear() && selectedMonth.month < today.getMonth());
@@ -46,7 +46,7 @@ export function SpendingChart() {
     const parsedTxs = filteredTransactions.map((t) => {
       const parts = t.date ? t.date.split('-') : [];
       const day = parts.length === 3 ? parseInt(parts[2], 10) : 0;
-      const isSettled = isPastMonth || (isCurrentMonth && t.date <= todayStr);
+      const isSettled = isPastMonth || (isCurrentMonth && t.date <= todayDateStr);
       return { day, amount: t.amount, isSettled };
     });
 
@@ -65,18 +65,21 @@ export function SpendingChart() {
     }
 
     return buckets.map((b, idx) => {
-      let settled = 0;
-      let scheduled = 0;
+      const settledAmounts: number[] = [];
+      const scheduledAmounts: number[] = [];
 
       for (const t of parsedTxs) {
         if (t.day >= b.startDay && t.day <= b.endDay) {
           if (t.isSettled) {
-            settled += t.amount;
+            settledAmounts.push(t.amount);
           } else {
-            scheduled += t.amount;
+            scheduledAmounts.push(t.amount);
           }
         }
       }
+
+      const settled = sumCurrency(settledAmounts);
+      const scheduled = sumCurrency(scheduledAmounts);
 
       const isCurrentRange = isCurrentMonth && todayDay >= b.startDay && todayDay <= b.endDay;
       const label =
@@ -98,7 +101,7 @@ export function SpendingChart() {
         isToday: isCurrentRange,
       };
     });
-  }, [filteredTransactions, selectedMonth]);
+  }, [filteredTransactions, selectedMonth, todayDateStr]);
 
   const maxVal = useMemo(() => {
     const totals = chartPoints.map((p) => p.settled + p.scheduled);
@@ -199,7 +202,7 @@ export function SpendingChart() {
                   {/* Stacked Bar with Flat Bottom grounded on X-axis line */}
                   <div
                     className={`w-4 xs:w-5 sm:w-8 md:w-9 flex flex-col justify-end overflow-hidden rounded-none transition-all duration-300 ${
-                      bar.isToday ? 'ring-1.5 sm:ring-2 ring-[#E65B3F] ring-offset-1 sm:ring-offset-2 ring-offset-[#F7F5F2]' : 'hover:opacity-90'
+                      bar.isToday ? 'ring-[1.5px] sm:ring-2 ring-[#E65B3F] ring-offset-1 sm:ring-offset-2 ring-offset-[#F7F5F2]' : 'hover:opacity-90'
                     }`}
                     style={{ height: `${heightPercent}%` }}
                   >

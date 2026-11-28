@@ -115,7 +115,7 @@ export function BentoMetrics() {
               TOP CAT
             </span>
             {topCategory && topCategoryPercentage > 0 && (
-              <span className="inline-block px-1 py-0.2 text-[9px] sm:text-[10px] font-mono font-semibold text-[#1B1A18] bg-[#EFECE6] border border-[#DED9D2] rounded-[2px] leading-none shrink-0 whitespace-nowrap">
+              <span className="inline-block px-1 py-[1px] text-[9px] sm:text-[10px] font-mono font-semibold text-[#1B1A18] bg-[#EFECE6] border border-[#DED9D2] rounded-[2px] leading-none shrink-0 whitespace-nowrap">
                 {topCategoryPercentage}%
               </span>
             )}

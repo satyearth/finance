@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { IconSearch } from '@tabler/icons-react';
 import { useFinance } from '@/context/FinanceContext';
 import { parseNaturalLanguageExpense } from '@/utils/parser';
-import { getTodayDateString, convertToBaseCurrency } from '@/utils/formatters';
+import { convertToBaseCurrency, formatDisplayAmount } from '@/utils/formatters';
 import { CURRENCIES, CATEGORIES } from '@/constants/categories';
 
 /**
@@ -13,7 +13,7 @@ import { CURRENCIES, CATEGORIES } from '@/constants/categories';
  * and keyboard shortcuts ('/' or 'Cmd/Ctrl + K') to quickly focus.
  */
 export function QuickExpenseBar() {
-  const { addTransaction, currency, selectedMonth } = useFinance();
+  const { addTransaction, currency, selectedMonth, todayDateStr } = useFinance();
   const currencySymbol = CURRENCIES[currency]?.symbol || '₹';
   const [inputVal, setInputVal] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -39,8 +39,9 @@ export function QuickExpenseBar() {
 
     const finalTitle = preview.title.trim() || (CATEGORIES[preview.category]?.label || 'Quick Expense');
     const baseAmount = convertToBaseCurrency(preview.amount, currency);
-    const today = getTodayDateString();
-    const dateToUse = today.startsWith(selectedMonth.key) ? today : `${selectedMonth.key}-01`;
+    const dateToUse = todayDateStr.startsWith(selectedMonth.key)
+      ? todayDateStr
+      : `${selectedMonth.key}-01`;
 
     addTransaction({
       title: finalTitle,
@@ -49,7 +50,7 @@ export function QuickExpenseBar() {
       date: dateToUse,
     });
 
-    setJustAddedMsg(`${finalTitle} (${currencySymbol}${preview.amount.toLocaleString()})`);
+    setJustAddedMsg(`${finalTitle} (${formatDisplayAmount(preview.amount, currency)})`);
     if (addedTimeoutRef.current) clearTimeout(addedTimeoutRef.current);
     addedTimeoutRef.current = setTimeout(() => setJustAddedMsg(null), 2500);
 
@@ -94,7 +95,7 @@ export function QuickExpenseBar() {
             onChange={(e) => setInputVal(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder="Quick add: e.g. Coffee ₹250 Food"
+            placeholder={`Quick add: e.g. Coffee ${currencySymbol}250 Food`}
             className="w-full text-xs sm:text-sm font-medium text-[#1B1A18] placeholder:text-[#625E59] bg-transparent outline-none border-none focus:outline-none focus:ring-0 focus-visible:outline-none font-sans min-w-0"
             style={{ outline: 'none', border: 'none', boxShadow: 'none' }}
           />
@@ -111,7 +112,7 @@ export function QuickExpenseBar() {
                 {CATEGORIES[preview.category]?.label || 'Expense'}
               </span>
               <span className="inline-flex items-center h-6 text-[11px] sm:text-xs font-mono font-bold text-[#A83F29] bg-[#F9EEE9] border border-[#E65B3F]/30 px-1.5 sm:px-2.5 rounded-[2px] tabular-nums whitespace-nowrap">
-                {currencySymbol}{preview.amount.toLocaleString()}
+                {formatDisplayAmount(preview.amount, currency)}
               </span>
             </div>
           )}

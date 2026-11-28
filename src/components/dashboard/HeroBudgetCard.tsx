@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useFinance } from '@/context/FinanceContext';
 import { formatCurrency, convertToBaseCurrency, convertFromBaseCurrency } from '@/utils/formatters';
 import { CURRENCIES } from '@/constants/categories';
@@ -13,6 +13,7 @@ import { CURRENCIES } from '@/constants/categories';
 export function HeroBudgetCard() {
   const {
     selectedMonth,
+    monthlyBudgets,
     currentBudget,
     setMonthlyBudget,
     totalSpentThisMonth,
@@ -26,19 +27,22 @@ export function HeroBudgetCard() {
   const displayBudget = convertFromBaseCurrency(currentBudget || 0, currency);
   const [budgetValue, setBudgetValue] = useState(displayBudget.toString());
 
-  useEffect(() => {
-    const converted = convertFromBaseCurrency(currentBudget || 0, currency);
-    setBudgetValue(converted.toString());
-  }, [currentBudget, currency]);
+  const openBudgetEditor = () => {
+    setBudgetValue(displayBudget.toString());
+    setIsEditingBudget(true);
+  };
 
   const remaining = currentBudget - totalSpentThisMonth;
   const isOverBudget = remaining < 0;
 
   const handleSaveBudget = () => {
     const num = parseFloat(budgetValue);
-    if (!isNaN(num) && num >= 0) {
-      const baseBudget = convertToBaseCurrency(num, currency);
-      setMonthlyBudget(selectedMonth.key, baseBudget);
+    if (Number.isFinite(num) && num >= 0) {
+      const hasExplicitBudget = monthlyBudgets[selectedMonth.key] !== undefined;
+      if (hasExplicitBudget || num > 0) {
+        const baseBudget = convertToBaseCurrency(num, currency);
+        setMonthlyBudget(selectedMonth.key, baseBudget);
+      }
     } else {
       setBudgetValue(displayBudget.toString());
     }
@@ -92,7 +96,7 @@ export function HeroBudgetCard() {
           ) : (
             <button
               type="button"
-              onClick={() => setIsEditingBudget(true)}
+              onClick={openBudgetEditor}
               className="col-span-2 xs:col-span-1 inline-flex items-center justify-between xs:justify-start gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[2px] text-[10px] xs:text-[11px] sm:text-xs font-mono bg-[#F7F5F2] text-[#625E59] border border-[#DED9D2] hover:border-[#1B1A18] hover:text-[#1B1A18] transition-colors cursor-pointer whitespace-nowrap"
             >
               <span className="w-1.5 h-1.5 bg-[#625E59] shrink-0" />
@@ -168,7 +172,7 @@ export function HeroBudgetCard() {
               </span>
             ) : (
               <button
-                onClick={() => setIsEditingBudget(true)}
+                onClick={openBudgetEditor}
                 className="hover:text-[#1B1A18] transition-colors flex items-center gap-1 group whitespace-nowrap"
                 title="Click to edit target"
               >
