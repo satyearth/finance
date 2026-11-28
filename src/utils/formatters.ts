@@ -12,6 +12,47 @@ const standardFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
 });
 
+const ISO_DATE_REGEX = /^(\d{4})-(\d{2})-(\d{2})$/;
+const MONTH_KEY_REGEX = /^\d{4}-(0[1-9]|1[0-2])$/;
+
+/**
+ * Rounds a monetary value cleanly to 2 decimal places, normalizing -0 to 0
+ * and mitigating IEEE-754 floating-point precision drift.
+ */
+export function roundCurrency(value: number): number {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return 0;
+  const sign = value < 0 ? -1 : 1;
+  const rounded = (sign * Math.round((Math.abs(value) + Number.EPSILON) * 100)) / 100;
+  return Math.abs(rounded) < 1e-9 ? 0 : rounded;
+}
+
+/**
+ * Sums monetary amounts in integer minor units (paise/cents) to avoid
+ * floating-point accumulation errors across multiple line items.
+ */
+export function sumCurrency(values: number[]): number {
+  let totalMinor = 0;
+  for (const val of values) {
+    if (typeof val === 'number' && Number.isFinite(val)) {
+      totalMinor += Math.round(val * 100);
+    }
+  }
+  return roundCurrency(totalMinor / 100);
+}
+
+/**
+ * Formats an amount already expressed in the active display currency.
+ */
+export function formatDisplayAmount(
+  amountInCurrency: number,
+  currencyCode: CurrencyCode = 'INR'
+): string {
+  const currency = CURRENCIES[currencyCode] || CURRENCIES.INR;
+  const safeNum = roundCurrency(amountInCurrency);
+  const formatter = currencyCode === 'INR' ? inrFormatter : standardFormatter;
+  return `${currency.symbol} ${formatter.format(safeNum)}`;
+}
+
 /**
  * Formats a given monetary amount into a localized currency string.
  *
@@ -24,8 +65,9 @@ export function formatCurrency(
   currencyCode: CurrencyCode = 'INR'
 ): string {
   const currency = CURRENCIES[currencyCode] || CURRENCIES.INR;
-  const num = typeof amount === 'number' && !isNaN(amount) ? amount : 0;
-  const convertedAmount = currencyCode === 'INR' ? num : num * currency.rateAgainstINR;
+  const num = typeof amount === 'number' && Number.isFinite(amount) ? amount : 0;
+  const convertedAmount =
+    currencyCode === 'INR' ? roundCurrency(num) : roundCurrency(num * currency.rateAgainstINR);
   const formatter = currencyCode === 'INR' ? inrFormatter : standardFormatter;
 
   return `${currency.symbol} ${formatter.format(convertedAmount)}`;
@@ -42,10 +84,10 @@ export function convertToBaseCurrency(
   amount: number,
   currencyCode: CurrencyCode = 'INR'
 ): number {
-  if (typeof amount !== 'number' || isNaN(amount)) return 0;
-  if (currencyCode === 'INR' || !amount) return amount;
+  if (typeof amount !== 'number' || !Number.isFinite(amount)) return 0;
+  if (currencyCode === 'INR' || !amount) return roundCurrency(amount);
   const rate = CURRENCIES[currencyCode]?.rateAgainstINR || 1;
-  return Number((amount / rate).toFixed(2));
+  return roundCurrency(amount / rate);
 }
 
 /**
@@ -59,10 +101,64 @@ export function convertFromBaseCurrency(
   amount: number,
   currencyCode: CurrencyCode = 'INR'
 ): number {
-  if (typeof amount !== 'number' || isNaN(amount)) return 0;
-  if (currencyCode === 'INR' || !amount) return amount;
+  if (typeof amount !== 'number' || !Number.isFinite(amount)) return 0;
+  if (currencyCode === 'INR' || !amount) return roundCurrency(amount);
   const rate = CURRENCIES[currencyCode]?.rateAgainstINR || 1;
-  return Number((amount * rate).toFixed(2));
+  return roundCurrency(amount * rate);
+}
+
+/**
+ * Validates that a value is a real calendar date string in YYYY-MM-DD format.
+ */
+export function isValidISODate(dateStr: unknown): dateStr is string {
+  if (typeof dateStr !== 'string') return false;
+  const match = ISO_DATE_REGEX.exec(dateStr.trim());
+  if (!match) return false;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (month < 1 || month > 12 || day < 1 || day > 31) return false;
+  const d = new Date(year, month - 1, day);
+  return d.getFullYear() === year && d.getMonth() === month - 1 && d.getDate() === day;
+}
+
+/**
+ * Validates that a string is a valid YYYY-MM month key.
+ */
+export function isValidMonthKey(key: unknown): key is string {
+  return typeof key === 'string' && MONTH_KEY_REGEX.test(key);
+}
+
+/**
+ * Parses an ISO date string (YYYY-MM-DD) strictly in the local timezone
+ * to avoid UTC-midnight off-by-one date shifts.
+ */
+export function parseLocalDate(dateString?: string): Date | null {
+  if (!isValidISODate(dateString)) return null;
+  const [year, month, day] = dateString.trim().split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+/**
+ * Formats a Date instance into a local YYYY-MM-DD string.
+ */
+export function formatLocalDateISO(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Compares two YYYY-MM-DD date strings chronologically in local calendar space.
+ */
+export function compareISODates(a: string, b: string): number {
+  const da = parseLocalDate(a);
+  const db = parseLocalDate(b);
+  if (da && db) {
+    return da.getTime() - db.getTime();
+  }
+  return a.localeCompare(b);
 }
 
 /**
@@ -73,19 +169,13 @@ export function convertFromBaseCurrency(
  */
 export function formatDate(dateString?: string): string {
   if (!dateString || typeof dateString !== 'string') return '';
-  try {
-    const parts = dateString.split('-').map(Number);
-    if (parts.length < 3 || parts.some(isNaN)) return dateString;
-    const [year, month, day] = parts;
-    const date = new Date(year, month - 1, day);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  } catch {
-    return dateString || '';
-  }
+  const date = parseLocalDate(dateString);
+  if (!date) return dateString;
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }
 
 /**
@@ -96,20 +186,14 @@ export function formatDate(dateString?: string): string {
  */
 export function formatFullDate(dateString?: string): string {
   if (!dateString || typeof dateString !== 'string') return '';
-  try {
-    const parts = dateString.split('-').map(Number);
-    if (parts.length < 3 || parts.some(isNaN)) return dateString;
-    const [year, month, day] = parts;
-    const date = new Date(year, month - 1, day);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  } catch {
-    return dateString || '';
-  }
+  const date = parseLocalDate(dateString);
+  if (!date) return dateString;
+  return date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }
 
 /**
@@ -128,21 +212,16 @@ export function getMonthYearLabel(year: number, monthIndex: number): string {
 }
 
 /**
- * Returns today's date formatted as an ISO date string (YYYY-MM-DD).
+ * Returns today's date formatted as a local ISO date string (YYYY-MM-DD).
  */
-export function getTodayDateString(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+export function getTodayDateString(now: Date = new Date()): string {
+  return formatLocalDateISO(now);
 }
 
 /**
- * Returns the current month key formatted as "YYYY-MM".
+ * Returns the current month key formatted as "YYYY-MM" in local time.
  */
-export function getCurrentMonthKey(): string {
-  const now = new Date();
+export function getCurrentMonthKey(now: Date = new Date()): string {
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, '0');
   return `${year}-${month}`;
@@ -150,43 +229,49 @@ export function getCurrentMonthKey(): string {
 
 /**
  * Adds a given number of months to an ISO date string (YYYY-MM-DD),
- * safely handling month overflows and leap years.
+ * clamping month-end days safely (e.g. Jan 31 + 1 mo -> Feb 28/29).
  *
  * @param dateStr - Base ISO date string
  * @param monthsToAdd - Number of calendar months to add
  * @returns Projected finish date string
  */
 export function addMonthsToDate(dateStr?: string, monthsToAdd: number = 0): string {
-  if (!dateStr || typeof dateStr !== 'string') return getTodayDateString();
-  try {
-    const parts = dateStr.split('-').map(Number);
-    if (parts.length < 3 || parts.some(isNaN)) return dateStr;
-    const [y, m, d] = parts;
-    const targetDate = new Date(y, m - 1 + monthsToAdd, d);
-    const year = targetDate.getFullYear();
-    const month = String(targetDate.getMonth() + 1).padStart(2, '0');
-    const day = String(targetDate.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  } catch {
-    return dateStr || getTodayDateString();
-  }
+  const parsed = parseLocalDate(dateStr);
+  if (!parsed) return dateStr && typeof dateStr === 'string' && dateStr.trim() ? dateStr : getTodayDateString();
+  const y = parsed.getFullYear();
+  const m = parsed.getMonth();
+  const d = parsed.getDate();
+
+  const targetMonthLastDay = new Date(y, m + monthsToAdd + 1, 0).getDate();
+  const clampedDay = Math.min(d, targetMonthLastDay);
+  const targetDate = new Date(y, m + monthsToAdd, clampedDay);
+  return formatLocalDateISO(targetDate);
 }
 
 /**
- * Calculates calendar days difference between two ISO date strings (YYYY-MM-DD).
+ * Adds a given number of calendar days to an ISO date string (YYYY-MM-DD) in local time.
+ */
+export function addDaysToDate(dateStr?: string, daysToAdd: number = 0): string {
+  const parsed = parseLocalDate(dateStr);
+  if (!parsed) return getTodayDateString();
+  const target = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate() + daysToAdd);
+  return formatLocalDateISO(target);
+}
+
+/**
+ * Calculates calendar days difference between two ISO date strings (YYYY-MM-DD),
+ * using UTC calendar coordinates so DST transitions never cause off-by-one drift.
  *
  * @param startStr - Start date string
  * @param endStr - End date string
  * @returns Number of days (minimum 1)
  */
 export function calculateDaysDifference(startStr?: string, endStr?: string): number {
-  if (!startStr || !endStr) return 30;
-  try {
-    const start = new Date(startStr);
-    const end = new Date(endStr);
-    const diffTime = end.getTime() - start.getTime();
-    return Math.max(1, Math.round(diffTime / (1000 * 60 * 60 * 24)));
-  } catch {
-    return 30;
-  }
+  const start = parseLocalDate(startStr);
+  const end = parseLocalDate(endStr);
+  if (!start || !end) return 30;
+  const startUtc = Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
+  const endUtc = Date.UTC(end.getFullYear(), end.getMonth(), end.getDate());
+  const diffDays = Math.round((endUtc - startUtc) / 86400000);
+  return Math.max(1, diffDays);
 }
