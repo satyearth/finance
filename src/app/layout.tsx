@@ -42,9 +42,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
+    <html lang="en" suppressHydrationWarning className="overflow-x-clip">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-white text-[#1B1A18] antialiased selection:bg-[#E65B3F] selection:text-white min-h-screen font-sans overflow-x-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-white text-[#1B1A18] antialiased selection:bg-[#E65B3F] selection:text-white min-h-screen font-sans overflow-x-clip`}
       >
         {children}
       </body>

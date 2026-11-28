@@ -46,6 +46,8 @@ video {
 html {
   color-scheme: light !important;
   background-color: #FFFFFF;
+  overflow-x: clip;
+  overflow-y: scroll;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -57,8 +59,7 @@ body {
   background-color: #FFFFFF;
   font-family: var(--font-geist-sans), 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   letter-spacing: -0.015em;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-x: clip;
   min-width: 320px;
   touch-action: manipulation;
 }
